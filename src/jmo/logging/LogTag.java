@@ -1,5 +1,6 @@
 package jmo.logging;
 
+//TODO Write documentation for this class
 public class LogTag {
 
 	public final static String ERROR = "ERROR";

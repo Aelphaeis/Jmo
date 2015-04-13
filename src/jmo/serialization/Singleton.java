@@ -3,6 +3,8 @@ package jmo.serialization;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO Document warning suppressions 
+//TODO Write test cases for this class
 public class Singleton {
 
 	private static final Singleton instance = new Singleton();

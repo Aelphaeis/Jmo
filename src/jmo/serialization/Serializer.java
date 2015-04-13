@@ -7,6 +7,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+//TODO Create documentation for this class
+//TODO Create method to reverse serialization
+//TODO Create test cases for this class.
 public final class Serializer {
 
 	private Serializer() {
@@ -30,7 +33,7 @@ public final class Serializer {
 		StringWriter stringWriter = new StringWriter();
 		Marshaller m = context.createMarshaller();
 
-		// This makes things readable.
+		//This makes things readable.
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 		m.marshal(element, stringWriter);

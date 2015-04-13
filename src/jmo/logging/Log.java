@@ -9,6 +9,7 @@ import java.util.Date;
 
 import jmo.serialization.Serializer;
 
+//TODO Try to remove the exception handling from toString();
 public class Log implements Serializable {
 	private static final long serialVersionUID = 5259203340243633671L;
 

@@ -1,4 +1,4 @@
-package jmo.serialization;
+package jmo.util;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -25,11 +25,8 @@ public class Singleton {
 				T obj = classOf.newInstance();
 				instance.mapHolder.put(classOf, obj);
 			}
-
 			return (T) instance.mapHolder.get(classOf);
-
 		}
-
 	}
 
 	public Object clone() throws CloneNotSupportedException {

@@ -27,8 +27,7 @@ public final class Serializer {
 		Class<T> objClass = (Class<T>) obj.getClass();
 		JAXBContext context = JAXBContext.newInstance(objClass);
 		QName qualifiedName = new QName(obj.getClass().getName());
-		JAXBElement<T> element = new JAXBElement<T>(qualifiedName, objClass,
-				obj);
+		JAXBElement<T> element = new JAXBElement<T>(qualifiedName, objClass, obj);
 
 		StringWriter stringWriter = new StringWriter();
 		Marshaller m = context.createMarshaller();

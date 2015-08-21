@@ -9,8 +9,8 @@ public abstract class AbstractObservable implements Observable {
     	obs = new Vector<Observer>();
     }
     
-	@Override
-	public void addObserver(Observer o) {
+    @Override
+    public void addObserver(Observer o) {
 		if (o == null){
 			throw new NullPointerException();
 		}

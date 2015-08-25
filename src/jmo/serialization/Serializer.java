@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 //TODO Create documentation for this class
 //TODO Create method to reverse serialization
 //TODO Create test cases for this class.
+//TODO Allow for multiple classes to be inserted into serializer.
 public final class Serializer {
 
 	private Serializer() {

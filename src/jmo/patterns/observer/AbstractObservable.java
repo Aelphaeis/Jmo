@@ -31,17 +31,17 @@ public abstract class AbstractObservable implements Observable {
 
 	@Override
 	public void notifyObservers(Object... args) {
-	     Object[] arrLocal;
+	    Object[] arrLocal;
 
 	 	synchronized (this) {
 	 	    if (!changed)
 	                 return;
 	             arrLocal = obs.toArray();
 	             clearChanged();
-	         }
+         }
 
-	         for (int i = arrLocal.length-1; i>=0; i--)
-	             ((Observer)arrLocal[i]).update(this, args);		
+         for (int i = arrLocal.length-1; i>=0; i--)
+             ((Observer)arrLocal[i]).update(this, args);		
 	}
 	@Override
 	public void deleteObservers() {

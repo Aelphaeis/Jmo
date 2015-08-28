@@ -1,5 +1,5 @@
 package jmo.structures;
 
-public interface Callable <T> {
-	public void function(T object);
+public interface Callable {
+	public void function(Object... args);
 }

@@ -13,24 +13,51 @@ public class TreeNode<T>{
 	}
 	
 	public boolean hasParent(){
-		return parent != null;
+		return getParent() != null;
 	}
 	
-	public void addChildren(List<TreeNode<T>> children){
-		getChildren().addAll(children);
+	public boolean hasValue(){
+		return getValue() != null;
+	}
+
+	public void addChild(T child){
+		TreeNode<T> node = new TreeNode<T>();
+		node.setValue(child);
+		node.setParent(this);
+		getChildren().add(node);
 	}
 	
-	public void transverse(Callable<T> action){
+	public void addChildren(List<T> children){
+		for(T v : children){
+			addChild(v);
+		}
+	}
+	
+	public List<T> getChildrenValues(){
+		List<T> output = new ArrayList<T>();
+		for(TreeNode<T> child : getChildren()){
+			output.add(child.getValue());
+		}
+		return output;
+	}
+	
+	public void transverse(Callable action){
 		transverse(this, action);
 	}
 	
-	private void transverse(TreeNode<T> n, Callable<T> action){
-		if( value != null){
-			action.function(value);
+	private void transverse(TreeNode<T> n, Callable action){
+		if( n.getValue() != null){
+			action.function(n.getValue(), n);
 		}
-		for(TreeNode<T> node : children){
-			transverse(node, action);
+		for(TreeNode<T> node : n.getChildren()){
+			n.transverse(node, action);
 		}
+	}
+	public int getLevel(){
+		int lv = 0;
+		for(TreeNode<T>current = this; current != null; current = current.getParent())
+			++lv;
+		return lv;
 	}
 	
 	/****     Getters and Setters    *****/

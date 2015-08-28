@@ -16,4 +16,8 @@ public class Strings {
 		}
 		return pad + s;
 	}
+	
+	public static String pad(String s, int n, char padding){
+		return padLeft(padRight(s,n, padding),n,padding);
+	}
 }

@@ -42,11 +42,13 @@ public class Randomizer {
 	
 	public double getDouble(){
 		byte [] bArr = new byte[8];
+		generator.nextBytes(bArr);
 		return ByteBuffer.wrap(bArr).order(ByteOrder.LITTLE_ENDIAN).getDouble();
 	}
 	
 	public char getChar(){
 		byte [] bArr = new byte[2];
+		generator.nextBytes(bArr);
 		return ByteBuffer.wrap(bArr).order(ByteOrder.LITTLE_ENDIAN).getChar();
 	}
 	

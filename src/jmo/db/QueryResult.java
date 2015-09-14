@@ -55,7 +55,7 @@ public class QueryResult {
 		return objs;
 	}
 	
-	public Object value(String columnName, int index){
+	public <T> T value(String columnName, int index){
 		QueryColumn qc = null;
 		for(int i = 0; i < columns.size(); i++ ){
 			qc = columns.get(i);
@@ -66,8 +66,9 @@ public class QueryResult {
 		return null;
 	}
 	
-	public Object value(int columnIndex, int index){
-		return values.get(index).get(columnIndex);
+	@SuppressWarnings("unchecked")
+	public <T> T value(int columnIndex, int index){
+		return (T) values.get(index).get(columnIndex);
 	}
 
 	public List<QueryColumn> getColumns() {

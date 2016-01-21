@@ -1,6 +1,8 @@
 package jmo.util;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -11,23 +13,21 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 public class InMemoryContext implements Context {
-
+	Map<String, Object> bindings = new HashMap<String, Object>();
+	
 	@Override
 	public Object lookup(Name name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		return lookup(name.toString());
 	}
 
 	@Override
 	public Object lookup(String name) throws NamingException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void bind(Name name, Object obj) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		bind(name.toString(), obj);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class InMemoryContext implements Context {
 
 	@Override
 	public void rename(Name oldName, Name newName) throws NamingException {
-		// TODO Auto-generated method stub
+		rename(oldName.toString(), newName.toString());
 		
 	}
 
@@ -75,22 +75,18 @@ public class InMemoryContext implements Context {
 	@Override
 	public NamingEnumeration<NameClassPair> list(Name name)
 			throws NamingException {
+		return list(name.toString());
+	}
+
+	@Override
+	public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public NamingEnumeration<NameClassPair> list(String name)
-			throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public NamingEnumeration<Binding> listBindings(Name name)
-			throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+	public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
+		return listBindings(name.toString());
 	}
 
 	@Override
@@ -102,8 +98,7 @@ public class InMemoryContext implements Context {
 
 	@Override
 	public void destroySubcontext(Name name) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		destroySubcontext(name.toString());
 	}
 
 	@Override
@@ -114,8 +109,7 @@ public class InMemoryContext implements Context {
 
 	@Override
 	public Context createSubcontext(Name name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		return createSubcontext(name.toString());
 	}
 
 	@Override
@@ -126,8 +120,7 @@ public class InMemoryContext implements Context {
 
 	@Override
 	public Object lookupLink(Name name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		return lookupLink(name.toString());
 	}
 
 	@Override
@@ -138,8 +131,7 @@ public class InMemoryContext implements Context {
 
 	@Override
 	public NameParser getNameParser(Name name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		return getNameParser(name.toString());
 	}
 
 	@Override

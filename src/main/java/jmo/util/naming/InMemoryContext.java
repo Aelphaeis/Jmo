@@ -1,4 +1,4 @@
-package jmo.util;
+package jmo.util.naming;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -12,7 +12,7 @@ import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-public class InMemoryContext implements Context {
+public class InMemoryContext implements Context  {
 	Map<String, Object> bindings = new HashMap<String, Object>();
 	
 	@Override

@@ -7,6 +7,10 @@
 	<name>Jmo</name>
 	<description>Joseph Morain's Java utilities. </description>
 
+	<properties>
+    	<project.build.sourceEncoding>ISO8859_1</project.build.sourceEncoding>
+  	</properties>
+  	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

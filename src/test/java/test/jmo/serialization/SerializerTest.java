@@ -47,7 +47,7 @@ public class SerializerTest {
 	}
 	
 	@Test
-	public void test() throws InvocationTargetException {
+	public void writeIterableToCSVSuccessTest() throws InvocationTargetException {
 		List<AnnotatedPerson> people = new ArrayList<AnnotatedPerson>();
 		people.add(new AnnotatedPerson("A", 1));
 		people.add(new AnnotatedPerson("B", 2));

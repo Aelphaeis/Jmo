@@ -1,15 +1,25 @@
 package jmo.serialization;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -103,4 +113,96 @@ public final class Serializer {
 		}
 	}
 	
+	/**
+	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
+	 * into a CSV format to a writer
+	 * @param writer Where to write the CSV data
+	 * @param iterable Data to write
+	 * @param clazz The class of the data
+	 * @throws InvocationTargetException
+	 */
+	public static <T> void writeIterabletoCSV(Writer writer, Iterable<T> iterable, Class<T> clazz) 
+			throws InvocationTargetException {
+		
+		PrintWriter pWriter = new PrintWriter(writer);
+		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(clazz);
+		String[] headers = new String[accessibles.size()];
+		
+		for(int i = 0; i < headers.length; i++){
+			headers[i] = accessibles.get(i).getAnnotation(XmlElement.class).name();
+		}
+
+		String headerText = Arrays.toString(headers);
+		headerText = headerText.substring(1, headerText.length() - 1);
+		
+		pWriter.println(headerText);
+	
+		for(T obj : iterable){
+			String[] values = new String[accessibles.size()];
+			for(int i = 0; i < accessibles.size(); i++){
+				AccessibleObject accessor = accessibles.get(i);
+				values [i] = getValueWithAccessor(obj, accessor).toString();
+			}
+			String valueText = Arrays.toString(values);
+			valueText = valueText.substring(1, valueText.length() - 1);
+			pWriter.println(valueText);
+		}
+		pWriter.flush();
+	}
+	
+	protected static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(Class<T> clazz){
+		List<AccessibleObject> accessibles = new ArrayList<AccessibleObject>();
+		
+		if(!clazz.isAnnotationPresent(XmlRootElement.class)){
+			throw new IllegalArgumentException("Class must be annotated with " + XmlRootElement.class);
+		}
+		
+		for(AccessibleObject obj : clazz.getFields()){
+			if(obj.isAnnotationPresent(XmlElement.class)){
+				accessibles.add(obj);
+			}
+		}
+		
+		for(AccessibleObject obj : clazz.getMethods()){
+			if(obj.isAnnotationPresent(XmlElement.class)){
+				accessibles.add(obj);
+			}
+		}
+		
+		if(accessibles.isEmpty()){
+			throw new IllegalArgumentException("Class must be annotated with " + XmlElement.class);
+		}
+		
+		return accessibles;
+	}
+	
+	protected static Object getValueWithAccessor(Object value, AccessibleObject accessor) 
+			throws InvocationTargetException{
+		if(accessor instanceof Field){
+			try{ 
+				return ((Field)accessor).get(value).toString();
+			}
+			catch(IllegalAccessException e){
+				//This should never happen, if it does we are in an illegal state
+				logger.error("Trying to access inaccessible field", e);
+				throw new IllegalStateException(e);
+			}
+		}
+		if(accessor instanceof Method){
+			try {
+				return ((Method)accessor).invoke(value).toString();
+			} 
+			catch (IllegalAccessException e) {
+				//this should never happen if it does we are in an illegal state
+				logger.error("Trying to access inaccessible field", e);
+				throw new IllegalStateException(e);
+			} 
+			catch (InvocationTargetException e) {
+				//This could happen, unlikely, but possible.
+				logger.error("The method we called threw an exception", e);
+				throw e;
+			}
+		}
+		throw new IllegalArgumentException("Accessor is not a Field or Method");
+	}
 }

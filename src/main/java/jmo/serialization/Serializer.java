@@ -21,8 +21,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-//TODO Create documentation for this class
-//TODO Create test cases for this class.
 //TODO Allow for multiple classes to be inserted into serializer.
 public final class Serializer {
 	private static final Logger logger =  LoggerFactory.getLogger(Serializer.class);
@@ -31,12 +29,24 @@ public final class Serializer {
 		// we don't want anyone instantiating this class.
 	}
 
+	/**
+	 * Given an object returns an xml representation of the object
+	 * @param obj object to serialize to xml
+	 * @return
+	 * @throws JAXBException if the object cannot be serialized
+	 */
 	public static <T> String serialize(T obj) throws JAXBException{
 		StringWriter stringWriter = new StringWriter();
 		serialize(obj, stringWriter);
 		return stringWriter.toString();
 	}
 	
+	/**
+	 * Gien an object and a writer will write the xml object to the writer.
+	 * @param obj
+	 * @param writer
+	 * @throws JAXBException if the object cannot be serialized.
+	 */
 	public static <T> void serialize(T obj, Writer writer) throws JAXBException{
 		/*
 		 * Casting Class<? extends Object> to Class<? extends T> is impossible
@@ -57,6 +67,13 @@ public final class Serializer {
 		m.marshal(element, writer);
 	}
 	
+	/**
+	 * De-serializes a string to specified object.
+	 * @param xml string to deserialize
+	 * @param clazzs class we will deserialize to
+	 * @return
+	 * @throws JAXBException if Object cannot be deserialized
+	 */
 	public static <T> T deserialize(String xml, Class<T> clazz) throws JAXBException{
 		try{
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

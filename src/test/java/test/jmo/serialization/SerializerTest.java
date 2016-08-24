@@ -32,7 +32,6 @@ public class SerializerTest {
 		p.setName("Joseph");
 		
 		String xml = Serializer.serialize(p);
-		System.out.println(xml);
 		Person pCopy = (Person) Serializer.deserialize(xml, p.getClass());
 		
 		

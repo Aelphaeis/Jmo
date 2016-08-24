@@ -14,6 +14,7 @@ public class InMemoryContextTest {
 	public void test() throws NamingException {
 		InitialContext ic = new InitialContext();
 		Context ctx = (Context) ic.lookup("java:comp/env");
+		assertNotNull(ctx);
 	}
 
 }

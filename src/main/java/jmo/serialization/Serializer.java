@@ -52,7 +52,7 @@ public final class Serializer {
 	}
 	
 	/**
-	 * Gien an object and a writer will write the xml object to the writer.
+	 * Given an object and a writer will write the xml object to the writer.
 	 * @param obj
 	 * @param writer
 	 * @throws JAXBException if the object cannot be serialized.
@@ -78,7 +78,7 @@ public final class Serializer {
 	}
 	
 	/**
-	 * De-serializes a string to specified object.
+	 * Deserializes a string to specified object.
 	 * @param xml string to deserialize
 	 * @param clazzs class we will deserialize to
 	 * @return
@@ -150,6 +150,12 @@ public final class Serializer {
 		pWriter.flush();
 	}
 	
+	/**
+	 * Gets all publicly accessible Objects annotated with XmlElements assuming the class specified
+	 * is annotated with XmlRootElement
+	 * @param clazz
+	 * @return list of AccessibleOjects
+	 */
 	protected static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(Class<T> clazz){
 		List<AccessibleObject> accessibles = new ArrayList<AccessibleObject>();
 		
@@ -176,6 +182,12 @@ public final class Serializer {
 		return accessibles;
 	}
 	
+	/**
+	 * Return the value of an AccessibleObject as a string if it is a Field or Method without arguments.
+	 * @param value The object we are trying to extract the value from
+	 * @param accessor The method or field we will try to extract value from
+	 * @throws InvocationTargetException If AccessibleObject is method and throws an exception
+	 */
 	protected static Object getValueWithAccessor(Object value, AccessibleObject accessor) 
 			throws InvocationTargetException{
 		if(accessor instanceof Field){

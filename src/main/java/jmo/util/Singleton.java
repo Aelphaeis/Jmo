@@ -9,8 +9,7 @@ public class Singleton {
 
 	private static final Singleton instance = new Singleton();
 
-	@SuppressWarnings("rawtypes")
-	private Map<Class, Object> mapHolder = new HashMap<Class, Object>();
+	private Map<Class<?>, Object> mapHolder = new HashMap<Class<?>, Object>();
 
 	private Singleton() {
 	}
@@ -19,13 +18,14 @@ public class Singleton {
 	public static <T> T getInstance(Class<T> classOf)
 			throws InstantiationException, IllegalAccessException {
 
+		T obj = null;
 		synchronized (instance) {
-
 			if (!instance.mapHolder.containsKey(classOf)) {
-				T obj = classOf.newInstance();
+				obj = classOf.newInstance();
 				instance.mapHolder.put(classOf, obj);
 			}
-			return (T) instance.mapHolder.get(classOf);
+			obj = (T) instance.mapHolder.get(classOf);
+			return obj;
 		}
 	}
 

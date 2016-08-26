@@ -11,7 +11,7 @@ import jmo.util.Reflector;
 public class ReflectorTest {
 
 	@Test
-	public void test() {
+	public void getClassForPackageSuccessTest() {
 		Package pkg = Reflector.class.getPackage();
 		assertNotNull(pkg);
 		

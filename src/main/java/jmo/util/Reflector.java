@@ -94,34 +94,41 @@ public class Reflector {
 		String relPath = pkgname.replace('.', '/');
 		String resPath = resource.getPath();
 		String jarPath = resPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
-		JarFile jarFile;
+		JarFile jarFile = null;
 		
 		try {
 			//attempt to load jar file
 			jarFile = new JarFile(jarPath);
+		
+			
+			//get contents of jar file and iterate through them
+			Enumeration<JarEntry> entries = jarFile.entries();
+			while (entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+				
+				//Get content name from jar file
+				String entryName = entry.getName();
+				String className = null;
+				
+				//If content is a class save class name.
+				if (entryName.endsWith(".class") && entryName.startsWith(relPath) 
+						&& entryName.length() > (relPath.length() + "/".length())) {
+					className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
+				}
+				
+				//If content is a class add class to List
+				if (className != null) {
+					classes.add(loadClass(className));
+				}
+			}
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
 		}
-		
-		//get contents of jar file and iterate through them
-		Enumeration<JarEntry> entries = jarFile.entries();
-		while (entries.hasMoreElements()) {
-			JarEntry entry = entries.nextElement();
-			
-			//Get content name from jar file
-			String entryName = entry.getName();
-			String className = null;
-			
-			//If content is a class save class name.
-			if (entryName.endsWith(".class") && entryName.startsWith(relPath) 
-					&& entryName.length() > (relPath.length() + "/".length())) {
-				className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
-			}
-			
-			//If content is a class add class to List
-			if (className != null) {
-				classes.add(loadClass(className));
+		finally{
+			if(jarFile != null){
+				try{ jarFile.close(); }
+				catch(IOException e){ throw new RuntimeException(e); }
 			}
 		}
 		return classes;

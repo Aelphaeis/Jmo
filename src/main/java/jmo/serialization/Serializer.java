@@ -192,7 +192,7 @@ public final class Serializer {
 			throws InvocationTargetException{
 		if(accessor instanceof Field){
 			try{ 
-				return ((Field)accessor).get(value).toString();
+				return String.valueOf(((Field)accessor).get(value));
 			}
 			catch(IllegalAccessException e){
 				//This should never happen, if it does we are in an illegal state
@@ -202,7 +202,7 @@ public final class Serializer {
 		}
 		if(accessor instanceof Method){
 			try {
-				return ((Method)accessor).invoke(value).toString();
+				return String.valueOf(((Method)accessor).invoke(value));
 			} 
 			catch (IllegalAccessException e) {
 				//this should never happen if it does we are in an illegal state

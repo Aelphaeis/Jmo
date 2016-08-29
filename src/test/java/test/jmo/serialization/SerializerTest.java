@@ -61,6 +61,20 @@ public class SerializerTest {
 		}), people, AnnotatedPerson.class);
 	}
 	
+	@Test
+	public void writeIterableToCSVNullValueSuccessTest() throws InvocationTargetException {
+		List<AnnotatedPerson> people = new ArrayList<AnnotatedPerson>();
+		people.add(new AnnotatedPerson("A", 1));
+		people.add(new AnnotatedPerson("B", 2));
+		people.add(new AnnotatedPerson(null, 3));
+
+		Serializer.writeIterabletoCSV(new PrintWriter(new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				
+			}
+		}), people, AnnotatedPerson.class);
+	}
 
 	
 	public static class Person{

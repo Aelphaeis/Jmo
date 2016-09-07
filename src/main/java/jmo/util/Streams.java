@@ -5,10 +5,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class Streams {
-	public static void copyStream(InputStream input, OutputStream output)
+	public static void copyStream(InputStream input, OutputStream output) 
+			throws IOException {
+		copyStream(input, output, 1024);
+		
+	}
+	
+	public static void copyStream(InputStream input, OutputStream output, int bufferSize)
 		    throws IOException {
-	    byte[] buffer = new byte[1024]; // Adjust if you want
-	    int bytesRead;
+		
+		int bytesRead;
+	    byte[] buffer = new byte[bufferSize]; 
 	    while ((bytesRead = input.read(buffer)) != -1)  {
 	        output.write(buffer, 0, bytesRead);
 	    }

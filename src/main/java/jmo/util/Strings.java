@@ -20,4 +20,16 @@ public class Strings {
 	public static String pad(String s, int n, char padding){
 		return padLeft(padRight(s,n, padding),n,padding);
 	}
+	
+	public static boolean isBlank(String value){
+		if(value == null){
+			return true;
+		}
+		
+		if(value.trim().isEmpty()){
+			return true;
+		}
+		
+		return false;
+	}
 }

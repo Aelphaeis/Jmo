@@ -3,6 +3,8 @@ package jmo.structures;
 import java.util.ArrayList;
 import java.util.List;
 
+import jmo.patterns.visitor.Visitor;
+
 public class TreeNode<T>{
 	private T value = null;
 	private TreeNode<T> parent = null;
@@ -41,13 +43,13 @@ public class TreeNode<T>{
 		return output;
 	}
 	
-	public void transverse(Callable action){
-		transverse(this, action);
+	public void transverse(Visitor<T> visitor){
+		transverse(this, visitor);
 	}
 	
-	private void transverse(TreeNode<T> n, Callable action){
+	private void transverse(TreeNode<T> n, Visitor<T> action){
 		if( n.getValue() != null){
-			action.function(n.getValue(), n);
+			action.visit(n.getValue());
 		}
 		for(TreeNode<T> node : n.getChildren()){
 			n.transverse(node, action);
@@ -56,7 +58,7 @@ public class TreeNode<T>{
 	
 	public int getLevel(){
 		int lv = 0;
-		for(TreeNode<T>current = this; current != null; current = current.getParent())
+		for(TreeNode<T> current = this; current != null; current = current.getParent())
 			++lv;
 		return lv;
 	}

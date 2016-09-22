@@ -50,14 +50,14 @@
 				</configuration>
 			</plugin>
 		</plugins>
-			<extensions>
-		<extension>
-			<!-- see https://github.com/spring-projects/aws-maven -->
-			<!-- Necessary to push maven projects to s3 -->
-			<groupId>org.springframework.build</groupId>
-			<artifactId>aws-maven</artifactId>
-			<version>5.0.0.RELEASE</version>
-		</extension>
-	</extensions>
+		<extensions>
+			<extension>
+				<!-- see https://github.com/spring-projects/aws-maven -->
+				<!-- Necessary to push maven projects to s3 -->
+				<groupId>org.springframework.build</groupId>
+				<artifactId>aws-maven</artifactId>
+				<version>5.0.0.RELEASE</version>
+			</extension>
+		</extensions>
 	</build>
 </project>

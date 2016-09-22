@@ -11,6 +11,19 @@
     	<project.build.sourceEncoding>ISO8859_1</project.build.sourceEncoding>
   	</properties>
   	
+  	<distributionManagement>
+		<repository>
+			<id>s3-maven-release-repo</id>
+			<name>aws release repository</name>
+			<url>s3://repo.maven/release</url>
+		</repository>
+		<snapshotRepository>
+			<id>s3-maven-snapshot-repo</id>
+			<name>aws snapshot repository</name>
+			<url>s3://repo.maven/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+  	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -37,5 +50,14 @@
 				</configuration>
 			</plugin>
 		</plugins>
+			<extensions>
+		<extension>
+			<!-- see https://github.com/spring-projects/aws-maven -->
+			<!-- Necessary to push maven projects to s3 -->
+			<groupId>org.springframework.build</groupId>
+			<artifactId>aws-maven</artifactId>
+			<version>5.0.0.RELEASE</version>
+		</extension>
+	</extensions>
 	</build>
 </project>

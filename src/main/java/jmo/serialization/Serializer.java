@@ -141,7 +141,8 @@ public final class Serializer {
 			String[] values = new String[accessibles.size()];
 			for(int i = 0; i < accessibles.size(); i++){
 				AccessibleObject accessor = accessibles.get(i);
-				values [i] = getValueWithAccessor(obj, accessor).toString();
+				Object value = getValueWithAccessor(obj, accessor);
+				values [i] = value == null ? "" : String.valueOf(value);
 			}
 			String valueText = Arrays.toString(values);
 			valueText = valueText.substring(1, valueText.length() - 1);

@@ -132,10 +132,7 @@ public final class Serializer {
 			headers[i] = accessibles.get(i).getAnnotation(XmlElement.class).name();
 		}
 
-		String headerText = Arrays.toString(headers);
-		headerText = headerText.substring(1, headerText.length() - 1);
-		
-		pWriter.println(headerText);
+		pWriter.println(toString(headers));
 	
 		for(T obj : iterable){
 			String[] values = new String[accessibles.size()];
@@ -144,8 +141,7 @@ public final class Serializer {
 				Object value = getValueWithAccessor(obj, accessor);
 				values [i] = value == null ? "" : String.valueOf(value);
 			}
-			String valueText = Arrays.toString(values);
-			valueText = valueText.substring(1, valueText.length() - 1);
+			String valueText = toString(values);
 			pWriter.println(valueText);
 		}
 		pWriter.flush();
@@ -218,4 +214,42 @@ public final class Serializer {
 		}
 		throw new IllegalArgumentException("Accessor is not a Field or Method");
 	}
+	
+	/** 
+	 * Turn an array of objects into a CSV parsable string
+	 * @param a
+	 * @return
+	 */
+	private static String toString(Object[] a) {
+        if (a == null || a.length == 0){
+        	  return "\"\"";
+        }
+          
+        int iMax = a.length - 1;
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; ; i++) {
+        	
+        	String element = String.valueOf(a[i]);
+        	boolean hasComma = false;
+        	
+        	if(element.contains(",")){
+        		b.append('"');
+        		hasComma = true;
+        	}
+        	
+        	element = element.replace("\"", "\"\"");
+        	b.append(element);
+        	
+        	if(hasComma){
+        		b.append('"');
+        	}
+        	
+            if (i == iMax){
+            	return b.toString();
+            }
+            
+        	b.append(", ");
+        }
+    }
+	
 }

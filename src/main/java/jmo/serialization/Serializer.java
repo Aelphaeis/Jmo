@@ -117,12 +117,27 @@ public final class Serializer {
 	/**
 	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
 	 * into a CSV format to a writer
+	 * 
 	 * @param writer Where to write the CSV data
 	 * @param iterable Data to write
 	 * @param clazz The class of the data
 	 * @throws InvocationTargetException
 	 */
 	public static <T> void writeIterabletoCSV(Writer writer, Iterable<T> iterable, Class<T> clazz) 
+			throws InvocationTargetException {
+		writeIterabletoCSV(writer, iterable, clazz, false);
+	}
+	
+	/**
+	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
+	 * into a CSV format to a writer
+	 * @param writer Where to write the CSV data
+	 * @param iterable Data to write
+	 * @param clazz The class of the data
+	 * @param closeStream whether or not to close stream upon operation completion
+	 * @throws InvocationTargetException
+	 */
+	public static <T> void writeIterabletoCSV(Writer writer, Iterable<T> iterable, Class<T> clazz, boolean closeWriter) 
 			throws InvocationTargetException {
 		
 		//Determine if property order exists
@@ -147,6 +162,14 @@ public final class Serializer {
 			pWriter.println(valueText);
 		}
 		pWriter.flush();
+		if(closeWriter){
+			try {
+				writer.close();
+			}
+			catch (IOException e) {
+				throw new IllegalStateException("Unable to close writer", e);
+			}
+		}
 	}
 	
 	/**

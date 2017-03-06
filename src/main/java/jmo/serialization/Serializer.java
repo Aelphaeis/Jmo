@@ -20,6 +20,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -124,16 +125,17 @@ public final class Serializer {
 	public static <T> void writeIterabletoCSV(Writer writer, Iterable<T> iterable, Class<T> clazz) 
 			throws InvocationTargetException {
 		
-		PrintWriter pWriter = new PrintWriter(writer);
-		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(clazz);
-		String[] headers = new String[accessibles.size()];
+		//Determine if property order exists
+		XmlType xmlType = clazz.getAnnotation(XmlType.class);
+		String [] propOrder = xmlType != null ? xmlType.propOrder() : null;
 		
-		for(int i = 0; i < headers.length; i++){
-			headers[i] = accessibles.get(i).getAnnotation(XmlElement.class).name();
-		}
+		//Organize all the data
+		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(clazz);
+		accessibles = sortAccessibles(accessibles, propOrder);
 
-		pWriter.println(toString(headers));
-	
+		//Print headers and columns
+		PrintWriter pWriter = new PrintWriter(writer);
+		pWriter.println(toString(propOrder));
 		for(T obj : iterable){
 			String[] values = new String[accessibles.size()];
 			for(int i = 0; i < accessibles.size(); i++){
@@ -145,6 +147,39 @@ public final class Serializer {
 			pWriter.println(valueText);
 		}
 		pWriter.flush();
+	}
+	
+	/**
+	 * Given a propOrder sorts the accessibles by name in the order specified. If no order is specified. 
+	 * @param accessibles
+	 * @param propOrder
+	 * @return
+	 */
+	protected static List<AccessibleObject> sortAccessibles(List<AccessibleObject> accessibles, String [] propOrder){
+		if(propOrder != null){
+			List<AccessibleObject> orderedAccessibles = new ArrayList<AccessibleObject>();
+			for(int i = 0; i < propOrder.length; i++){
+				for(int j = 0; j < accessibles.size(); j++){
+					String name = accessibles.get(j).getAnnotation(XmlElement.class).name();
+					if(name.equals(propOrder[i])){
+						orderedAccessibles.add(accessibles.remove(j));
+					}
+				}
+			}
+			if(!accessibles.isEmpty()){
+				String [] unusedAccessibles = new String[accessibles.size()];
+				for(int i = 0; i < accessibles.size(); i ++){
+					AccessibleObject obj = accessibles.get(i);
+					String objName = obj.getAnnotation(XmlElement.class).name();
+					unusedAccessibles[i] = objName;
+				}
+				String msg = "The following properties name are present but not speified in @XmlType.propOrder : ";
+				msg += Arrays.toString(unusedAccessibles);
+				throw new IllegalStateException(msg);
+			}
+			accessibles = orderedAccessibles;
+		}
+		return accessibles;
 	}
 	
 	/**

@@ -113,6 +113,55 @@ public final class Serializer {
 			throw new IllegalArgumentException("Illegal Xml input", e);
 		}
 	}
+	/**
+	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the specified writer
+	 * where list B represents a row. Row size is not reinforced. Header should be first entry
+	 * inside of the list.
+	 *  <br /> 
+	 *  If content is null it will be assumed to be an empty list
+	 * @param writer Where to write content. Will not be closed 
+	 * @param content 
+	 */
+	public static void writeListsToCSV(Writer writer, List<? extends List<String>> content){
+		writeListsToCSV(writer, content, false);
+	}
+	/**
+	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the specified writer
+	 * where list B represents a row. Row size is not reinforced. Header should be first entry
+	 * inside of the list.
+	 *  <br /> 
+	 *  If content is null it will be assumed to be an empty list
+	 *  
+	 * @param writer Where to write content. Will not be closed 
+	 * @param content 
+	 * @param closeWriter whether or not to close the writer when completed.
+	 */
+	public static void writeListsToCSV(Writer writer, List<? extends List<String>> content, boolean closeWriter){
+		if(content == null){
+			content = new ArrayList<ArrayList<String>>();
+		}
+		
+		PrintWriter pWriter = new PrintWriter(writer);
+		for(List<String> row :  content){
+			String[] rowValues = row.toArray(new String[0]);
+			for(int i = 0; i < rowValues.length; i ++){
+				if(rowValues[i] == null){
+					rowValues[i] = "";
+				}
+			}
+			pWriter.println(toString(rowValues));
+		}
+		pWriter.flush();
+		if(closeWriter){
+			try {
+				writer.close();
+			}
+			catch (IOException e) {
+				throw new IllegalStateException("Unable to close writer", e);
+			}
+		}
+	}
+
 	
 	/**
 	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data

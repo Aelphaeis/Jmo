@@ -12,29 +12,29 @@ import java.util.jar.JarFile;
 public class Reflector {
 	/**
 	 * Give a package this method returns all classes contained in that package
+	 * 
 	 * @param pkg
 	 * @return Classes within package
 	 */
 	public static List<Class<?>> getClassesForPackage(Package pkg) {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 
-		//Get name of package and turn it to a relative path
+		// Get name of package and turn it to a relative path
 		String pkgname = pkg.getName();
 		String relPath = pkgname.replace('.', '/');
 
 		// Get a File object for the package
 		URL resource = ClassLoader.getSystemClassLoader().getResource(relPath);
-		
-		//If we can't find the resource we throw an exception
+
+		// If we can't find the resource we throw an exception
 		if (resource == null) {
-			throw new RuntimeException("Unexpected problem: No resource for "+ relPath);
+			throw new RuntimeException("Unexpected problem: No resource for " + relPath);
 		}
-		
-		//If the resource is a jar get all classes from jar
+
+		// If the resource is a jar get all classes from jar
 		if (resource.toString().startsWith("jar:")) {
 			classes.addAll(processJarfile(resource, pkgname));
-		}
-		else {
+		} else {
 			classes.addAll(processDirectory(new File(resource.getPath()), pkgname));
 		}
 
@@ -42,13 +42,15 @@ public class Reflector {
 	}
 
 	/**
-	 * Given a package name and a directory returns all classes within that directory
+	 * Given a package name and a directory returns all classes within that
+	 * directory
+	 * 
 	 * @param directory
 	 * @param pkgname
 	 * @return Classes within Directory with package name
 	 */
 	public static List<Class<?>> processDirectory(File directory, String pkgname) {
-		List<Class<?>>  classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<Class<?>>();
 		// Get the list of the files contained in the package
 		String[] files = directory.list();
 		for (int i = 0; i < files.length; i++) {
@@ -59,12 +61,12 @@ public class Reflector {
 				// removes the .class extension
 				className = pkgname + '.' + fileName.substring(0, fileName.length() - 6);
 			}
-			
+
 			if (className != null) {
 				classes.add(loadClass(className));
 			}
-			
-			//If the file is a directory recursively class this method.
+
+			// If the file is a directory recursively class this method.
 			File subdir = new File(directory, fileName);
 			if (subdir.isDirectory()) {
 				classes.addAll(processDirectory(subdir, pkgname + '.' + fileName));
@@ -74,63 +76,91 @@ public class Reflector {
 	}
 
 	private static Class<?> loadClass(String className) {
-		try{
-			//return a class based on a strong name from current class loader
+		try {
+			// return a class based on a strong name from current class loader
 			return Class.forName(className);
-		}
-		catch (ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Unexpected ClassNotFoundException loading class '" + className + "'");
 		}
 	}
 
 	/**
-	 * Given a jar file's URL and a package name returns all classes within jar file.
+	 * Given a jar file's URL and a package name returns all classes within jar
+	 * file.
+	 * 
 	 * @param resource
 	 * @param pkgname
 	 */
 	public static List<Class<?>> processJarfile(URL resource, String pkgname) {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
-		//Turn package name to relative path to jar file
+		// Turn package name to relative path to jar file
 		String relPath = pkgname.replace('.', '/');
 		String resPath = resource.getPath();
 		String jarPath = resPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
 		JarFile jarFile = null;
-		
+
 		try {
-			//attempt to load jar file
+			// attempt to load jar file
 			jarFile = new JarFile(jarPath);
-		
-			
-			//get contents of jar file and iterate through them
+
+			// get contents of jar file and iterate through them
 			Enumeration<JarEntry> entries = jarFile.entries();
 			while (entries.hasMoreElements()) {
 				JarEntry entry = entries.nextElement();
-				
-				//Get content name from jar file
+
+				// Get content name from jar file
 				String entryName = entry.getName();
 				String className = null;
-				
-				//If content is a class save class name.
-				if (entryName.endsWith(".class") && entryName.startsWith(relPath) 
+
+				// If content is a class save class name.
+				if (entryName.endsWith(".class") && entryName.startsWith(relPath)
 						&& entryName.length() > (relPath.length() + "/".length())) {
 					className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
 				}
-				
-				//If content is a class add class to List
+
+				// If content is a class add class to List
 				if (className != null) {
 					classes.add(loadClass(className));
 				}
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
-		}
-		finally{
-			if(jarFile != null){
-				try{ jarFile.close(); }
-				catch(IOException e){ throw new RuntimeException(e); }
+		} finally {
+			if (jarFile != null) {
+				try {
+					jarFile.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 		return classes;
+	}
+
+	public static class ReflectorException extends RuntimeException {
+
+		private static final long serialVersionUID = 909384213793458361L;
+
+		public ReflectorException() {
+			super();
+		}
+
+		public ReflectorException(String message) {
+			super(message);
+		}
+
+		public ReflectorException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public ReflectorException(Throwable cause) {
+			super(cause);
+		}
+
+		protected ReflectorException(String message, Throwable cause, boolean enableSuppression,
+				boolean writableStackTrace) {
+			super(message, cause, enableSuppression, writableStackTrace);
+		}
+
 	}
 }

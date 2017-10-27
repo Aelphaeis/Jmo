@@ -10,13 +10,25 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class Reflector {
+	
+	private static final String CLASS_SUFFIX = ".class";
 	/**
-	 * Give a package this method returns all classes contained in that package
+	 * Given a package this method returns all classes contained in that package
 	 * 
 	 * @param pkg
 	 * @return Classes within package
 	 */
 	public static List<Class<?>> getClassesForPackage(Package pkg) {
+		return getClassesForPackage(pkg, ClassLoader.getSystemClassLoader());
+	}
+	
+	/**
+	 * Given a package name and class loader this method returns all classes contained in package.
+	 * @param pkg
+	 * @param loader
+	 * @return
+	 */
+	public static List<Class<?>> getClassesForPackage(Package pkg, ClassLoader loader) {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 
 		// Get name of package and turn it to a relative path
@@ -24,11 +36,11 @@ public class Reflector {
 		String relPath = pkgname.replace('.', '/');
 
 		// Get a File object for the package
-		URL resource = ClassLoader.getSystemClassLoader().getResource(relPath);
+		URL resource = loader.getResource(relPath);
 
 		// If we can't find the resource we throw an exception
 		if (resource == null) {
-			throw new RuntimeException("Unexpected problem: No resource for " + relPath);
+			throw new ReflectorException("Unexpected problem: No resource for " + relPath);
 		}
 
 		// If the resource is a jar get all classes from jar
@@ -40,6 +52,7 @@ public class Reflector {
 
 		return classes;
 	}
+
 
 	/**
 	 * Given a package name and a directory returns all classes within that
@@ -57,7 +70,7 @@ public class Reflector {
 			String fileName = files[i];
 			String className = null;
 			// we are only interested in .class files
-			if (fileName.endsWith(".class")) {
+			if (fileName.endsWith(CLASS_SUFFIX)) {
 				// removes the .class extension
 				className = pkgname + '.' + fileName.substring(0, fileName.length() - 6);
 			}
@@ -80,7 +93,7 @@ public class Reflector {
 			// return a class based on a strong name from current class loader
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Unexpected ClassNotFoundException loading class '" + className + "'");
+			throw new ReflectorException("Unexpected ClassNotFoundException loading class '" + className + "'");
 		}
 	}
 
@@ -113,9 +126,9 @@ public class Reflector {
 				String className = null;
 
 				// If content is a class save class name.
-				if (entryName.endsWith(".class") && entryName.startsWith(relPath)
+				if (entryName.endsWith(CLASS_SUFFIX) && entryName.startsWith(relPath)
 						&& entryName.length() > (relPath.length() + "/".length())) {
-					className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
+					className = entryName.replace('/', '.').replace('\\', '.').replace(CLASS_SUFFIX, "");
 				}
 
 				// If content is a class add class to List
@@ -124,13 +137,13 @@ public class Reflector {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
+			throw new ReflectorException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
 		} finally {
 			if (jarFile != null) {
 				try {
 					jarFile.close();
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+					throw new ReflectorException(e);
 				}
 			}
 		}

@@ -1,35 +1,38 @@
 package jmo.util;
 
 public class Strings {
+	
+	public static final String EMPTY = "";
+	
 	public static String padRight(String s, int n, char padding){
-		String pad = "";
+		StringBuilder builder = new StringBuilder(s);
 		for(int i = 0; i < n; i++){
-			pad += padding;
+			builder.append(padding);
 		}
-		return  s + pad;
-		
+		return builder.toString();
 	}
+	
 	public static String padLeft(String s, int n,  char padding) {
-		String pad = "";
+		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < n; i++){
-			pad += padding;
+			builder.append(Character.toString(padding));
 		}
-		return pad + s;
+		return builder.append(s).toString();
 	}
 	
 	public static String pad(String s, int n, char padding){
-		return padLeft(padRight(s,n, padding),n,padding);
+		StringBuilder pad = new StringBuilder();
+		StringBuilder value = new StringBuilder();
+		for(int i = 0; i < n; i++){
+			pad.append(Character.toString(padding));
+		}
+		return value.append(pad).append(s).append(pad).toString();
 	}
 	
 	public static boolean isBlank(String value){
-		if(value == null){
+		if(value == null || value.trim().isEmpty()){
 			return true;
 		}
-		
-		if(value.trim().isEmpty()){
-			return true;
-		}
-		
 		return false;
 	}
 }

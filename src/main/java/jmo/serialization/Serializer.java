@@ -137,12 +137,10 @@ public final class Serializer {
 	 * @param closeWriter whether or not to close the writer when completed.
 	 */
 	public static void writeListsToCSV(Writer writer, List<? extends List<String>> content, boolean closeWriter){
-		if(content == null){
-			content = new ArrayList<ArrayList<String>>();
-		}
+		List<? extends List<String>> strings = content == null? new ArrayList<ArrayList<String>>() : content;
 		
 		PrintWriter pWriter = new PrintWriter(writer);
-		for(List<String> row :  content){
+		for(List<String> row :  strings){
 			String[] rowValues = row.toArray(new String[0]);
 			for(int i = 0; i < rowValues.length; i ++){
 				if(rowValues[i] == null){
@@ -249,7 +247,7 @@ public final class Serializer {
 				msg += Arrays.toString(unusedAccessibles);
 				throw new IllegalStateException(msg);
 			}
-			accessibles = orderedAccessibles;
+			return orderedAccessibles;
 		}
 		return accessibles;
 	}

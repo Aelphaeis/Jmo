@@ -9,9 +9,13 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class Reflector {
-	
+public final class Reflector {
+
+	private Reflector() { 
+		throw new IllegalStateException("Utility class");
+	}
 	private static final String CLASS_SUFFIX = ".class";
+	
 	/**
 	 * Given a package this method returns all classes contained in that package
 	 * 
@@ -174,6 +178,5 @@ public class Reflector {
 				boolean writableStackTrace) {
 			super(message, cause, enableSuppression, writableStackTrace);
 		}
-
 	}
 }

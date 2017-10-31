@@ -1,6 +1,6 @@
 package jmo.util;
 
-public class Strings {
+public final class Strings {
 	
 	public static final String EMPTY = "";
 	
@@ -30,9 +30,9 @@ public class Strings {
 	}
 	
 	public static boolean isBlank(String value){
-		if(value == null || value.trim().isEmpty()){
-			return true;
-		}
-		return false;
+		return (value == null || value.trim().isEmpty());
 	}
+	
+	private Strings() { }
+
 }

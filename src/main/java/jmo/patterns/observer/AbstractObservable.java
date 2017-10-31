@@ -1,12 +1,12 @@
 package jmo.patterns.observer;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public abstract class AbstractObservable implements Observable {
     private boolean changed = false;
-    private Vector<Observer> obs;
+    private ArrayList<Observer> obs;
     
     public AbstractObservable(){
-    	obs = new Vector<Observer>();
+    	obs = new ArrayList<Observer>();
     }
     
     @Override
@@ -15,13 +15,13 @@ public abstract class AbstractObservable implements Observable {
 			throw new NullPointerException();
 		}
 		if (!obs.contains(o)) {
-			obs.addElement(o);
+			obs.add(o);
 		}
 	}
 
 	@Override
 	public void deleteObserver(Observer o) {
-	  obs.removeElement(o);
+	  obs.remove(o);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public abstract class AbstractObservable implements Observable {
 	}
 	@Override
 	public void deleteObservers() {
-		obs.removeAllElements();
+		obs = new ArrayList<Observer>();
 	}
 
 	@Override

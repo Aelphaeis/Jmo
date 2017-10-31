@@ -20,6 +20,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -112,10 +113,58 @@ public final class Serializer {
 			throw new IllegalArgumentException("Illegal Xml input", e);
 		}
 	}
+	/**
+	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the specified writer
+	 * where list B represents a row. Row size is not reinforced. Header should be first entry
+	 * inside of the list.
+	 *  <br /> 
+	 *  If content is null it will be assumed to be an empty list
+	 * @param writer Where to write content. Will not be closed 
+	 * @param content 
+	 */
+	public static void writeListsToCSV(Writer writer, List<? extends List<String>> content){
+		writeListsToCSV(writer, content, false);
+	}
+	/**
+	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the specified writer
+	 * where list B represents a row. Row size is not reinforced. Header should be first entry
+	 * inside of the list.
+	 *  <br /> 
+	 *  If content is null it will be assumed to be an empty list
+	 *  
+	 * @param writer Where to write content. Will not be closed 
+	 * @param content 
+	 * @param closeWriter whether or not to close the writer when completed.
+	 */
+	public static void writeListsToCSV(Writer writer, List<? extends List<String>> content, boolean closeWriter){
+		List<? extends List<String>> strings = content == null? new ArrayList<ArrayList<String>>() : content;
+		
+		PrintWriter pWriter = new PrintWriter(writer);
+		for(List<String> row :  strings){
+			String[] rowValues = row.toArray(new String[0]);
+			for(int i = 0; i < rowValues.length; i ++){
+				if(rowValues[i] == null){
+					rowValues[i] = "";
+				}
+			}
+			pWriter.println(toString(rowValues));
+		}
+		pWriter.flush();
+		if(closeWriter){
+			try {
+				writer.close();
+			}
+			catch (IOException e) {
+				throw new IllegalStateException("Unable to close writer", e);
+			}
+		}
+	}
+
 	
 	/**
 	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
 	 * into a CSV format to a writer
+	 * 
 	 * @param writer Where to write the CSV data
 	 * @param iterable Data to write
 	 * @param clazz The class of the data
@@ -123,31 +172,84 @@ public final class Serializer {
 	 */
 	public static <T> void writeIterabletoCSV(Writer writer, Iterable<T> iterable, Class<T> clazz) 
 			throws InvocationTargetException {
-		
-		PrintWriter pWriter = new PrintWriter(writer);
-		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(clazz);
-		String[] headers = new String[accessibles.size()];
-		
-		for(int i = 0; i < headers.length; i++){
-			headers[i] = accessibles.get(i).getAnnotation(XmlElement.class).name();
-		}
-
-		String headerText = Arrays.toString(headers);
-		headerText = headerText.substring(1, headerText.length() - 1);
-		
-		pWriter.println(headerText);
+		writeIterabletoCSV(writer, iterable, clazz, false);
+	}
 	
+	/**
+	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
+	 * into a CSV format to a writer
+	 * @param writer Where to write the CSV data
+	 * @param iterable Data to write
+	 * @param clazz The class of the data
+	 * @param closeStream whether or not to close stream upon operation completion
+	 * @throws InvocationTargetException
+	 */
+	public static <T> void writeIterabletoCSV(Writer writer, Iterable<T> iterable, Class<T> clazz, boolean closeWriter) 
+			throws InvocationTargetException {
+		
+		//Determine if property order exists
+		XmlType xmlType = clazz.getAnnotation(XmlType.class);
+		String [] propOrder = xmlType != null ? xmlType.propOrder() : null;
+		
+		//Organize all the data
+		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(clazz);
+		accessibles = sortAccessibles(accessibles, propOrder);
+
+		//Print headers and columns
+		PrintWriter pWriter = new PrintWriter(writer);
+		pWriter.println(toString(propOrder));
 		for(T obj : iterable){
 			String[] values = new String[accessibles.size()];
 			for(int i = 0; i < accessibles.size(); i++){
 				AccessibleObject accessor = accessibles.get(i);
-				values [i] = getValueWithAccessor(obj, accessor).toString();
+				Object value = getValueWithAccessor(obj, accessor);
+				values [i] = value == null ? "" : String.valueOf(value);
 			}
-			String valueText = Arrays.toString(values);
-			valueText = valueText.substring(1, valueText.length() - 1);
+			String valueText = toString(values);
 			pWriter.println(valueText);
 		}
 		pWriter.flush();
+		if(closeWriter){
+			try {
+				writer.close();
+			}
+			catch (IOException e) {
+				throw new IllegalStateException("Unable to close writer", e);
+			}
+		}
+	}
+	
+	/**
+	 * Given a propOrder sorts the accessibles by name in the order specified. If no order is specified. 
+	 * @param accessibles
+	 * @param propOrder
+	 * @return
+	 */
+	protected static List<AccessibleObject> sortAccessibles(List<AccessibleObject> accessibles, String [] propOrder){
+		if(propOrder != null){
+			List<AccessibleObject> orderedAccessibles = new ArrayList<AccessibleObject>();
+			for(int i = 0; i < propOrder.length; i++){
+				for(int j = 0; j < accessibles.size(); j++){
+					String name = accessibles.get(j).getAnnotation(XmlElement.class).name();
+					if(name.equals(propOrder[i])){
+						orderedAccessibles.add(accessibles.remove(j));
+					}
+				}
+			}
+			if(!accessibles.isEmpty()){
+				String [] unusedAccessibles = new String[accessibles.size()];
+				for(int i = 0; i < accessibles.size(); i ++){
+					AccessibleObject obj = accessibles.get(i);
+					String objName = obj.getAnnotation(XmlElement.class).name();
+					unusedAccessibles[i] = objName;
+				}
+				String msg = "The following properties name are present but not speified in @XmlType.propOrder : ";
+				msg += Arrays.toString(unusedAccessibles);
+				throw new IllegalStateException(msg);
+			}
+			return orderedAccessibles;
+		}
+		return accessibles;
 	}
 	
 	/**
@@ -192,7 +294,7 @@ public final class Serializer {
 			throws InvocationTargetException{
 		if(accessor instanceof Field){
 			try{ 
-				return String.valueOf(((Field)accessor).get(value));
+				return ((Field)accessor).get(value);
 			}
 			catch(IllegalAccessException e){
 				//This should never happen, if it does we are in an illegal state
@@ -202,7 +304,7 @@ public final class Serializer {
 		}
 		if(accessor instanceof Method){
 			try {
-				return String.valueOf(((Method)accessor).invoke(value));
+				return ((Method)accessor).invoke(value);
 			} 
 			catch (IllegalAccessException e) {
 				//this should never happen if it does we are in an illegal state
@@ -217,4 +319,42 @@ public final class Serializer {
 		}
 		throw new IllegalArgumentException("Accessor is not a Field or Method");
 	}
+	
+	/** 
+	 * Turn an array of objects into a CSV parsable string
+	 * @param a
+	 * @return
+	 */
+	private static String toString(Object[] a) {
+        if (a == null || a.length == 0){
+        	  return "\"\"";
+        }
+          
+        int iMax = a.length - 1;
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; ; i++) {
+        	
+        	String element = String.valueOf(a[i]);
+        	boolean hasComma = false;
+        	
+        	if(element.contains(",")){
+        		b.append('"');
+        		hasComma = true;
+        	}
+        	
+        	element = element.replace("\"", "\"\"");
+        	b.append(element);
+        	
+        	if(hasComma){
+        		b.append('"');
+        	}
+        	
+            if (i == iMax){
+            	return b.toString();
+            }
+            
+        	b.append(", ");
+        }
+    }
+	
 }

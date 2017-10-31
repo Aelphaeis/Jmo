@@ -43,6 +43,17 @@ public class TreeNode<T>{
 		return output;
 	}
 	
+	public void transverseNodes(Visitor<TreeNode<T>> visitor){
+		transverseNodes(this, visitor);
+	}
+	
+	private void transverseNodes(TreeNode<T> n, Visitor<TreeNode<T>> visitor){
+		visitor.visit(n);
+		for(TreeNode<T> node : n.getChildren()){
+			n.transverseNodes(node, visitor);
+		}
+	}
+	
 	public void transverse(Visitor<T> visitor){
 		transverse(this, visitor);
 	}

@@ -20,6 +20,33 @@ import jmo.serialization.Serializer;
 public class SerializerTest {
 
 	@Test
+	public void SerializerWriteListsToCSVTest(){
+		List<List<String>> content = new ArrayList<List<String>>(3);
+		List<String> A = new ArrayList<String>(3);
+		List<String> B = new ArrayList<String>(3);
+		List<String> C = new ArrayList<String>(3);
+		
+		A.add("Person's Name");
+		A.add("Person's Age");
+		A.add("Person's Sex");
+		
+		B.add("M1x-745");
+		B.add("12053312123 ms");
+		B.add("NonBinary");
+		
+		C.add("Morain, Joseph");
+		C.add("25");
+		C.add("Male");
+		
+		content.add(A);
+		content.add(B);
+		content.add(C);
+		
+		Serializer.writeListsToCSV(new PrintWriter(System.out), content);
+	}
+	
+	
+	@Test
 	public void serializationCycleAnotatedTest() throws Exception {
 		AnnotatedPerson ap = new AnnotatedPerson();
 		ap.setAge(101);

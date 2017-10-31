@@ -7,13 +7,18 @@ import java.util.Map;
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 public class InMemoryContext implements Context  {
-	Map<String, Object> bindings = new HashMap<String, Object>();
+	Map<String, Object> bindings;
+	
+	public InMemoryContext() {
+		bindings = new HashMap<String, Object>();
+	}
 	
 	@Override
 	public Object lookup(Name name) throws NamingException {
@@ -22,7 +27,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public Object lookup(String name) throws NamingException {
-		return null;
+		return bindings.get(name);
 	}
 
 	@Override
@@ -32,32 +37,32 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public void bind(String name, Object obj) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		if(bindings.containsKey(name)){
+			String err = "object has already been bound to name : %s";
+			throw new NameAlreadyBoundException(err);
+		}
+		bindings.put(name, obj);
 	}
 
 	@Override
 	public void rebind(Name name, Object obj) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		rebind(name.toString(), obj);
 	}
 
 	@Override
 	public void rebind(String name, Object obj) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		bindings.put(name, obj);
 	}
 
 	@Override
 	public void unbind(Name name) throws NamingException {
-		// TODO Auto-generated method stub
+		unbind(name.toString());
 		
 	}
 
 	@Override
 	public void unbind(String name) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		bindings.remove(name);
 	}
 
 	@Override
@@ -68,8 +73,9 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public void rename(String oldName, String newName) throws NamingException {
-		// TODO Auto-generated method stub
-		
+		Object value = lookup(oldName);
+		unbind(oldName);
+		bind(newName, value);
 	}
 
 	@Override

@@ -93,7 +93,7 @@ public class Reflector {
 			// return a class based on a strong name from current class loader
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			throw new ReflectorException("Unexpected ClassNotFoundException loading class '" + className + "'");
+			throw new ReflectorException("Unexpected exception loading class '" + className + "'", e);
 		}
 	}
 

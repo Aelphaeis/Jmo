@@ -29,8 +29,28 @@ public final class Strings {
 		return value.append(pad).append(s).append(pad).toString();
 	}
 	
+	/**
+	 * Checks to see if an a string is null or empty.
+	 * @param value
+	 * @return
+	 */
 	public static boolean isBlank(String value){
 		return (value == null || value.trim().isEmpty());
+	}
+	
+	/**
+	 * Checks to see if all the string's given as parameters are 
+	 * null or empty.
+	 * @param args
+	 * @return
+	 */
+	public static boolean isBlank(String ...args) {
+		for(String arg : args) {
+			if(!isBlank(arg)) {
+				return false; 
+			}
+		}
+		return true;
 	}
 	
 	private Strings() { }

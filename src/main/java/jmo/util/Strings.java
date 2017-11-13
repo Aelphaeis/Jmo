@@ -29,6 +29,7 @@ public final class Strings {
 		return value.append(pad).append(s).append(pad).toString();
 	}
 	
+	
 	/**
 	 * Checks to see if an a string is null or empty.
 	 * @param value
@@ -39,14 +40,42 @@ public final class Strings {
 	}
 	
 	/**
-	 * Checks to see if all the string's given as parameters are 
+	 * Checks to see if any the strings given as parameters are 
 	 * null or empty.
 	 * @param args
 	 * @return
 	 */
-	public static boolean isBlank(String ...args) {
-		for(String arg : args) {
-			if(!isBlank(arg)) {
+	public static boolean isAnyBlank(String value, String ...additional) {
+		if(isBlank(value)) {
+			return true;
+		}
+		
+		String[] arrToIterate = additional == null ? new String[0]: additional;
+		
+		for(String s : arrToIterate) {
+			if(isBlank(s)) {
+				return true; 
+			}
+		}
+		return false;
+	}
+	
+
+	/**
+	 * Checks to see if any the strings given as parameters are 
+	 * null or empty.
+	 * @param args
+	 * @return
+	 */
+	public static boolean isAllBlank(String value, String ...additional) {
+		if(!isBlank(value)) {
+			return false;
+		}
+		
+		String[] arrToIterate = additional == null ? new String[0]: additional;
+		
+		for(String s : arrToIterate) {
+			if(!isBlank(s)) {
 				return false; 
 			}
 		}

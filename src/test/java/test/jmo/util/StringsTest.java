@@ -89,4 +89,61 @@ public class StringsTest {
 		value = Strings.pad(value, 0, 'p');
 		assertEquals("val", value);
 	}
+	
+	@Test 
+	public void isAnyBlank_emptyString_returnTrue() {
+		assertTrue(Strings.isAnyBlank((String)null));
+	}
+	
+	@Test 
+	public void isAnyBlank_nonEmptyString_returnFalse() {
+		assertFalse(Strings.isAnyBlank("a", "b"));
+	}
+	
+	@Test 
+	public void isAnyBlank_secondStringEmpty_returnTrue() {
+		assertTrue(Strings.isAnyBlank("a", ""));
+	}
+	
+	@Test 
+	public void isAnyBlank_secondStringNull_returnTrue() {
+		assertTrue(Strings.isAnyBlank("a", (String)null));
+	}
+	
+	@Test 
+	public void isAnyBlank_nullParamArray_returnTrue() {
+		assertFalse(Strings.isAnyBlank("a", (String[])null));
+	}
+	
+	@Test 
+	public void isAllBlank_singleNonBlankArg_returnFalse() {
+		assertFalse(Strings.isAllBlank("a"));
+	}
+	
+	
+	@Test 
+	public void isAllBlank_singleBlankArg_returnTrue() {
+		assertTrue(Strings.isAllBlank(""));
+	}
+	
+	@Test 
+	public void isAllBlank_secondArgBlank_returnFalse() {
+		assertFalse(Strings.isAllBlank("a", ""));
+	}
+	
+	@Test 
+	public void isAllBlank_bothArgBlank_returnTrue() {
+		assertTrue(Strings.isAllBlank("", ""));
+	}
+	
+	@Test 
+	public void isAllBlank_secondArgNullArr_returnTrue() {
+		assertTrue(Strings.isAllBlank("", (String[])null));
+	}
+	
+	@Test 
+	public void isAllBlank_firstArgNullSecondArgNotBlank_returnFalse() {
+		assertFalse(Strings.isAllBlank(null, "a"));
+	}
 }
+

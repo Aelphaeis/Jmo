@@ -3,11 +3,12 @@ package jmo.structures;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 
 import jmo.patterns.visitor.Visitor;
 
-public class TreeNode<T> {
+public class TreeNode<T> implements Iterable<T>{
 	private static final TreeTraversal DEFAULT = TreeTraversal.PREORDER;
 	
 	private T value = null;
@@ -109,29 +110,14 @@ public class TreeNode<T> {
 		return lv;
 	}
 	
-	/****     Getters and Setters    *****/
-	public T getValue() {
-		return value;
+	@Override
+	public Iterator<T> iterator() {
+		return iterator(DEFAULT);
 	}
-
-	public void setValue(T value) {
-		this.value = value;
-	}
-
-	public TreeNode<T> getParent() {
-		return parent;
-	}
-
-	public void setParent(TreeNode<T> parent) {
-		this.parent = parent;
-	}
-
-	public List<TreeNode<T>> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<TreeNode<T>> children) {
-		this.children = children;
+	public Iterator<T> iterator(TreeTraversal transveral) {
+		final List<T> treeNodeList = new ArrayList<>();
+		transverals.get(transveral).transverse(this, treeNodeList::add);
+		return treeNodeList.iterator();
 	}
 	
 	protected interface Transveral<T> {
@@ -157,5 +143,52 @@ public class TreeNode<T> {
 				transverseNodes(node, visitor);
 			}
 		}
+	}
+	
+
+	protected class PostorderTransveral implements Transveral<T>{
+		@Override
+		public void transverse(TreeNode<T> n, Visitor<T> action) {
+			if( n.getValue() != null){
+				action.visit(n.getValue());
+			}
+			for(TreeNode<T> node : n.getChildren()){
+				transverse(node, action);
+			}
+		}
+		
+		@Override
+		public void transverseNodes(TreeNode<T> n, Visitor<TreeNode<T>> visitor) {
+			visitor.visit(n);
+			for(TreeNode<T> node : n.getChildren()){
+				transverseNodes(node, visitor);
+			}
+		}
+	}
+
+	
+	/****     Getters and Setters    *****/
+	public T getValue() {
+		return value;
+	}
+
+	public void setValue(T value) {
+		this.value = value;
+	}
+
+	public TreeNode<T> getParent() {
+		return parent;
+	}
+
+	public void setParent(TreeNode<T> parent) {
+		this.parent = parent;
+	}
+
+	public List<TreeNode<T>> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<TreeNode<T>> children) {
+		this.children = children;
 	}
 }

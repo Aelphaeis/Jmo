@@ -1,4 +1,4 @@
-package jmo.structures;
+package test.jmo.structures;
 
 
 import static org.junit.Assert.assertEquals;
@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import jmo.patterns.visitor.Visitor;
+import jmo.structures.TreeNode;
 
 public class TreeNodeTest {
 	

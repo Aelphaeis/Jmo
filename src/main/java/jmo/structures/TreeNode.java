@@ -23,7 +23,7 @@ public class TreeNode<T>{
 	}
 
 	public void addChild(T child){
-		TreeNode<T> node = new TreeNode<T>();
+		TreeNode<T> node = new TreeNode<>();
 		node.setValue(child);
 		node.setParent(this);
 		getChildren().add(node);
@@ -36,7 +36,7 @@ public class TreeNode<T>{
 	}
 	
 	public List<T> getChildrenValues(){
-		List<T> output = new ArrayList<T>();
+		List<T> output = new ArrayList<>();
 		for(TreeNode<T> child : getChildren()){
 			output.add(child.getValue());
 		}

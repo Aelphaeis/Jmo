@@ -17,7 +17,7 @@ public class InMemoryContext implements Context  {
 	Map<String, Object> bindings;
 	
 	public InMemoryContext() {
-		bindings = new HashMap<String, Object>();
+		bindings = new HashMap<>();
 	}
 	
 	@Override

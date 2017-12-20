@@ -69,7 +69,7 @@ public final class Serializer {
 		Class<T> objClass = (Class<T>) obj.getClass();
 		JAXBContext context = JAXBContext.newInstance(objClass);
 		QName qualifiedName = new QName(obj.getClass().getSimpleName());
-		JAXBElement<T> element = new JAXBElement<T>(qualifiedName, objClass, obj);
+		JAXBElement<T> element = new JAXBElement<>(qualifiedName, objClass, obj);
 
 		Marshaller m = context.createMarshaller();
 
@@ -137,7 +137,7 @@ public final class Serializer {
 	 * @param closeWriter whether or not to close the writer when completed.
 	 */
 	public static void writeListsToCSV(Writer writer, List<? extends List<String>> content, boolean closeWriter){
-		List<? extends List<String>> strings = content == null? new ArrayList<ArrayList<String>>() : content;
+		List<? extends List<String>> strings = content == null? new ArrayList<>() : content;
 		
 		PrintWriter pWriter = new PrintWriter(writer);
 		for(List<String> row :  strings){
@@ -227,7 +227,7 @@ public final class Serializer {
 	 */
 	protected static List<AccessibleObject> sortAccessibles(List<AccessibleObject> accessibles, String [] propOrder){
 		if(propOrder != null){
-			List<AccessibleObject> orderedAccessibles = new ArrayList<AccessibleObject>();
+			List<AccessibleObject> orderedAccessibles = new ArrayList<>();
 			for(int i = 0; i < propOrder.length; i++){
 				for(int j = 0; j < accessibles.size(); j++){
 					String name = accessibles.get(j).getAnnotation(XmlElement.class).name();
@@ -259,7 +259,7 @@ public final class Serializer {
 	 * @return list of AccessibleOjects
 	 */
 	protected static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(Class<T> clazz){
-		List<AccessibleObject> accessibles = new ArrayList<AccessibleObject>();
+		List<AccessibleObject> accessibles = new ArrayList<>();
 		
 		if(!clazz.isAnnotationPresent(XmlRootElement.class)){
 			throw new IllegalArgumentException("Class must be annotated with " + XmlRootElement.class);

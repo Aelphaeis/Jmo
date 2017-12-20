@@ -5,7 +5,7 @@ import java.util.List;
 
 import jmo.patterns.visitor.Visitor;
 
-public class TreeNode<T>{
+public class TreeNode<T> {
 	private T value = null;
 	private TreeNode<T> parent = null;
 	private List<TreeNode<T>> children = null;

@@ -2,7 +2,6 @@ package test.jmo.serialization;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.junit.Test;
 
 import jmo.serialization.Serializer;
+import jmo.streams.NullOutputStream;
 
 public class SerializerTest {
 
@@ -42,7 +42,8 @@ public class SerializerTest {
 		content.add(B);
 		content.add(C);
 		
-		Serializer.writeListsToCSV(new PrintWriter(System.out), content);
+		OutputStream stream = NullOutputStream.INSTANCE;
+		Serializer.writeListsToCSV(new PrintWriter(stream), content);
 	}
 	
 	
@@ -80,12 +81,8 @@ public class SerializerTest {
 		people.add(new AnnotatedPerson("B", 2));
 		people.add(new AnnotatedPerson("C", 3));
 
-		Serializer.writeIterabletoCSV(new PrintWriter(new OutputStream() {
-			@Override
-			public void write(int b) throws IOException {
-				
-			}
-		}), people, AnnotatedPerson.class);
+		OutputStream stream = NullOutputStream.INSTANCE;
+		Serializer.writeIterabletoCSV(new PrintWriter(stream), people, AnnotatedPerson.class);
 	}
 	
 	@Test
@@ -95,12 +92,8 @@ public class SerializerTest {
 		people.add(new AnnotatedPerson("B", 2));
 		people.add(new AnnotatedPerson(null, 3));
 
-		Serializer.writeIterabletoCSV(new PrintWriter(new OutputStream() {
-			@Override
-			public void write(int b) throws IOException {
-				
-			}
-		}), people, AnnotatedPerson.class);
+		OutputStream stream = NullOutputStream.INSTANCE;
+		Serializer.writeIterabletoCSV(new PrintWriter(stream), people, AnnotatedPerson.class);
 	}
 
 	

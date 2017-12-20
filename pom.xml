@@ -7,11 +7,12 @@
 	<name>Jmo</name>
 	<description>Joseph Morain's Java utilities. </description>
 
+
 	<properties>
-    	<project.build.sourceEncoding>ISO8859_1</project.build.sourceEncoding>
-  	</properties>
-  	
-  	<distributionManagement>
+		<project.build.sourceEncoding>ISO8859_1</project.build.sourceEncoding>
+	</properties>
+
+	<distributionManagement>
 		<repository>
 			<id>s3-maven-release-repo</id>
 			<name>aws release repository</name>
@@ -23,7 +24,7 @@
 			<url>s3://repo.maven/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-  	
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -31,10 +32,10 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency> 
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-log4j12</artifactId>
-		  <version>1.7.21</version>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
 		</dependency>
 	</dependencies>
 
@@ -60,4 +61,13 @@
 			</extension>
 		</extensions>
 	</build>
+
+	<contributors>
+		<contributor>
+			<email>joseph.morain@live.ca</email>
+			<name>Joseph Morain</name>
+			<url>http://ec2-52-205-254-214.compute-1.amazonaws.com:8080/</url>
+		</contributor>
+	</contributors>
+
 </project>

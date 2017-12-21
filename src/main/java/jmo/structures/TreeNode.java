@@ -13,7 +13,7 @@ public class TreeNode<T> implements Iterable<T>{
 	
 	private T value = null;
 	private TreeNode<T> parent;
-	private List<TreeNode<T>> children;
+	List<TreeNode<T>> children;
 	
 	private EnumMap<TreeTraversal, Transveral<T>> transverals;
 	

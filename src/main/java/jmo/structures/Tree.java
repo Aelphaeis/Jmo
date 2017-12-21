@@ -1,7 +1,9 @@
 package jmo.structures;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import jmo.patterns.visitor.Visitor;
 
@@ -28,61 +30,87 @@ public class Tree<T> implements Collection<TreeNode<T>> {
 
 	@Override
 	public boolean contains(Object o) {
-		return false;
+		Checker checker = new Checker(o);
+		root.transverseNodes(checker);
+		return checker.hasElement;
 	}
 
 	@Override
 	public Iterator<TreeNode<T>> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		final List<TreeNode<T>> treeNodeList = new ArrayList<>();
+		root.transverseNodes(treeNodeList::add);
+		return treeNodeList.iterator();
 	}
 
 	@Override
 	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		int size = size();
+		Object[] arr = new Object[size];
+		Iterator<TreeNode<T>> it = iterator();
+		for(int count = 0; count < size; count++) {
+			arr[count] = it.hasNext();
+		}
+		return arr;
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
+	public <E> E[] toArray(E[] a) {
+		final List<TreeNode<T>> treeNodeList = new ArrayList<>();
+		root.transverseNodes(treeNodeList::add);
+		return treeNodeList.toArray(a);
 	}
 
 	@Override
 	public boolean add(TreeNode<T> e) {
-		// TODO Auto-generated method stub
-		return false;
+		root.addChild(e);
+		return true;
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		Checker checker = new Checker(o, true);
+		root.transverseNodes(checker);
+		return checker.hasElement;
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean containsAll = true;
+		for(Iterator<?> it = c.iterator(); it.hasNext() && containsAll;) {
+			containsAll &= contains(it.next());
+		}
+		return containsAll;
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends TreeNode<T>> c) {
-		// TODO Auto-generated method stub
-		return false;
+		for(TreeNode<T> element : c) {
+			add(element);
+		}
+		return !c.isEmpty();
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isCollectionModified = false;
+		Iterator<?> it = c.iterator();
+		while(it.hasNext()) {
+			isCollectionModified |= remove(it.next());
+		}
+		return isCollectionModified;
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isCollectionModified = false;
+		Iterator<TreeNode<T>> it = iterator();
+		while(it.hasNext()) {
+			Object o = it.next();
+			if(!c.contains(o)) {
+				isCollectionModified = remove(o);
+			}
+		}
+		return isCollectionModified;
 	}
 
 	@Override
@@ -103,5 +131,36 @@ public class Tree<T> implements Collection<TreeNode<T>> {
 		}
 	}
 	
-
+	class Checker implements Visitor<TreeNode<T>>{
+		
+		private boolean hasElement;
+		private boolean rem;
+		private Object obj;
+		
+		
+		public Checker(Object object) {
+			this(object, false);
+		}
+		
+		public Checker(Object object, boolean remove) {
+			hasElement = false;
+			obj = object;
+			rem = remove;
+		}
+		
+		@Override
+		public void visit(TreeNode<T> element) {
+			if(obj == null) {
+				hasElement |= element == null;
+			}
+			else {
+				hasElement |= obj.equals(element);
+				if(rem) {
+					TreeNode<T> parent = element.getParent();
+					List<TreeNode<T>> children = parent.getChildren();
+					children.remove(element);
+				}
+			}
+		}
+	}
 }

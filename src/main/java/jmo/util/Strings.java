@@ -82,6 +82,28 @@ public final class Strings {
 		return true;
 	}
 	
+	/**
+	 * Removes specified character from source string
+	 * @param source String that will have character removed
+	 * @param c character to remove
+	 * @return String with all instances of c removed.
+	 */
+	public static String remove(String source, char c) {
+		int index;
+		if((index = source.indexOf('c')) == -1)
+			return source;
+		else {
+			StringBuilder builder = new StringBuilder(source.substring(0, index));
+			for(int i = index; i < source.length(); i++) {
+				char current = source.charAt(i);
+				if(current != c) {
+					builder.append(current);
+				}
+			}
+			return builder.toString();
+		}
+	}
+	
 	private Strings() { }
 
 }

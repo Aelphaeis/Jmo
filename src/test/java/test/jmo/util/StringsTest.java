@@ -145,5 +145,26 @@ public class StringsTest {
 	public void isAllBlank_firstArgNullSecondArgNotBlank_returnFalse() {
 		assertFalse(Strings.isAllBlank(null, "a"));
 	}
+	
+	@Test
+	public void remove_emptyString_sameString() {
+		String value = "";
+		String result = Strings.remove(value, 'c');
+		assertEquals("", result);
+	}
+	
+	@Test
+	public void remove_chicken_hiken() {
+		String value = "chicken";
+		String result = Strings.remove(value, 'c');
+		assertEquals("hiken", result);
+	}
+	
+	@Test
+	public void remove_c_emptyString() {
+		String value = "c";
+		String result = Strings.remove(value, 'c');
+		assertEquals("", result);
+	}
 }
 

@@ -1,5 +1,7 @@
 package jmo.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +87,19 @@ public class Exceptions {
 			}
 		}
 		return throwables;
+	}
+	
+	/**
+	 * Takes a throwable's stack trace and puts it into a string
+	 * 
+	 * @param t
+	 * @return stack trace
+	 */
+	public static String toString(Throwable t) {
+		StringWriter sWriter = new StringWriter();
+		PrintWriter pWriter = new PrintWriter(sWriter);
+		t.printStackTrace(pWriter);
+		return pWriter.toString();
 	}
 	
 	private Exceptions() { }

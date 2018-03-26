@@ -1,5 +1,5 @@
 package jmo.patterns.observer;
 
-public interface Observer {
-	void update(Observable o, Object ... arg);
+public interface Observer<T extends ObservableArgs> {
+	void update(Object caller, T args);
 }

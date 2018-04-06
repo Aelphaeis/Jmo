@@ -1,6 +1,8 @@
 package jmo.serialization;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -25,6 +27,13 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +77,8 @@ public final class Serializer {
 		@SuppressWarnings("unchecked")
 		Class<T> objClass = (Class<T>) obj.getClass();
 		JAXBContext context = JAXBContext.newInstance(objClass);
-		QName qualifiedName = new QName(obj.getClass().getSimpleName());
-		JAXBElement<T> element = new JAXBElement<>(qualifiedName, objClass, obj);
+		QName qName = new QName(obj.getClass().getSimpleName());
+		JAXBElement<T> element = new JAXBElement<>(qName, objClass, obj);
 
 		Marshaller m = context.createMarshaller();
 
@@ -79,16 +88,44 @@ public final class Serializer {
 	}
 	
 	/**
+	 * Given a document and a writer, will write the contents of the document
+	 * to the writter.
+	 * @param document
+	 * @param writer
+	 */
+	public static void serialize(Document document, Writer writer) {
+		final String indent = "{http://xml.apache.org/xslt}indent-amount";
+		try {
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer t = tf.newTransformer();
+			DOMSource source = new DOMSource(document);
+			StreamResult result = new StreamResult(writer);
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			t.setOutputProperty(indent, "2");
+			t.transform(source, result);
+		} catch (TransformerConfigurationException e) {
+			// this is impossible and not recoverable
+			logger.error("Unable to configure tranformer", e);
+			throw new IllegalStateException(e);
+		} catch (TransformerException e) {
+			String err = "Unrecoverable error occurred during transformation";
+			logger.error(err, e);
+			throw new IllegalArgumentException(err);
+		}
+	}
+	
+	/**
 	 * Deserializes a string to specified object.
 	 * @param xml string to deserialize
 	 * @param clazzs class we will deserialize to
 	 * @return
 	 * @throws JAXBException if Object cannot be deserialized
 	 */
-	public static <T> T deserialize(String xml, Class<T> clazz) throws JAXBException{
+	public static <T> T deserialize(String xml, Class<T> clazz) 
+			throws JAXBException{
 		try{
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 			InputSource xmlSource = new InputSource(new StringReader(xml));
 			Document doc = dBuilder.parse(xmlSource);
 			
@@ -113,10 +150,43 @@ public final class Serializer {
 			throw new IllegalArgumentException("Illegal Xml input", e);
 		}
 	}
+	
 	/**
-	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the specified writer
-	 * where list B represents a row. Row size is not reinforced. Header should be first entry
-	 * inside of the list.
+	 * Given a input stream deserializes the xml into a document
+	 * @param is
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	public static Document deserialize(InputStream is)
+			throws SAXException, IOException {
+		DocumentBuilderFactory docFactory;
+		try {
+			docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			return docBuilder.parse(is);
+		} catch (ParserConfigurationException e) {
+			// this is impossible and not recoverable
+			logger.error("Unknown error occurred", e);
+			throw new IllegalStateException(e);
+		}
+	}
+	
+	/**
+	 * Given a string of xml, deserializes the xml into a document
+	 * @param xml
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	public static Document deserialize(String xml)
+			throws SAXException, IOException {
+		return deserialize(new ByteArrayInputStream(xml.getBytes()));
+	}
+	/**
+	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the 
+	 * specified writer where list B represents a row. Row size is not 
+	 * reinforced. Header should be first entry inside of the list.
 	 *  <br /> 
 	 *  If content is null it will be assumed to be an empty list
 	 * @param writer Where to write content. Will not be closed 
@@ -126,11 +196,10 @@ public final class Serializer {
 		writeListsToCSV(writer, content, false);
 	}
 	/**
-	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the specified writer
-	 * where list B represents a row. Row size is not reinforced. Header should be first entry
-	 * inside of the list.
-	 *  <br /> 
-	 *  If content is null it will be assumed to be an empty list
+	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the
+	 * specified writer where list B represents a row. Row size is not .
+	 * reinforced. Header should be first entry inside of the list.<br /> 
+	 * If content is null it will be assumed to be an empty list
 	 *  
 	 * @param writer Where to write content. Will not be closed 
 	 * @param content 
@@ -162,8 +231,8 @@ public final class Serializer {
 
 	
 	/**
-	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
-	 * into a CSV format to a writer
+	 * Takes a list of an object annotated annotated with XmlRootElement and 
+	 * XmlElement and writes data into a CSV format to a writer
 	 * 
 	 * @param writer Where to write the CSV data
 	 * @param iterable Data to write
@@ -176,8 +245,8 @@ public final class Serializer {
 	}
 	
 	/**
-	 * Takes a list of an object annotated annotated with XmlRootElement and XmlElement and writes data
-	 * into a CSV format to a writer
+	 * Takes a list of an object annotated annotated with XmlRootElement and 
+	 * XmlElement and writes data into a CSV format to a writer
 	 * @param writer Where to write the CSV data
 	 * @param iterable Data to write
 	 * @param clazz The class of the data
@@ -220,7 +289,8 @@ public final class Serializer {
 	}
 	
 	/**
-	 * Given a propOrder sorts the accessibles by name in the order specified. If no order is specified. 
+	 * Given a propOrder sorts the accessibles by name in the order specified. 
+	 * If no order is specified. 
 	 * @param accessibles
 	 * @param propOrder
 	 * @return
@@ -253,8 +323,8 @@ public final class Serializer {
 	}
 	
 	/**
-	 * Gets all publicly accessible Objects annotated with XmlElements assuming the class specified
-	 * is annotated with XmlRootElement
+	 * Gets all publicly accessible Objects annotated with XmlElements 
+	 * assuming the class specified is annotated with XmlRootElement
 	 * @param clazz
 	 * @return list of AccessibleOjects
 	 */
@@ -262,7 +332,8 @@ public final class Serializer {
 		List<AccessibleObject> accessibles = new ArrayList<>();
 		
 		if(!clazz.isAnnotationPresent(XmlRootElement.class)){
-			throw new IllegalArgumentException("Class must be annotated with " + XmlRootElement.class);
+			String err = "Class must be annotated with " + XmlRootElement.class;
+			throw new IllegalArgumentException(err);
 		}
 		
 		for(AccessibleObject obj : clazz.getFields()){
@@ -278,17 +349,20 @@ public final class Serializer {
 		}
 		
 		if(accessibles.isEmpty()){
-			throw new IllegalArgumentException("Class must be annotated with " + XmlElement.class);
+			String err = "Class must be annotated with " + XmlElement.class;
+			throw new IllegalArgumentException(err);
 		}
 		
 		return accessibles;
 	}
 	
 	/**
-	 * Return the value of an AccessibleObject as a string if it is a Field or Method without arguments.
+	 * Return the value of an AccessibleObject as a string if it is a Field or
+	 * Method without arguments.
 	 * @param value The object we are trying to extract the value from
 	 * @param accessor The method or field we will try to extract value from
-	 * @throws InvocationTargetException If AccessibleObject is method and throws an exception
+	 * @throws InvocationTargetException If AccessibleObject is method and 
+	 * throws an exception
 	 */
 	protected static Object getValueWithAccessor(Object value, AccessibleObject accessor) 
 			throws InvocationTargetException{

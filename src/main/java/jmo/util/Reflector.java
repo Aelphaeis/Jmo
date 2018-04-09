@@ -34,6 +34,7 @@ public final class Reflector {
 	 * @param pkg
 	 * @param loader
 	 * @return
+	 * @throws IOException
 	 */
 	public static List<Class<?>> getClassesForPackage(Package pkg, ClassLoader loader) {
 		ArrayList<Class<?>> classes = new ArrayList<>();
@@ -43,18 +44,29 @@ public final class Reflector {
 		String relPath = pkgname.replace('.', '/');
 
 		// Get a File object for the package
-		URL resource = loader.getResource(relPath);
 
-		// If we can't find the resource we throw an exception
-		if (resource == null) {
-			throw new ReflectorException("Unexpected problem: No resource for " + relPath);
+		Enumeration<URL> resources;
+		try {
+			resources = loader.getResources(relPath);
+		} catch (IOException e) {
+			String err = "Unexpected error loading resources";
+			throw new ReflectorException(err, e);
 		}
+		boolean isEmpty = !resources.hasMoreElements();
 
-		// If the resource is a jar get all classes from jar
-		if (resource.toString().startsWith("jar:")) {
-			classes.addAll(processJarfile(resource, pkgname));
+		if (isEmpty) {
+			String err = "Unexpected problem: No resource for {%s}";
+			throw new ReflectorException(String.format(err, relPath));
 		} else {
-			classes.addAll(processDirectory(new File(resource.getPath()), pkgname));
+			do {
+				URL resource = resources.nextElement();
+				// If the resource is a jar get all classes from jar
+				if (resource.toString().startsWith("jar:")) {
+					classes.addAll(processJarfile(resource, pkgname));
+				} else {
+					classes.addAll(processDirectory(new File(resource.getPath()), pkgname));
+				}
+			} while (resources.hasMoreElements());
 		}
 
 		return classes;

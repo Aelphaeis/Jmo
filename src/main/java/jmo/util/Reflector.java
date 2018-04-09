@@ -11,11 +11,12 @@ import java.util.jar.JarFile;
 
 public final class Reflector {
 
-	private Reflector() { 
+	private Reflector() {
 		throw new IllegalStateException("Utility class");
 	}
+
 	private static final String CLASS_SUFFIX = ".class";
-	
+
 	/**
 	 * Given a package this method returns all classes contained in that package
 	 * 
@@ -25,9 +26,11 @@ public final class Reflector {
 	public static List<Class<?>> getClassesForPackage(Package pkg) {
 		return getClassesForPackage(pkg, ClassLoader.getSystemClassLoader());
 	}
-	
+
 	/**
-	 * Given a package name and class loader this method returns all classes contained in package.
+	 * Given a package name and class loader this method returns all classes
+	 * contained in package.
+	 * 
 	 * @param pkg
 	 * @param loader
 	 * @return
@@ -56,7 +59,6 @@ public final class Reflector {
 
 		return classes;
 	}
-
 
 	/**
 	 * Given a package name and a directory returns all classes within that
@@ -114,11 +116,9 @@ public final class Reflector {
 		String relPath = pkgname.replace('.', '/');
 		String resPath = resource.getPath();
 		String jarPath = resPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
-		JarFile jarFile = null;
 
-		try {
+		try (JarFile jarFile = new JarFile(jarPath)) {
 			// attempt to load jar file
-			jarFile = new JarFile(jarPath);
 
 			// get contents of jar file and iterate through them
 			Enumeration<JarEntry> entries = jarFile.entries();
@@ -142,14 +142,6 @@ public final class Reflector {
 			}
 		} catch (IOException e) {
 			throw new ReflectorException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
-		} finally {
-			if (jarFile != null) {
-				try {
-					jarFile.close();
-				} catch (IOException e) {
-					throw new ReflectorException(e);
-				}
-			}
 		}
 		return classes;
 	}

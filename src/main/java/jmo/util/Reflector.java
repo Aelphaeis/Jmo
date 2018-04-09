@@ -33,7 +33,7 @@ public final class Reflector {
 	 * @return
 	 */
 	public static List<Class<?>> getClassesForPackage(Package pkg, ClassLoader loader) {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+		ArrayList<Class<?>> classes = new ArrayList<>();
 
 		// Get name of package and turn it to a relative path
 		String pkgname = pkg.getName();
@@ -67,7 +67,7 @@ public final class Reflector {
 	 * @return Classes within Directory with package name
 	 */
 	public static List<Class<?>> processDirectory(File directory, String pkgname) {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<>();
 		// Get the list of the files contained in the package
 		String[] files = directory.list();
 		for (int i = 0; i < files.length; i++) {
@@ -109,7 +109,7 @@ public final class Reflector {
 	 * @param pkgname
 	 */
 	public static List<Class<?>> processJarfile(URL resource, String pkgname) {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<>();
 		// Turn package name to relative path to jar file
 		String relPath = pkgname.replace('.', '/');
 		String resPath = resource.getPath();

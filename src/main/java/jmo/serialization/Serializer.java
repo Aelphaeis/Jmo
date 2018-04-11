@@ -1,9 +1,8 @@
 package jmo.serialization;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -32,8 +31,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,19 @@ public final class Serializer {
 		serialize(obj, stringWriter);
 		return stringWriter.toString();
 	}
+	
+	/**
+	 * Given an document returns a string representation of the object
+	 * @param obj object to serialize to xml
+	 * @return
+	 * @throws JAXBException if the object cannot be serialized
+	 */
+	public static String serialize(Document obj) {
+		StringWriter stringWriter = new StringWriter();
+		serialize(obj, stringWriter);
+		return stringWriter.toString();
+	}
+	
 	
 	/**
 	 * Given an object and a writer will write the xml object to the writer.
@@ -100,8 +114,11 @@ public final class Serializer {
 			Transformer t = tf.newTransformer();
 			DOMSource source = new DOMSource(document);
 			StreamResult result = new StreamResult(writer);
-			t.setOutputProperty(OutputKeys.INDENT, "yes");
+
 			t.setOutputProperty(indent, "2");
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			
 			t.transform(source, result);
 		} catch (TransformerConfigurationException e) {
 			// this is impossible and not recoverable
@@ -155,33 +172,38 @@ public final class Serializer {
 	 * Given a input stream deserializes the xml into a document
 	 * @param is
 	 * @return
-	 * @throws SAXException
-	 * @throws IOException
+	 * @throws IOException 
 	 */
-	public static Document deserialize(InputStream is)
-			throws SAXException, IOException {
-		DocumentBuilderFactory docFactory;
+	public static Document deserialize(Reader is) throws IOException {
 		try {
-			docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			return docBuilder.parse(is);
-		} catch (ParserConfigurationException e) {
+			TransformerFactory factory = TransformerFactory.newInstance();
+			Transformer transformer = factory.newTransformer();
+			StreamSource source = new StreamSource(is);
+			DOMResult result = new DOMResult();
+			
+			transformer.transform(source, result);
+			
+			return (Document) result.getNode();
+		} catch (TransformerConfigurationException e) {
 			// this is impossible and not recoverable
 			logger.error("Unknown error occurred", e);
 			throw new IllegalStateException(e);
 		}
+		catch(TransformerException e){
+			throw new IOException(e);
+		}
+	
 	}
 	
 	/**
 	 * Given a string of xml, deserializes the xml into a document
 	 * @param xml
 	 * @return
-	 * @throws SAXException
-	 * @throws IOException
-	 */
+	 * @throws IOException 
+	 * */
 	public static Document deserialize(String xml)
-			throws SAXException, IOException {
-		return deserialize(new ByteArrayInputStream(xml.getBytes()));
+			throws IOException {
+		return deserialize(new StringReader(xml));
 	}
 	/**
 	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the 

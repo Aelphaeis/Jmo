@@ -1,6 +1,7 @@
 package jmo.serialization;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -13,12 +14,49 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
-import jmo.serialization.Serializer;
 import jmo.streams.NullOutputStream;
 
 public class SerializerTest {
 
+	//jmo.serialization.Serializer.serialize(Document, Writer)
+	//jmo.serialization.Serializer.deserialize(InputStream)
+	//jmo.serialization.Serializer.sortAccessibles(List<AccessibleObject>, String[])
+	
+	@Test
+	public void deserializeStringtoDocument() throws Exception  {
+		String xml = buildAnnotatedPersonXml();
+		Document doc = Serializer.deserialize(xml);
+		Node n = doc.getElementsByTagName("age").item(0);
+		assertEquals("1", n.getTextContent());
+		
+		n = doc.getElementsByTagName("name").item(0);
+		assertEquals("name", n.getTextContent());
+	}
+	
+	@Test
+	public void serializeDocument() throws Exception  {
+		String xml = buildAnnotatedPersonXml();
+		Document doc = Serializer.deserialize(xml);
+		String result = Serializer.serialize(doc);
+		assertTrue(result.contains("<AnnotatedPerson>"));
+		assertTrue(result.contains("<name>"));
+		assertTrue(result.contains("<age>"));
+		assertTrue(result.contains("1"));
+	}
+	
+	public String buildAnnotatedPersonXml() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+		builder.append("<AnnotatedPerson>\n");
+		builder.append("  <age>1</age>\n");
+		builder.append("  <name>name</name>\n");
+		builder.append("</AnnotatedPerson>\n");
+		return builder.toString();
+	}
+	
 	@Test
 	public void SerializerWriteListsToCSVTest(){
 		List<List<String>> content = new ArrayList<List<String>>(3);

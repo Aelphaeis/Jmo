@@ -9,7 +9,7 @@ public class Singleton {
 
 	private static final Singleton instance = new Singleton();
 
-	private Map<Class<?>, Object> mapHolder = new HashMap<Class<?>, Object>();
+	private Map<Class<?>, Object> mapHolder = new HashMap<>();
 
 	private Singleton() {
 	}
@@ -27,9 +27,5 @@ public class Singleton {
 			obj = (T) instance.mapHolder.get(classOf);
 			return obj;
 		}
-	}
-
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
 	}
 }

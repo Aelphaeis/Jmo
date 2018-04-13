@@ -56,7 +56,7 @@ public class QueryResult {
 		return objs;
 	}
 	
-	public <T> T value(String columnName, int index){
+	public Object value(String columnName, int index){
 		QueryColumn qc = null;
 		for(int i = 0; i < columns.size(); i++ ){
 			qc = columns.get(i);
@@ -67,9 +67,15 @@ public class QueryResult {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T value(int columnIndex, int index){
-		return (T) values.get(index).get(columnIndex);
+	public <T> T value(String columnName, int index, Class<T> cls){
+		return cls.cast(value(columnName, index));
+	}
+	
+	public <T> T value(int columnIndex, int index, Class<T> cls){
+		return cls.cast(values.get(index).get(columnIndex));
+	}
+	public Object value(int columnIndex, int index){
+		return values.get(index).get(columnIndex);
 	}
 
 	public List<QueryColumn> getColumns() {
@@ -78,5 +84,9 @@ public class QueryResult {
 
 	protected void setColumns(List<QueryColumn> columns) {
 		this.columns = columns;
+	}
+	
+	public int getRowCount() {
+		return values.size();
 	}
 }

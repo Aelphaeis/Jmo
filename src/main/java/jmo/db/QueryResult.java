@@ -19,6 +19,7 @@ public class QueryResult {
 	}
 	
 	public QueryResult(ResultSet rs) throws SQLException{
+		this();
 		ResultSetMetaData meta = rs.getMetaData();
 		int metaCount = meta.getColumnCount();
 		List<QueryColumn> cols = this.getColumns();

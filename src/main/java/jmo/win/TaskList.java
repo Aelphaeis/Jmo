@@ -8,11 +8,13 @@ import java.util.List;
 
 /**
  * A class that represents tasklist.exe
+ * 
  * @author Aelphaeis
  *
  */
 public class TaskList {
 	public static final String PROCESS_NAME = "tasklist";
+	private static final String LINE_FORMAT = "%-25s %14s %-16s %14s %15s\n";
 
 	public static Process getTaskListProcess() throws IOException {
 		return Runtime.getRuntime().exec(PROCESS_NAME);
@@ -56,9 +58,23 @@ public class TaskList {
 	Process getProcess() throws IOException {
 		return getTaskListProcess();
 	}
-	
+
 	public List<TaskListEntry> getTaskListEntries() {
 		return Collections.unmodifiableList(taskListEntries);
+	}
+
+	@Override
+	public String toString() {
+		String sep = "============================";
+		String headers = String.format(LINE_FORMAT, "Image Name", "PID", "Session Name", "Session#", "Mem Usage");
+		StringBuilder builder = new StringBuilder(headers);
+		builder.append(sep).append(" ").append(sep.substring(17)).append(" ").append(sep.substring(9)).append(" ")
+				.append(sep.substring(17)).append(" ").append(sep.substring(13)).append('\n');
+
+		for (TaskListEntry entry : getTaskListEntries()) {
+			builder.append(entry.toString());
+		}
+		return builder.toString();
 	}
 
 	public class TaskListEntry {
@@ -101,8 +117,7 @@ public class TaskList {
 
 		@Override
 		public String toString() {
-			String format = "%-25s %8d %-16s %11d %12s";
-			return String.format(format, image, pid, sessionName, sessionNum, memUsage);
+			return String.format(LINE_FORMAT, image, pid, sessionName, sessionNum, memUsage);
 		}
 
 		public String getImage() {
@@ -145,6 +160,4 @@ public class TaskList {
 			this.memUsage = memUsage;
 		}
 	}
-
-	
 }

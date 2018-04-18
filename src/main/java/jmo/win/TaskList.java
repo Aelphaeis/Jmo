@@ -3,6 +3,7 @@ package jmo.win;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,6 +55,10 @@ public class TaskList {
 
 	Process getProcess() throws IOException {
 		return getTaskListProcess();
+	}
+	
+	public List<TaskListEntry> getTaskListEntries() {
+		return Collections.unmodifiableList(taskListEntries);
 	}
 
 	public class TaskListEntry {
@@ -140,4 +145,6 @@ public class TaskList {
 			this.memUsage = memUsage;
 		}
 	}
+
+	
 }

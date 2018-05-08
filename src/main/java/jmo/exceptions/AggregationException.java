@@ -3,6 +3,7 @@ package jmo.exceptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * The class {@code AggregationException} represents that multiple exceptions have occurred.
@@ -64,5 +65,15 @@ public class AggregationException extends Exception {
 	 */
 	public Collection<Throwable> getExceptions() {
 		return exceptions;
+	}
+	
+	/**
+	 * Returns an unmodifiable collection that contains the exceptions passed into this exception. This cannot return
+	 * null. If no exceptions were passed into this an empty collection will be returned.
+	 * @return
+	 */
+	public <T> Collection<T> getExceptions(Class<T> type) {
+		return Collections.unmodifiableList(exceptions.stream()
+				.map(type::cast).collect(Collectors.toList()));
 	}
 }

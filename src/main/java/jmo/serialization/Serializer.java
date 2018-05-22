@@ -364,7 +364,7 @@ public final class Serializer {
 					String objName = obj.getAnnotation(XmlElement.class).name();
 					unusedAccessibles[i] = objName;
 				}
-				String msg = "The following properties name are present but not speified in @XmlType.propOrder : ";
+				String msg = "The following properties name are present but not specified in @XmlType.propOrder : ";
 				msg += Arrays.toString(unusedAccessibles);
 				throw new IllegalStateException(msg);
 			}

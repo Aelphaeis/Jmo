@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -21,10 +23,6 @@ import jmo.streams.NullOutputStream;
 
 public class SerializerTest {
 
-	//jmo.serialization.Serializer.serialize(Document, Writer)
-	//jmo.serialization.Serializer.deserialize(InputStream)
-	//jmo.serialization.Serializer.sortAccessibles(List<AccessibleObject>, String[])
-	
 	@Test
 	public void deserializeStringtoDocument() throws Exception  {
 		String xml = buildAnnotatedPersonXml();
@@ -135,7 +133,7 @@ public class SerializerTest {
 	}
 
 	
-	public static class Person{
+	public static class Person {
 		
 		private String name;
 		private int age;
@@ -154,15 +152,85 @@ public class SerializerTest {
 		}
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void getAccessibleFieldsAndMethods_unannotated_illegalArgument(){
+		Serializer.getAccessibleFieldsAndMethods(Person.class);
+	}
+	
+	@Test
+	public void getAccessibleFieldsAndMethods_fieldAnnotation_ordered(){
+		List<AccessibleObject> aos = Serializer
+				.getAccessibleFieldsAndMethods(AnnotatedFieldPerson.class);
+		assertEquals(2, aos.size());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void getAccessibleFieldsAndMethods_unannotatedField_err(){
+		Serializer.getAccessibleFieldsAndMethods(UnannotatedFieldPerson.class);
+	}
+	
+	@Test
+	public void sortAccessibles_propType_OrderedProps() {
+		Class<SortedAnnotatedPerson> clazz = SortedAnnotatedPerson.class;
+		XmlType xtype = clazz.getAnnotation(XmlType.class); 
+		String[] propOrder = xtype.propOrder();
+
+		List<AccessibleObject> aos = Serializer
+				.getAccessibleFieldsAndMethods(SortedAnnotatedPerson.class);
+		
+		aos = Serializer.sortAccessibles(aos, propOrder);
+		assertEquals(2, aos.size());
+		
+		XmlElement a = aos.get(0).getDeclaredAnnotation(XmlElement.class);
+		assertEquals("name", a.name());
+		XmlElement b = aos.get(1).getDeclaredAnnotation(XmlElement.class);
+		assertEquals("age", b.name());
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void sortAccessibles_partialElementAnnotation_expect() {
+		Class<?> clazz = PartialPropTypeAnnotationedPerson.class;
+		XmlType xtype = clazz.getAnnotation(XmlType.class); 
+		String[] propOrder = xtype.propOrder();
+
+		List<AccessibleObject> aos = Serializer
+				.getAccessibleFieldsAndMethods(clazz);
+		Serializer.sortAccessibles(aos, propOrder);
+	}
+	
 	@XmlRootElement
-	public static class AnnotatedPerson {
+	public static class UnannotatedFieldPerson extends Person { }
+	
+	@XmlRootElement
+	public static class AnnotatedFieldPerson {
+		@XmlElement(name="name")
+		public String name;
+		@XmlElement(name="age")
+		public int age;
 		
-		private String name;
-		private int age;
-		
-		public AnnotatedPerson() {
-		
+		public int random;
+	}
+	
+	@XmlRootElement
+	@XmlType(propOrder= {"age"})
+	public static class PartialPropTypeAnnotationedPerson extends Person {
+		@XmlElement(name="name")
+		@Override
+		public String getName() {
+			return super.getName();
 		}
+		
+		@XmlElement(name="age")
+		@Override
+		public int getAge() {
+			return super.getAge();
+		}
+	}
+	
+	@XmlRootElement
+	public static class AnnotatedPerson extends Person {
+
+		public AnnotatedPerson() { }
 		
 		public AnnotatedPerson(String name, int age){
 			this();
@@ -171,19 +239,28 @@ public class SerializerTest {
 		}
 		
 		@XmlElement(name="name")
+		@Override
 		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
+			return super.getName();
 		}
 		
 		@XmlElement(name="age")
+		@Override
 		public int getAge() {
-			return age;
+			return super.getAge();
 		}
-		public void setAge(int age) {
-			this.age = age;
+	}
+	
+	@XmlRootElement
+	@XmlType(propOrder= {"name","age"})
+	public static class SortedAnnotatedPerson extends AnnotatedPerson {
+
+		public SortedAnnotatedPerson() { 
+			super();
+		}
+		
+		public SortedAnnotatedPerson(String name, int age){
+			super(name, age);
 		}
 	}
 }

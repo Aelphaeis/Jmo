@@ -19,8 +19,6 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import jmo.streams.NullOutputStream;
-
 public class SerializerTest {
 
 	@Test
@@ -263,4 +261,24 @@ public class SerializerTest {
 			super(name, age);
 		}
 	}
+	
+	public static class NullOutputStream extends OutputStream {
+
+		public static final NullOutputStream INSTANCE = new NullOutputStream();
+
+		@Override
+		public void write(int b) {
+			// Do nothing
+		}
+
+		@Override
+		public void write(byte[] b, int offset, int length) {
+			// do nothing
+		}
+		
+		private NullOutputStream() {
+			//We don't really need people creating instances of this.
+		}
+	}
+
 }

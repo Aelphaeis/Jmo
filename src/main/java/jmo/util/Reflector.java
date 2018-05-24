@@ -2,6 +2,7 @@ package jmo.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -17,6 +18,22 @@ public final class Reflector {
 
 	private static final String CLASS_SUFFIX = ".class";
 
+	
+	/**
+	 * @param clazz
+	 * @return
+	 */
+	//TODO construction with params
+	public static Object initParamCtor(Class<?> clazz) {
+		try {
+			Constructor<?> ctor = clazz.getConstructor();
+			return ctor.newInstance();
+		} 
+		catch (Exception e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Given a package this method returns all classes contained in that package
 	 * 
@@ -27,6 +44,8 @@ public final class Reflector {
 		return getClassesForPackage(pkg, ClassLoader.getSystemClassLoader());
 	}
 
+	
+	
 	/**
 	 * Given a package name and class loader this method returns all classes
 	 * contained in package.
@@ -157,6 +176,7 @@ public final class Reflector {
 		}
 		return classes;
 	}
+	
 
 	public static class ReflectorException extends RuntimeException {
 

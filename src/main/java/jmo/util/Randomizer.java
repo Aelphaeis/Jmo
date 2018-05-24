@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.security.SecureRandom;
 
 public class Randomizer {
-	private final static String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	SecureRandom generator;
 	
 	public Randomizer(){
@@ -55,7 +55,7 @@ public class Randomizer {
 	public String getString(int characterCount){
 		String s = "";
 		for(int i = 0; i < characterCount; i++){
-			s += chars.charAt(generator.nextInt(chars.length()));
+			s += CHARS.charAt(generator.nextInt(CHARS.length()));
 		}
 		return s;
 	}

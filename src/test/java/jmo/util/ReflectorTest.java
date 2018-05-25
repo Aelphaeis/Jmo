@@ -43,7 +43,7 @@ public class ReflectorTest {
 	
 	@Test
 	public void initParamCtor_privateCtor_null() {
-		assertNotNull(Reflector.initParamCtor(Reflector.class));
+		assertNull(Reflector.initParamCtor(Reflector.class));
 	}
 	
 

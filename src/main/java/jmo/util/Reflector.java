@@ -3,6 +3,7 @@ package jmo.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -20,14 +21,37 @@ public final class Reflector {
 
 	
 	/**
+	 * Determines whether or not class can be instantiated via reflection
+	 * @param cls
+	 * @return
+	 */
+	public static boolean isInstantiable(Class<?> cls) {
+		boolean isInstantiable = !(cls == null
+				|| String.class.isAssignableFrom(cls) 
+				|| Integer.class.isAssignableFrom(cls)
+				|| cls.isArray() 
+				|| cls.isInterface()
+				|| cls.isPrimitive()
+				|| Modifier.isAbstract(cls.getModifiers()));
+		
+		if(!isInstantiable) {
+			return false;
+		}
+		else {
+			Constructor<?>[] ctors = cls.getConstructors();
+			return ctors.length > 0;
+		}
+	}
+	
+	/**
 	 * @param clazz
 	 * @return
 	 */
 	//TODO construction with params
-	public static Object initParamCtor(Class<?> clazz) {
+	public static <T> T initParamCtor(Class<T> clazz) {
 		try {
-			Constructor<?> ctor = clazz.getConstructor();
-			return ctor.newInstance();
+			Constructor<?> ctor = clazz.getDeclaredConstructor();
+			return clazz.cast(ctor.newInstance());
 		} 
 		catch (Exception e) {
 			return null;

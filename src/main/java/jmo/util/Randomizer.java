@@ -53,10 +53,10 @@ public class Randomizer {
 	}
 	
 	public String getString(int characterCount){
-		String s = "";
+		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < characterCount; i++){
-			s += CHARS.charAt(generator.nextInt(CHARS.length()));
+			builder.append(CHARS.charAt(generator.nextInt(CHARS.length())));
 		}
-		return s;
+		return builder.toString();
 	}
 }

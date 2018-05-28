@@ -14,6 +14,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 public class InMemoryContext implements Context  {
+	private static final String NIY = "Not Implemented Yet";
 	Map<String, Object> bindings;
 	
 	public InMemoryContext() {
@@ -86,8 +87,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
@@ -98,8 +98,7 @@ public class InMemoryContext implements Context  {
 	@Override
 	public NamingEnumeration<Binding> listBindings(String name)
 			throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
@@ -109,7 +108,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public void destroySubcontext(String name) throws NamingException {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException(NIY);
 		
 	}
 
@@ -120,8 +119,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public Context createSubcontext(String name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
@@ -131,8 +129,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public Object lookupLink(String name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
@@ -142,52 +139,45 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public NameParser getNameParser(String name) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
 	public Name composeName(Name name, Name prefix) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
 	public String composeName(String name, String prefix)
 			throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
 	public Object addToEnvironment(String propName, Object propVal)
 			throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
 	public Object removeFromEnvironment(String propName) throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
 	public Hashtable<?, ?> getEnvironment() throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
 	public void close() throws NamingException {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException(NIY);
 		
 	}
 
 	@Override
 	public String getNameInNamespace() throws NamingException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(NIY);
 	}
 
 }

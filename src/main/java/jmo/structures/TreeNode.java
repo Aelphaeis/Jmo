@@ -69,8 +69,11 @@ public class TreeNode<T> {
 	
 	public int getLevel(){
 		int lv = 0;
-		for(TreeNode<T> current = this; current != null; current = current.getParent())
-			++lv;
+		TreeNode<T> current =  this;
+		while(current!= null) {
+			current = current.getParent();
+			lv++;
+		}
 		return lv;
 	}
 	

@@ -2,7 +2,6 @@ package jmo.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,10 +78,6 @@ public class RandomizerTest {
 		final Collection<Long> data;
 		private Iterator<Long> it;
 
-		public FakeGenerator() {
-			this(new ArrayList<>(0));
-		}
-
 		public FakeGenerator(Collection<Long> data) {
 			super();
 			this.data = Collections.unmodifiableCollection(data);
@@ -91,7 +86,7 @@ public class RandomizerTest {
 
 		@Override
 		protected int next(int bits) {
-			return data.isEmpty() ? super.next(bits) : (int) next();
+			return (int) next();
 		}
 
 		private long next() {

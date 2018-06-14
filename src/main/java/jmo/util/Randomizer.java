@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Randomizer {
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	Random generator;
+	private final Random generator;
 	
 	public Randomizer(){
 		this(new SecureRandom());

@@ -3,13 +3,18 @@ package jmo.util;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.SecureRandom;
+import java.util.Random;
 
 public class Randomizer {
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	SecureRandom generator;
+	Random generator;
 	
 	public Randomizer(){
-		generator = new SecureRandom();
+		this(new SecureRandom());
+	}
+	
+	public Randomizer(Random r){
+		generator = r;
 	}
 	
 	public byte getByte(){

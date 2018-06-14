@@ -10,7 +10,6 @@ public class JmoInitContextFactory implements InitialContextFactory {
 
 	@Override
 	public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
-		// TODO Auto-generated method stub
 		return new InMemoryContext();
 	}
 

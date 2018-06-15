@@ -80,6 +80,12 @@ public class RandomizerTest {
 
 		public FakeGenerator(Collection<Long> data) {
 			super();
+			
+			if(data.isEmpty()) {
+				String err = "Empty collection is not allowed";
+				throw new IllegalArgumentException(err);
+			}
+			
 			this.data = Collections.unmodifiableCollection(data);
 			this.it = data.iterator();
 		}

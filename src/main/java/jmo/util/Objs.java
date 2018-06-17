@@ -9,8 +9,7 @@ import java.lang.reflect.Method;
 
 public class Objs {
 
-	public static <T> boolean equalGetterValues(T a, T b)
-			throws IntrospectionException {
+	public static <T> boolean equalGetterValues(T a, T b) {
 		try {
 			if (a == b) {
 				return true;

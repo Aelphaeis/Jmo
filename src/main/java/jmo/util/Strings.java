@@ -8,7 +8,8 @@ public final class Strings {
 	public static final String EMPTY = "";
 	
 	public static String padRight(String s, int n, char padding){
-		StringBuilder builder = new StringBuilder(s);
+		StringBuilder builder = new StringBuilder(s.length() + n);
+		builder.append(s);
 		for(int i = 0; i < n; i++){
 			builder.append(padding);
 		}
@@ -16,7 +17,7 @@ public final class Strings {
 	}
 	
 	public static String padLeft(String s, int n,  char padding) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(s.length() + n);
 		for(int i = 0; i < n; i++){
 			builder.append(Character.toString(padding));
 		}
@@ -24,10 +25,10 @@ public final class Strings {
 	}
 	
 	public static String pad(String s, int n, char padding){
-		StringBuilder pad = new StringBuilder();
-		StringBuilder value = new StringBuilder();
+		StringBuilder pad = new StringBuilder(s.length() + n * 2);
+		StringBuilder value = new StringBuilder(n);
 		for(int i = 0; i < n; i++){
-			pad.append(Character.toString(padding));
+			pad.append(padding);
 		}
 		return value.append(pad).append(s).append(pad).toString();
 	}

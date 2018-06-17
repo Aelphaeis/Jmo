@@ -54,9 +54,9 @@ public final class Strings {
 			return true;
 		}
 		
-		String[] arrToIterate = additional == null ? new String[0]: additional;
+		String[] loopable = additional == null ? new String[0]: additional;
 		
-		for(String s : arrToIterate) {
+		for(String s : loopable) {
 			if(isBlank(s)) {
 				return true; 
 			}
@@ -76,9 +76,9 @@ public final class Strings {
 			return false;
 		}
 		
-		String[] arrToIterate = additional == null ? new String[0]: additional;
+		String[] loopable = additional == null ? new String[0]: additional;
 		
-		for(String s : arrToIterate) {
+		for(String s : loopable) {
 			if(!isBlank(s)) {
 				return false; 
 			}
@@ -93,13 +93,14 @@ public final class Strings {
 	 * @return String with all instances of c removed.
 	 */
 	public static String remove(String source, char c) {
-		int index;
-		if((index = source.indexOf('c')) == -1)
+		int i;
+		if((i = source.indexOf('c')) == -1) {
 			return source;
+		}
 		else {
-			StringBuilder builder = new StringBuilder(source.substring(0, index));
-			for(int i = index; i < source.length(); i++) {
-				char current = source.charAt(i);
+			StringBuilder builder = new StringBuilder(source.substring(0, i));
+			for(int count = i; count < source.length(); count++) {
+				char current = source.charAt(count);
 				if(current != c) {
 					builder.append(current);
 				}

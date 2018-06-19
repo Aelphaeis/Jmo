@@ -14,6 +14,16 @@ public class TreeNode<T> {
 		setChildren(new ArrayList<TreeNode<T>>());
 	}
 	
+	public TreeNode(TreeNode<T> parent){
+		this();
+		this.parent = parent;
+	}
+	
+	public TreeNode(TreeNode<T> parent, T value) {
+		this(parent);
+		this.value = value;
+	}
+	
 	public boolean hasParent(){
 		return getParent() != null;
 	}

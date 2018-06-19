@@ -12,11 +12,11 @@ public class Stringifier<T> implements Visitor<TreeNode<T>> {
 		StringBuilder segment = new StringBuilder();
 		segment.append(" >-");
 
-		TreeNode<? extends Object> n = e.getParent();
-		TreeNode<? extends Object> c = e;
+		TreeNode<T> n = e.getParent();
+		TreeNode<T> c = e;
 		// └
 		while (n != null) {
-			List<?> kids = n.getChildren();
+			List<TreeNode<T>> kids = n.getChildren();
 			if (e == c) {
 				segment.append("+   ");
 			} else if (kids.indexOf(c) < kids.size() - 1) {

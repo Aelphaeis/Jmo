@@ -7,25 +7,29 @@ import jmo.patterns.visitor.Visitor;
 
 public class TreeNode<T> {
 	private T value = null;
-	private TreeNode<T> parent = null;
-	private List<TreeNode<T>> children = null;
+	private TreeNode<T> parent;
+	private final List<TreeNode<T>> children;
 
 	public TreeNode() {
-		setChildren(new ArrayList<TreeNode<T>>());
+		children = new ArrayList<>();
 	}
 
 	public TreeNode(TreeNode<T> parent) {
 		this();
-		this.parent = parent;
-	}
-
-	public TreeNode(TreeNode<T> parent, T value) {
-		this(parent);
-		this.value = value;
+		this.parent = parent; 
+		if(parent != null) {
+			parent.getChildren().add(this);
+		}
+	
 	}
 
 	public TreeNode(T value) {
 		this((TreeNode<T>) null);
+		this.value = value;
+	}
+	
+	public TreeNode(TreeNode<T> parent, T value) {
+		this(parent);
 		this.value = value;
 	}
 
@@ -111,9 +115,5 @@ public class TreeNode<T> {
 
 	public List<TreeNode<T>> getChildren() {
 		return children;
-	}
-
-	public void setChildren(List<TreeNode<T>> children) {
-		this.children = children;
 	}
 }

@@ -14,13 +14,12 @@ public class Stringifier<T> implements Visitor<TreeNode<T>> {
 
 		TreeNode<? extends Object> n = e.getParent();
 		TreeNode<? extends Object> c = e;
-		//└
+		// └
 		while (n != null) {
 			List<?> kids = n.getChildren();
-			if(e == c) {
+			if (e == c) {
 				segment.append("+   ");
-			}
-			else if (kids.indexOf(c) < kids.size() - 1) {
+			} else if (kids.indexOf(c) < kids.size() - 1) {
 				segment.append("|   ");
 			} else {
 				segment.append("    ");
@@ -33,11 +32,9 @@ public class Stringifier<T> implements Visitor<TreeNode<T>> {
 		builder.append(e.getValue());
 		builder.append(System.lineSeparator());
 	}
+
 	@Override
 	public String toString() {
 		return builder.toString();
 	}
-
-
-
 }

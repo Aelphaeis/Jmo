@@ -24,6 +24,11 @@ public class TreeNode<T> {
 		this.value = value;
 	}
 	
+	public TreeNode(T value) {
+		this((TreeNode<T>)null);
+		this.value = value;
+	}
+	
 	public boolean hasParent(){
 		return getParent() != null;
 	}

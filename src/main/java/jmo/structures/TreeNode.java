@@ -48,7 +48,7 @@ public class TreeNode<T> {
 		getChildren().add(node);
 	}
 
-	public void addChildren(List<T> children) {
+	public void addChildren(Iterable<T> children) {
 		for (T v : children) {
 			addChild(v);
 		}
@@ -62,8 +62,9 @@ public class TreeNode<T> {
 		return output;
 	}
 
-	public void transverseNodes(Visitor<TreeNode<T>> visitor) {
+	public Visitor<TreeNode<T>> transverseNodes(Visitor<TreeNode<T>> visitor) {
 		transverseNodes(this, visitor);
+		return visitor;
 	}
 
 	private void transverseNodes(TreeNode<T> n, Visitor<TreeNode<T>> visitor) {

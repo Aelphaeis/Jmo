@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jmo.patterns.visitor.Stringifier;
-
 public class TreeAdaptorTest {
 
 	TreeAdaptor<Integer> adaptor = new TreeAdaptor<Integer>() {
@@ -23,6 +21,5 @@ public class TreeAdaptorTest {
 		for (int i = 1; i <= 16; i++) {
 			list.add(i);
 		}
-		System.out.println(adaptor.toTree(list).transverseNodes(new Stringifier<>()));
 	}
 }

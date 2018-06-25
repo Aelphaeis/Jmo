@@ -9,26 +9,23 @@ public class Stringifier<T> implements Visitor<TreeNode<T>> {
 
 	@Override
 	public void visit(TreeNode<T> e) {
-		StringBuilder segment = new StringBuilder();
-		segment.append(" >-");
+		int i = builder.length();
 
 		TreeNode<T> n = e.getParent();
 		TreeNode<T> c = e;
-		// └
 		while (n != null) {
 			List<TreeNode<T>> kids = n.getChildren();
 			if (e == c) {
-				segment.append("+   ");
+				builder.insert(i, "   +");
 			} else if (kids.indexOf(c) < kids.size() - 1) {
-				segment.append("|   ");
+				builder.insert(i, "   |");
 			} else {
-				segment.append("    ");
+				builder.insert(i, "    ");
 			}
 			c = n;
 			n = c.getParent();
 		}
-
-		builder.append(segment.reverse());
+		builder.append("-> ");
 		builder.append(e.getValue());
 		builder.append(System.lineSeparator());
 	}

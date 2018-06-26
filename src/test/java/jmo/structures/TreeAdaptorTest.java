@@ -28,19 +28,17 @@ public class TreeAdaptorTest {
 		}
 		TreeNode<Integer> tn = adaptor.toTree(list);
 		
-		System.out.println(tn.transverseNodes(new Stringifier<>()).toString());
-		
 		assertEquals(0, tn.getValue().intValue());
-		assertEquals(1, tn.getChildren().get(0).getValue().intValue());
+		assertEquals(1, tn.child(0).intValue());
+		
+		
+		tn = tn.node(0);
+		assertEquals(2, tn.child(0).intValue());
 		
 		
 		tn = tn.getChildren().get(0);
-		assertEquals(2, tn.getChildren().get(0).getValue().intValue());
-		
-		
-		tn = tn.getChildren().get(0);
-		assertEquals(3, tn.getChildren().get(0).getValue().intValue());
-		assertEquals(4, tn.getChildren().get(1).getValue().intValue());
+		assertEquals(3, tn.child(0).intValue());
+		assertEquals(4, tn.child(1).intValue());
 	}
 
 	@Test
@@ -52,8 +50,8 @@ public class TreeAdaptorTest {
 		
 		TreeNode<Integer> tn = adaptor.toTree(list);
 		assertEquals(2, tn.getValue().intValue());
-		assertEquals(3, tn.getChildren().get(0).getValue().intValue());
-		assertEquals(4, tn.getChildren().get(1).getValue().intValue());
+		assertEquals(3, tn.child(0).intValue());
+		assertEquals(4, tn.child(1).intValue());
 		
 		System.out.println(tn.transverseNodes(new Stringifier<>()).toString());
 	}
@@ -72,8 +70,8 @@ public class TreeAdaptorTest {
 		}
 		TreeNode<Integer> tn = adaptor.toTree(list);
 		assertNull(tn.getValue());
-		assertEquals(3, tn.getChildren().get(0).getValue().intValue());
-		assertEquals(4, tn.getChildren().get(1).getValue().intValue());
+		assertEquals(3, tn.child(0).intValue());
+		assertEquals(4, tn.child(1).intValue());
 	}
 	@Test
 	public void toTree_2Roots_artificalRoot() {
@@ -90,8 +88,8 @@ public class TreeAdaptorTest {
 		TreeNode<Integer> tn = adaptor.toTree(list);
 		System.out.println(tn.transverseNodes(new Stringifier<>()));
 		assertNull(tn.getValue());
-		assertEquals(6, tn.getChildren().get(0).getValue().intValue());
-		assertEquals(8, tn.getChildren().get(1).getValue().intValue());
+		assertEquals(6, tn.child(0).intValue());
+		assertEquals(8, tn.child(1).intValue());
 		assertEquals(3, tn.node(0).child(0).intValue());
 		assertEquals(4, tn.node(1).child(0).intValue());
 	}

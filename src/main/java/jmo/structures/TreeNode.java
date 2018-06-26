@@ -46,6 +46,14 @@ public class TreeNode<T> {
 		node.setParent(this);
 		getChildren().add(node);
 	}
+	
+	public T child(int i) {
+		return getChildren().get(i).getValue();
+	}
+	
+	public TreeNode<T> node(int i) {
+		return getChildren().get(i);
+	}
 
 	public void addChildren(Iterable<T> children) {
 		for (T v : children) {

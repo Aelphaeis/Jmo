@@ -1,9 +1,6 @@
 package jmo.structures;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,40 +14,36 @@ public abstract class TreeAdaptor<T> {
 	protected abstract T resolveParent(T child);
 	
 	public TreeNode<T> toTree(Iterable<T> iterable){
-		boolean hasRoot = false;
 		Map<T, T> parents = new HashMap<>();
 		Iterator<T> it = iterable.iterator();
 	
 		//find the parent of each node
 		while(it.hasNext()) {
 			T value = it.next();
-			
 			//if a node has no parent its the root
 			T parent = resolveParent(value);
-			if(parent != null) {
-				parents.put(value, parent);
-			}
-			else if(!hasRoot){
-				hasRoot = true;
-			}
-			else {
-				String err = "Multiple roots found";
-				throw new IllegalStateException(err);
-			}
+			parents.put(value, parent);
 		}
 		
 		//find the root
-		List<T> roots = parents.values().stream()
+		List<T> roots = new ArrayList<>(parents.values().stream()
 				.filter(p -> !parents.containsKey(p))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet()));
 		
 		//child parent mappings
-		Map<T, List<T>> cpm = parents.entrySet().stream()
-				.collect(groupingBy(Entry::getValue,
-						mapping(Entry::getKey, toList())));
+		Map<T, List<T>> cpm = new HashMap<>();
+		for(Entry<T, T> p : parents.entrySet()) {
+			T val = p.getValue();
+			T key = p.getKey();
+			cpm.computeIfAbsent(val, k -> new ArrayList<T>()).add(key);
+		}
 		
+		if(roots.isEmpty()) {
+			String err = "Unable to resolve root. Circular dependency?";
+			throw new IllegalArgumentException(err);
+		}
 		//if multiple roots create an artificial root
-		if(roots.isEmpty() || roots.size() > 1) {
+		if(roots.size() > 1) {
 			TreeNode<T> artificalRoot = new TreeNode<>();
 			for(T subValue : roots) {
 				subTree(cpm, subValue, artificalRoot);

@@ -20,7 +20,6 @@ public class TreeNode<T> {
 		if(parent != null) {
 			parent.getChildren().add(this);
 		}
-	
 	}
 
 	public TreeNode(T value) {

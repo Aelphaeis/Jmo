@@ -21,7 +21,6 @@ public abstract class TreeAdaptor<T> {
 		Map<T, T> parents = new HashMap<>();
 		Iterator<T> it = iterable.iterator();
 	
-		
 		//find the parent of each node
 		while(it.hasNext()) {
 			T value = it.next();
@@ -39,6 +38,7 @@ public abstract class TreeAdaptor<T> {
 				throw new IllegalStateException(err);
 			}
 		}
+		
 		//find the root
 		List<T> roots = parents.values().stream()
 				.filter(p -> !parents.containsKey(p))
@@ -49,7 +49,7 @@ public abstract class TreeAdaptor<T> {
 				.collect(groupingBy(Entry::getValue,
 						mapping(Entry::getKey, toList())));
 		
-		//if multiple roots create an artifical root
+		//if multiple roots create an artificial root
 		if(roots.isEmpty() || roots.size() > 1) {
 			TreeNode<T> artificalRoot = new TreeNode<>();
 			for(T subValue : roots) {

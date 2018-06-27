@@ -73,7 +73,6 @@ public class TreeNodeTest {
 	public void addChildren_values_added() {
 		root = new TreeNode<>(0);
 		root.addChildren(Arrays.asList(1, 2));
-		System.out.println(root.transverseNodes(new Stringifier<>()));
 		assertEquals((Integer)1, root.child(0));
 		assertEquals((Integer)2, root.child(1));
 	}

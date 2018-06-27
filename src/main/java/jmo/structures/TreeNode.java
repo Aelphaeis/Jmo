@@ -17,7 +17,7 @@ public class TreeNode<T> {
 	public TreeNode(TreeNode<T> parent) {
 		this();
 		setParent(parent);
-		if(parent != null) {
+		if (parent != null) {
 			parent.getChildren().add(this);
 		}
 	}
@@ -26,7 +26,7 @@ public class TreeNode<T> {
 		this((TreeNode<T>) null);
 		setValue(value);
 	}
-	
+
 	public TreeNode(TreeNode<T> parent, T value) {
 		this(parent);
 		setValue(value);
@@ -46,11 +46,11 @@ public class TreeNode<T> {
 		node.setParent(this);
 		getChildren().add(node);
 	}
-	
+
 	public T child(int i) {
 		return getChildren().get(i).getValue();
 	}
-	
+
 	public TreeNode<T> node(int i) {
 		return getChildren().get(i);
 	}
@@ -82,16 +82,7 @@ public class TreeNode<T> {
 	}
 
 	public void transverse(Visitor<T> visitor) {
-		transverse(this, visitor);
-	}
-
-	private void transverse(TreeNode<T> n, Visitor<T> action) {
-		if (n.getValue() != null) {
-			action.visit(n.getValue());
-		}
-		for (TreeNode<T> node : n.getChildren()) {
-			n.transverse(node, action);
-		}
+		transverseNodes(this, p -> visitor.visit(p.getValue()));
 	}
 
 	public int getLevel() {

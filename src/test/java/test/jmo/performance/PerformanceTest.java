@@ -1,12 +1,17 @@
 package test.jmo.performance;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import jmo.util.Strings;
+import jmo.patterns.visitor.Stringifier;
+import jmo.structures.TreeAdaptor;
+import jmo.structures.TreeNode;
 
 public class PerformanceTest {
 	Logger logger = LogManager.getLogger(PerformanceTest.class);
@@ -19,28 +24,42 @@ public class PerformanceTest {
 	Candidate A;
 	Candidate B;
 	
+
+			
 	@Before
 	public void setup() {
+		List<Integer> list = new ArrayList<>();
+		for (int i = 1; i <= 16; i++) {
+			list.add(i);
+		}
+		
+		TreeNode<Integer> root = TreeAdaptor.toTree(list, p ->{
+			int sqrt = (int) Math.round(Math.sqrt(p));
+			return p == sqrt? 0 : sqrt;
+		});
+		
 		A = new Candidate() {
+			
 			@Override
 			public String getName() {
-				return "remove w substring";
+				return "visitor with reserve";
 			}
 			
 			@Override
 			public void doAction() {
-				Strings.remove("chicken", 'c');
+				root.transverseNodes(new Stringifier<>());
 			}
 		};
 		B = new Candidate() {
 			
 			@Override
 			public String getName() {
-				return "remove /w split";
+				return "visitor with insert";
 			}
 			
 			@Override
 			public void doAction() {
+				root.transverseNodes(new Stringifier<>());
 			}
 		};
 		
@@ -51,6 +70,7 @@ public class PerformanceTest {
 	public void performanceTest() {
 		run(A);
 		run(B);
+		run(A);
 	}
 	
 	

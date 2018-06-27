@@ -11,8 +11,6 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import jmo.patterns.visitor.Stringifier;
-
 public class TreeAdaptorTest {
 
 	TreeAdaptor<Integer> adaptor = child -> {
@@ -31,7 +29,7 @@ public class TreeAdaptorTest {
 
 		tn = tn.node(0);
 		assertEquals(2, tn.child(0).intValue());
-
+	
 		tn = tn.getChildren().get(0);
 		assertEquals(3, tn.child(0).intValue());
 		assertEquals(4, tn.child(1).intValue());

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -13,6 +14,8 @@ import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import jmo.patterns.visitor.Stringifier;
 
 public class TreeNodeTest {
 
@@ -64,5 +67,14 @@ public class TreeNodeTest {
 	public void ctor_values_resolveCorrectly() {
 		assertTrue(new TreeNode<Integer>(0).hasValue());
 		assertFalse(new TreeNode<Integer>((Integer)null).hasValue());
+	}
+	
+	@Test
+	public void addChildren_values_added() {
+		root = new TreeNode<>(0);
+		root.addChildren(Arrays.asList(1, 2));
+		System.out.println(root.transverseNodes(new Stringifier<>()));
+		assertEquals((Integer)1, root.child(0));
+		assertEquals((Integer)2, root.child(1));
 	}
 }

@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jmo.patterns.visitor.Stringifier;
@@ -62,6 +63,7 @@ public class PerformanceTest {
 	}
 
 	@Test
+	@Ignore
 	public void performanceTest() {
 		run(A);
 		run(B);

@@ -44,7 +44,7 @@ public class TreeNode<T> {
 	}
 
 	public void addChild(T child) {
-		children.add(new TreeNode<>(this, child));
+		new TreeNode<>(this, child);
 	}
 
 	public T child(int i) {

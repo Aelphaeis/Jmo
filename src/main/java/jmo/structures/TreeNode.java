@@ -24,12 +24,12 @@ public class TreeNode<T> {
 
 	public TreeNode(T value) {
 		this((TreeNode<T>) null);
-		this.value = value;
+		setValue(value);
 	}
 	
 	public TreeNode(TreeNode<T> parent, T value) {
 		this(parent);
-		this.value = value;
+		setValue(value);
 	}
 
 	public boolean hasParent() {

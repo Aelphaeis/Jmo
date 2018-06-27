@@ -1,5 +1,7 @@
 package jmo.structures;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,10 +44,7 @@ public class TreeNode<T> {
 	}
 
 	public void addChild(T child) {
-		TreeNode<T> node = new TreeNode<>();
-		node.setValue(child);
-		node.setParent(this);
-		children.add(node);
+		children.add(new TreeNode<>(this, child));
 	}
 
 	public T child(int i) {
@@ -57,17 +56,11 @@ public class TreeNode<T> {
 	}
 
 	public void addChildren(Iterable<T> children) {
-		for (T v : children) {
-			addChild(v);
-		}
+		children.forEach(this::addChild);
 	}
 
 	public List<T> getChildrenValues() {
-		List<T> output = new ArrayList<>();
-		for (TreeNode<T> child : getChildren()) {
-			output.add(child.getValue());
-		}
-		return output;
+		return children.stream().map(TreeNode::getValue).collect(toList());
 	}
 
 	public Visitor<TreeNode<T>> transverseNodes(Visitor<TreeNode<T>> visitor) {
@@ -83,9 +76,7 @@ public class TreeNode<T> {
 
 	public int getLevel() {
 		int lv = -1;
-		TreeNode<T> current = this;
-		while (current != null) {
-			current = current.getParent();
+		for(TreeNode<T> curr = this; curr != null; curr = curr.getParent()) {
 			lv++;
 		}
 		return lv;

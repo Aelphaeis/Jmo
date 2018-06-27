@@ -70,19 +70,15 @@ public class TreeNode<T> {
 	}
 
 	public Visitor<TreeNode<T>> transverseNodes(Visitor<TreeNode<T>> visitor) {
-		transverseNodes(this, visitor);
+		visitor.visit(this);
+		this.getChildren().forEach( p -> p.transverseNodes(visitor));
 		return visitor;
 	}
 
-	private void transverseNodes(TreeNode<T> n, Visitor<TreeNode<T>> visitor) {
-		visitor.visit(n);
-		for (TreeNode<T> node : n.getChildren()) {
-			n.transverseNodes(node, visitor);
-		}
-	}
 
-	public void transverse(Visitor<T> visitor) {
-		transverseNodes(this, p -> visitor.visit(p.getValue()));
+	public Visitor<T> transverse(Visitor<T> visitor) {
+		transverseNodes(p -> visitor.visit(p.getValue()));
+		return visitor;
 	}
 
 	public int getLevel() {

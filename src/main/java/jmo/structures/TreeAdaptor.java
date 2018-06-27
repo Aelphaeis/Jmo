@@ -41,6 +41,7 @@ public interface TreeAdaptor<T> {
 			String err = "Unable to resolve root. Circular dependency?";
 			throw new IllegalArgumentException(err);
 		}
+		
 		// if multiple roots create an artificial root
 		if (roots.size() > 1) {
 			TreeNode<T> artificalRoot = new TreeNode<>();

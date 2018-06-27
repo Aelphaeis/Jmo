@@ -1,6 +1,7 @@
 package jmo.structures;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jmo.patterns.visitor.Visitor;
@@ -18,7 +19,7 @@ public class TreeNode<T> {
 		this();
 		setParent(parent);
 		if (parent != null) {
-			parent.getChildren().add(this);
+			parent.children.add(this);
 		}
 	}
 
@@ -44,7 +45,7 @@ public class TreeNode<T> {
 		TreeNode<T> node = new TreeNode<>();
 		node.setValue(child);
 		node.setParent(this);
-		getChildren().add(node);
+		children.add(node);
 	}
 
 	public T child(int i) {
@@ -71,7 +72,7 @@ public class TreeNode<T> {
 
 	public Visitor<TreeNode<T>> transverseNodes(Visitor<TreeNode<T>> visitor) {
 		visitor.visit(this);
-		this.getChildren().forEach(p -> p.transverseNodes(visitor));
+		children.forEach(p -> p.transverseNodes(visitor));
 		return visitor;
 	}
 
@@ -108,6 +109,6 @@ public class TreeNode<T> {
 	}
 
 	public List<TreeNode<T>> getChildren() {
-		return children;
+		return Collections.unmodifiableList(children);
 	}
 }

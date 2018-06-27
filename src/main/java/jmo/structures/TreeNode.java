@@ -71,10 +71,9 @@ public class TreeNode<T> {
 
 	public Visitor<TreeNode<T>> transverseNodes(Visitor<TreeNode<T>> visitor) {
 		visitor.visit(this);
-		this.getChildren().forEach( p -> p.transverseNodes(visitor));
+		this.getChildren().forEach(p -> p.transverseNodes(visitor));
 		return visitor;
 	}
-
 
 	public Visitor<T> transverse(Visitor<T> visitor) {
 		transverseNodes(p -> visitor.visit(p.getValue()));

@@ -10,29 +10,29 @@ import jmo.patterns.visitor.Visitor;
 
 public class TreeNode<T> {
 	private T value = null;
-	private TreeNode<T> parent;
+	private final TreeNode<T> parent;
 	private final List<TreeNode<T>> children;
 
 	public TreeNode() {
-		children = new ArrayList<>();
+		this(null, null);
 	}
 
 	public TreeNode(TreeNode<T> parent) {
-		this();
-		setParent(parent);
-		if (parent != null) {
-			parent.children.add(this);
-		}
+		this(parent, null);
 	}
 
 	public TreeNode(T value) {
-		this((TreeNode<T>) null);
-		setValue(value);
+		this(null, value);
 	}
 
 	public TreeNode(TreeNode<T> parent, T value) {
-		this(parent);
+		this.children = new ArrayList<>();
+		this.parent = parent;
 		setValue(value);
+		
+		if(parent != null) {
+			parent.children.add(this);
+		}
 	}
 
 	public boolean hasParent() {
@@ -76,7 +76,7 @@ public class TreeNode<T> {
 
 	public int getLevel() {
 		int lv = -1;
-		for(TreeNode<T> curr = this; curr != null; curr = curr.getParent()) {
+		for (TreeNode<T> curr = this; curr != null; curr = curr.getParent()) {
 			lv++;
 		}
 		return lv;
@@ -93,10 +93,6 @@ public class TreeNode<T> {
 
 	public TreeNode<T> getParent() {
 		return parent;
-	}
-
-	public void setParent(TreeNode<T> parent) {
-		this.parent = parent;
 	}
 
 	public List<TreeNode<T>> getChildren() {

@@ -16,7 +16,7 @@ public class TreeNode<T> {
 
 	public TreeNode(TreeNode<T> parent) {
 		this();
-		this.parent = parent; 
+		setParent(parent);
 		if(parent != null) {
 			parent.getChildren().add(this);
 		}
@@ -95,7 +95,7 @@ public class TreeNode<T> {
 	}
 
 	public int getLevel() {
-		int lv = 0;
+		int lv = -1;
 		TreeNode<T> current = this;
 		while (current != null) {
 			current = current.getParent();

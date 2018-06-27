@@ -15,8 +15,6 @@ import java.util.stream.IntStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import jmo.patterns.visitor.Stringifier;
-
 public class TreeNodeTest {
 
 	TreeNode<Integer> root;

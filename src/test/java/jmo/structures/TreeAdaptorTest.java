@@ -43,8 +43,6 @@ public class TreeAdaptorTest {
 		assertEquals(2, tn.getValue().intValue());
 		assertEquals(3, tn.child(0).intValue());
 		assertEquals(4, tn.child(1).intValue());
-
-		System.out.println(tn.transverseNodes(new Stringifier<>()).toString());
 	}
 
 	@Test
@@ -60,7 +58,6 @@ public class TreeAdaptorTest {
 	public void toTree_2Roots_artificalRoot() {
 		TreeNode<Integer> tn = TreeAdaptor.toTree(Arrays.asList(3, 4),
 				p -> p * 2);
-		System.out.println(tn.transverseNodes(new Stringifier<>()));
 		assertNull(tn.getValue());
 		assertEquals(6, tn.child(0).intValue());
 		assertEquals(8, tn.child(1).intValue());

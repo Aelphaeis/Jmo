@@ -4,7 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -19,10 +22,8 @@ public class TreeAdaptorTest {
 
 	@Test
 	public void toTree_intList_createTree() {
-		List<Integer> list = new ArrayList<>();
-		for (int i = 1; i <= 4; i++) {
-			list.add(i);
-		}
+		List<Integer> list = IntStream.range(1, 16)
+				.mapToObj(p -> p).collect(Collectors.toList());
 		TreeNode<Integer> tn = adaptor.toTree(list);
 
 		assertEquals(0, tn.getValue().intValue());
@@ -38,12 +39,7 @@ public class TreeAdaptorTest {
 
 	@Test
 	public void toTree_noRoot_createTree() {
-		List<Integer> list = new ArrayList<>();
-		for (int i = 3; i <= 4; i++) {
-			list.add(i);
-		}
-
-		TreeNode<Integer> tn = adaptor.toTree(list);
+		TreeNode<Integer> tn = adaptor.toTree(Arrays.asList(3, 4));
 		assertEquals(2, tn.getValue().intValue());
 		assertEquals(3, tn.child(0).intValue());
 		assertEquals(4, tn.child(1).intValue());
@@ -53,11 +49,8 @@ public class TreeAdaptorTest {
 
 	@Test
 	public void toTree_noRoot_artificalRoot() {
-		List<Integer> list = new ArrayList<>();
-		for (int i = 3; i <= 4; i++) {
-			list.add(i);
-		}
-		TreeNode<Integer> tn = TreeAdaptor.toTree(list, p -> null);
+		TreeNode<Integer> tn = TreeAdaptor.toTree(Arrays.asList(3, 4), 
+				p -> null);
 		assertNull(tn.getValue());
 		assertEquals(3, tn.child(0).intValue());
 		assertEquals(4, tn.child(1).intValue());
@@ -65,11 +58,8 @@ public class TreeAdaptorTest {
 	
 	@Test
 	public void toTree_2Roots_artificalRoot() {
-		List<Integer> list = new ArrayList<>();
-		for (int i = 3; i <= 4; i++) {
-			list.add(i);
-		}
-		TreeNode<Integer> tn = TreeAdaptor.toTree(list, p -> p * 2);
+		TreeNode<Integer> tn = TreeAdaptor.toTree(Arrays.asList(3, 4),
+				p -> p * 2);
 		System.out.println(tn.transverseNodes(new Stringifier<>()));
 		assertNull(tn.getValue());
 		assertEquals(6, tn.child(0).intValue());

@@ -1,18 +1,13 @@
 package test.jmo.performance;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import static jmo.util.NamingConventions.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import jmo.patterns.visitor.Stringifier;
-import jmo.structures.TreeAdaptor;
-import jmo.structures.TreeNode;
 
 public class PerformanceTest {
 	Logger logger = LogManager.getLogger(PerformanceTest.class);
@@ -24,39 +19,65 @@ public class PerformanceTest {
 
 	Candidate A;
 	Candidate B;
+	Candidate C;
+	Candidate D;
 
 	@Before
 	public void setup() {
-		List<Integer> range = IntStream.rangeClosed(1, 16)
-				.mapToObj(p-> Integer.valueOf(p)).collect(Collectors.toList());
-		
-		TreeNode<Integer> root = TreeAdaptor.toTree(range, p -> {
-			int sqrt = (int) Math.round(Math.sqrt(p));
-			return p == sqrt ? 0 : sqrt;
-		});
-
 		A = new Candidate() {
 
 			@Override
 			public String getName() {
-				return "visitor with reserve";
+				return "A";
 			}
 
 			@Override
 			public void doAction() {
-				root.transverseNodes(new Stringifier<>());
+				String s = "HelloWorld!";
+				assertEquals("HELLO_WORLD!",
+						toScreamingSnakeCaseFromCamelCase(s));
 			}
 		};
 		B = new Candidate() {
 
 			@Override
 			public String getName() {
-				return "visitor with insert";
+				return "B";
 			}
 
 			@Override
 			public void doAction() {
-				root.transverseNodes(new Stringifier<>());
+				String s = "HelloWorld!";
+				assertEquals("HELLO_WORLD!",
+						toScreamingSnakeCaseFromCamelCase2(s));
+			}
+		};
+		C = new Candidate() {
+
+			@Override
+			public String getName() {
+				return "C";
+			}
+
+			@Override
+			public void doAction() {
+				String s = "HelloWorld!";
+				assertEquals("HELLO_WORLD!",
+						toScreamingSnakeCaseFromCamelCase3(s));
+			}
+		};
+		D = new Candidate() {
+
+			@Override
+			public String getName() {
+				return "D";
+			}
+
+			@Override
+			public void doAction() {
+				String s = "HelloWorld!";
+				assertEquals("HELLO_WORLD!",
+						toScreamingSnakeCaseFromCamelCase4(s));
 			}
 		};
 
@@ -65,9 +86,15 @@ public class PerformanceTest {
 	@Test
 	@Ignore
 	public void performanceTest() {
+		A.doAction();
+		B.doAction();
+		C.doAction();
+		D.doAction();
+
 		run(A);
 		run(B);
-		run(A);
+		run(C);
+		run(D);
 	}
 
 	void run(Candidate can) {

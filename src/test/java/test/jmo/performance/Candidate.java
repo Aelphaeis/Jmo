@@ -13,7 +13,7 @@ public interface Candidate {
 		return 10000;
 	}
 	default int getPerformanceIterations() {
-		return 100000;
+		return 1000000;
 	}
 	default long checkPerformance() {
 		long start = System.currentTimeMillis();

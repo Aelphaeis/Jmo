@@ -119,14 +119,14 @@ public final class Reflector {
 	 * Given a package name and a directory returns all classes within that
 	 * directory
 	 * 
-	 * @param directory
+	 * @param dir
 	 * @param pkgname
 	 * @return Classes within Directory with package name
 	 */
-	public static List<Class<?>> processDirectory(File directory, String pkgname) {
+	public static List<Class<?>> processDirectory(File dir, String pkgname) {
 		List<Class<?>> classes = new ArrayList<>();
 		// Get the list of the files contained in the package
-		String[] files = directory.list();
+		String[] files = dir.list();
 		for (int i = 0; i < files.length; i++) {
 			String fileName = files[i];
 			String className = null;
@@ -141,7 +141,7 @@ public final class Reflector {
 			}
 
 			// If the file is a directory recursively class this method.
-			File subdir = new File(directory, fileName);
+			File subdir = new File(dir, fileName);
 			if (subdir.isDirectory()) {
 				classes.addAll(processDirectory(subdir, pkgname + '.' + fileName));
 			}
@@ -154,7 +154,8 @@ public final class Reflector {
 			// return a class based on a strong name from current class loader
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			throw new ReflectorException("Unexpected exception loading class '" + className + "'", e);
+			String err = "Unexpected exception loading class [%s]";
+			throw new ReflectorException(String.format(err, className), e);
 		}
 	}
 
@@ -196,7 +197,8 @@ public final class Reflector {
 				}
 			}
 		} catch (IOException e) {
-			throw new ReflectorException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
+			String err = "Unexpected IOException reading JAR File [%s]";
+			throw new ReflectorException(String.format(err, jarPath), e);
 		}
 		return classes;
 	}
@@ -220,11 +222,6 @@ public final class Reflector {
 
 		public ReflectorException(Throwable cause) {
 			super(cause);
-		}
-
-		protected ReflectorException(String message, Throwable cause, boolean enableSuppression,
-				boolean writableStackTrace) {
-			super(message, cause, enableSuppression, writableStackTrace);
 		}
 	}
 }

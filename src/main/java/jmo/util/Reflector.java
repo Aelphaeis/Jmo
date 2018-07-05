@@ -64,8 +64,8 @@ public final class Reflector {
 	 * @param pkg
 	 * @return Classes within package
 	 */
-	public static List<Class<?>> getClassesForPackage(Package pkg) {
-		return getClassesForPackage(pkg, ClassLoader.getSystemClassLoader());
+	public static List<Class<?>> getPackageClasses(Package pkg) {
+		return getPackageClasses(pkg, ClassLoader.getSystemClassLoader());
 	}
 
 	
@@ -74,23 +74,23 @@ public final class Reflector {
 	 * Given a package name and class loader this method returns all classes
 	 * contained in package.
 	 * 
-	 * @param pkg
-	 * @param loader
+	 * @param p
+	 * @param l
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<Class<?>> getClassesForPackage(Package pkg, ClassLoader loader) {
+	public static List<Class<?>> getPackageClasses(Package p, ClassLoader l) {
 		ArrayList<Class<?>> classes = new ArrayList<>();
 
 		// Get name of package and turn it to a relative path
-		String pkgname = pkg.getName();
+		String pkgname = p.getName();
 		String relPath = pkgname.replace('.', '/');
 
 		// Get a File object for the package
 
 		Enumeration<URL> resources;
 		try {
-			resources = loader.getResources(relPath);
+			resources = l.getResources(relPath);
 		} catch (IOException e) {
 			String err = "Unexpected error loading resources";
 			throw new ReflectorException(err, e);
@@ -107,7 +107,8 @@ public final class Reflector {
 				if (resource.toString().startsWith("jar:")) {
 					classes.addAll(processJarfile(resource, pkgname));
 				} else {
-					classes.addAll(processDirectory(new File(resource.getPath()), pkgname));
+					File dir = new File(resource.getPath());
+					classes.addAll(processDirectory(dir, pkgname));
 				}
 			} while (resources.hasMoreElements());
 		}

@@ -17,7 +17,7 @@ public class ReflectorTest {
 		assertNotNull(loader);
 		assertNotNull(pkg);
 		
-		List<Class<?>> classes = Reflector.getClassesForPackage(pkg, loader);
+		List<Class<?>> classes = Reflector.getPackageClasses(pkg, loader);
 		assertTrue(classes.contains(Reflector.class));
 	}
 	

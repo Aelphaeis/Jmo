@@ -80,40 +80,35 @@ public final class Reflector {
 	 * @throws IOException
 	 */
 	public static List<Class<?>> getPackageClasses(Package p, ClassLoader l) {
-		ArrayList<Class<?>> classes = new ArrayList<>();
+		List<Class<?>> classes = new ArrayList<>();
 
 		// Get name of package and turn it to a relative path
 		String pkgname = p.getName();
 		String relPath = pkgname.replace('.', '/');
 
 		// Get a File object for the package
-
-		Enumeration<URL> resources;
 		try {
-			resources = l.getResources(relPath);
+			Enumeration<URL> resources = l.getResources(relPath);
+			if (!resources.hasMoreElements()) {
+				String err = "Unexpected problem: No resource for {%s}";
+				throw new ReflectorException(String.format(err, relPath));
+			} else {
+				do {
+					URL resource = resources.nextElement();
+					// If the resource is a jar get all classes from jar
+					if (resource.toString().startsWith("jar:")) {
+						classes.addAll(processJarfile(resource, pkgname));
+					} else {
+						File dir = new File(resource.getPath());
+						classes.addAll(processDirectory(dir, pkgname));
+					}
+				} while (resources.hasMoreElements());
+			}
+			return classes;
 		} catch (IOException e) {
 			String err = "Unexpected error loading resources";
 			throw new ReflectorException(err, e);
 		}
-		boolean isEmpty = !resources.hasMoreElements();
-
-		if (isEmpty) {
-			String err = "Unexpected problem: No resource for {%s}";
-			throw new ReflectorException(String.format(err, relPath));
-		} else {
-			do {
-				URL resource = resources.nextElement();
-				// If the resource is a jar get all classes from jar
-				if (resource.toString().startsWith("jar:")) {
-					classes.addAll(processJarfile(resource, pkgname));
-				} else {
-					File dir = new File(resource.getPath());
-					classes.addAll(processDirectory(dir, pkgname));
-				}
-			} while (resources.hasMoreElements());
-		}
-
-		return classes;
 	}
 
 	/**
@@ -126,25 +121,19 @@ public final class Reflector {
 	 */
 	public static List<Class<?>> processDirectory(File dir, String pkgname) {
 		List<Class<?>> classes = new ArrayList<>();
-		// Get the list of the files contained in the package
-		String[] files = dir.list();
-		for (int i = 0; i < files.length; i++) {
-			String fileName = files[i];
-			String className = null;
+		for(String file : dir.list()) {
+			String cls = null;
 			// we are only interested in .class files
-			if (fileName.endsWith(CLASS_SUFFIX)) {
+			if (file.endsWith(CLASS_SUFFIX)) {
 				// removes the .class extension
-				className = pkgname + '.' + fileName.substring(0, fileName.length() - 6);
-			}
-
-			if (className != null) {
-				classes.add(loadClass(className));
+				cls = pkgname + '.' + file.substring(0, file.length() - 6);
+				classes.add(loadClass(cls));
 			}
 
 			// If the file is a directory recursively class this method.
-			File subdir = new File(dir, fileName);
+			File subdir = new File(dir, file);
 			if (subdir.isDirectory()) {
-				classes.addAll(processDirectory(subdir, pkgname + '.' + fileName));
+				classes.addAll(processDirectory(subdir, pkgname + '.' + file));
 			}
 		}
 		return classes;

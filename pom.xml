@@ -61,11 +61,15 @@
 			</extension>
 		</extensions>
 	</build>
+	
+	<scm>
+		<url>https://github.com/Aelphaeis/Jmo</url>
+	</scm>
 
 	<contributors>
 		<contributor>
-			<email>joseph.morain@live.ca</email>
 			<name>Joseph Morain</name>
+			<email>joseph.morain@live.ca</email>
 			<url>http://ec2-52-205-254-214.compute-1.amazonaws.com:8080/</url>
 		</contributor>
 	</contributors>

@@ -6,9 +6,9 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 public class Randomizer {
+	public static final String DIGITS = "0123456789";
 	public static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
 	public static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	public static final String DIGITS = "0123456789";
 	public static final String ALPHANUMERIC = LOWERCASE + UPPERCASE + DIGITS;
 	
 	private final Random generator;

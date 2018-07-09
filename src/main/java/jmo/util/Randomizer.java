@@ -6,7 +6,11 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 public class Randomizer {
-	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	public static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+	public static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	public static final String DIGITS = "0123456789";
+	public static final String ALPHANUMERIC = LOWERCASE + UPPERCASE + DIGITS;
+	
 	private final Random generator;
 	
 	public Randomizer(){
@@ -57,10 +61,15 @@ public class Randomizer {
 		return ByteBuffer.wrap(bArr).order(ByteOrder.LITTLE_ENDIAN).getChar();
 	}
 	
-	public String getString(int characterCount){
+	public String getString(final int charCount){
+		return getString(charCount, ALPHANUMERIC);
+	}
+	
+	public String getString(final int charCount, final String source) {
 		StringBuilder builder = new StringBuilder();
-		for(int i = 0; i < characterCount; i++){
-			builder.append(CHARS.charAt(generator.nextInt(CHARS.length())));
+		final int len = source.length();
+		for(int i = 0; i < charCount; i++){
+			builder.append(source.charAt(generator.nextInt(len)));
 		}
 		return builder.toString();
 	}

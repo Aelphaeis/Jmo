@@ -1,6 +1,7 @@
 package jmo.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,6 +15,12 @@ public class RandomizerTest {
 
 	Randomizer r;
 
+	
+	@Test
+	public void ctor_noArgument_successfulinit() {
+		r = new Randomizer();
+		assertNotNull(r);
+	}
 	@Test
 	public void getInt_zeroSeed_zero() {
 		r = new RandomizerDecorator(0L);

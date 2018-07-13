@@ -3,12 +3,17 @@ package jmo.structures;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import jmo.patterns.visitor.Visitor;
 
-public class TreeNode<T> {
+public class TreeNode<T> implements Iterable<T>{
 	private T value = null;
 	private final TreeNode<T> parent;
 	private final List<TreeNode<T>> children;
@@ -63,7 +68,7 @@ public class TreeNode<T> {
 		return children.stream().map(TreeNode::getValue).collect(toList());
 	}
 
-	public Visitor<TreeNode<T>> transverseNodes(Visitor<TreeNode<T>> visitor) {
+	public <R extends Visitor<TreeNode<T>>> R transverseNodes(R visitor) {
 		visitor.visit(this);
 		children.forEach(p -> p.transverseNodes(visitor));
 		return visitor;
@@ -81,7 +86,18 @@ public class TreeNode<T> {
 		}
 		return lv;
 	}
-
+	
+	public <R> TreeNode<R> map(Function<? super T, ? extends R> m) {
+		return transverseNodes(new Mapper<R>(m)).getRoot();
+	}
+	
+	@Override
+	public Iterator<T> iterator() {
+		Collection<T> collection = new ArrayList<>();
+		transverse(collection::add);
+		return collection.iterator();
+	}
+	
 	/**** Getters and Setters *****/
 	public T getValue() {
 		return value;
@@ -97,5 +113,24 @@ public class TreeNode<T> {
 
 	public List<TreeNode<T>> getChildren() {
 		return Collections.unmodifiableList(children);
+	}
+	
+	private class Mapper<R> implements Visitor<TreeNode<T>> {
+		private Map<TreeNode<T>, TreeNode<R>> i = new HashMap<>(); // images
+		private Function<? super T, ? extends R> m;
+
+		public Mapper(Function<? super T, ? extends R> mapper) {
+			this.m = mapper;
+		}
+
+		@Override
+		public void visit(TreeNode<T> p) {
+			i.put(p, new TreeNode<R>(i.get(p.parent), m.apply(p.value)));
+		}
+
+		public TreeNode<R> getRoot() {
+			return i.values().stream().filter(p -> p.getParent() == null)
+					.findFirst().orElseThrow(IllegalStateException::new);
+		}
 	}
 }

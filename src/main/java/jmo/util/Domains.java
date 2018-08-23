@@ -22,7 +22,7 @@ public class Domains {
 		return false;
 	}
 
-	private static boolean isWhitelisted(String entry, String input) {
+	public static boolean isWhitelisted(String entry, String input) {
 		String[] wlparts = entry.split(DOMAIN_SPLIT_REGEX);
 		String[] parts = input.split(DOMAIN_SPLIT_REGEX);
 

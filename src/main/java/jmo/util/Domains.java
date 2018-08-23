@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class Domains {
 	private static final String TLD_RGX = "(\\.[A-Za-z]{2,})";
-	public static final String DOMAIN_RGX = "[\\w\\-]+(\\.[\\w\\-]+)*" + TLD_RGX + ")$";
+	public static final String DOMAIN_RGX = "[\\w\\-]+(\\.[\\w\\-]+)*" + TLD_RGX + "$";
 	private static final Pattern DOMAIN_PATTERN = Pattern.compile(DOMAIN_RGX);
 	private static final String DOMAIN_SPLIT_REGEX = "\\.";
 	private static final String WC = "*"; // wildcard

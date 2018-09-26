@@ -17,11 +17,8 @@ public class Primitives {
 
 		String content = in.substring(1, in.length() - 1);
 		String[] ctntArr = content.split(",");
-		return Arrays.asList(ctntArr).stream()
-				.map(String::trim)
-				.map(p::parse)
-				.collect(Collectors.toList())
-				.toArray(out);
+		return Arrays.asList(ctntArr).stream().map(String::trim).map(p::parse)
+				.collect(Collectors.toList()).toArray(out);
 	}
 
 	public static int parseOrDefault(String input, int defaultValue) {
@@ -58,6 +55,134 @@ public class Primitives {
 		} catch (NumberFormatException e) {
 			return defaultValue;
 		}
+	}
+
+	public static byte[] unbox(Byte[] content) {
+		byte[] result = new byte[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static Byte[] box(byte[] content) {
+		Byte[] result = new Byte[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static int[] unbox(Integer[] content) {
+		int[] result = new int[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static Integer[] box(int[] content) {
+		Integer[] result = new Integer[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+	
+	public static double[] unbox(Double[] content) {
+		double[] result = new double[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static Double[] box(double[] content) {
+		Double[] result = new Double[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+	
+	public static float[] unbox(Float[] content) {
+		float[] result = new float[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static Float[] box(float[] content) {
+		Float[] result = new Float[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static char[] unbox(Character[] content) {
+		char[] result = new char[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+	
+	public static Character[] box(char[] content) {
+		Character[] result = new Character[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+	
+	public static short[] unbox(Short[] content) {
+		short[] result = new short[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+	
+	public static Short[] box(short[] content) {
+		Short[] result = new Short[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+	
+	public static boolean[] unbox(Boolean[] content) {
+		boolean[] result = new boolean[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static Boolean[] box(boolean[] content) {
+		Boolean[] result = new Boolean[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static long[] unbox(Long[] content) {
+		long[] result = new long[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
+	}
+
+	public static Long[] box(long[] content) {
+		Long[] result = new Long[content.length];
+		for (int i = 0; i < content.length; i++) {
+			result[i] = content[i];
+		}
+		return result;
 	}
 
 	@FunctionalInterface

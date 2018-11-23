@@ -1,9 +1,24 @@
 package jmo.util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 
 public class Charsets {
+	private static final String DIGITS = "0123456789";
+	private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+	private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	
+	private static final List<Character>  B64_CHARSET;
+	
+	static {
+		String charset = DIGITS + LOWERCASE + UPPERCASE + "+/";
+		Character[] boxed = Primitives.box(charset.toCharArray());
+		B64_CHARSET = Collections.unmodifiableList(Arrays.asList(boxed));
+	}
+	
 	public static final String UTF8 = "utf-8";
 
 	public static String toUtf8(byte[] content) {
@@ -31,6 +46,13 @@ public class Charsets {
 	public static byte[] fromB64(String content) {
 		return Base64.getDecoder().decode(content);
 	}
+	
+	public static boolean isB64(String ctnt) {
+		return ctnt.codePoints()
+				.mapToObj(p -> Character.valueOf((char)p))
+				.anyMatch(p -> !B64_CHARSET.contains(p));
+	}
+	
 
 	public static String toHex(byte[] content) {
 		final char[] hexArray = "0123456789abcdef".toCharArray();

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 public class Primitives {
 
+	public static final Parser<Boolean> YNBOOL_PARSER = new YesNoBoolParser();
+	
 	public static <T> T[] parseArray(Parser<T> p, String in, T[] out) {
 		if (!isArrayString(in)) {
 			String err = "String is not an output from Arrays.toString";
@@ -196,5 +198,22 @@ public class Primitives {
 
 	private static boolean isArrayString(String in) {
 		return in.startsWith("[") && in.endsWith("]");
+	}
+	
+	private static class YesNoBoolParser implements Parser<Boolean> {
+		private static final String YES = "yes";
+		private static final String NO = "no";
+		private static final String FALSE = String.valueOf(Boolean.FALSE);
+
+		public Boolean parse(String v) {
+			if (YES.equalsIgnoreCase(v) || Boolean.valueOf(v)) {
+				return true;
+			} else if (FALSE.equalsIgnoreCase(v) || NO.equalsIgnoreCase(v)) {
+				return false;
+			} else {
+				String err = "Not a valid boolean [%s]";
+				throw new IllegalArgumentException(String.format(err, v));
+			}
+		}
 	}
 }

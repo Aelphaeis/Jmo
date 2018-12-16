@@ -110,6 +110,35 @@ public final class Strings {
 		}
 	}
 
+	public static Integer parseOrDefault(String input, Integer defaultValue) {
+		return parseOrDefault(Integer::parseInt, input, defaultValue);
+	}
+
+	public static Double parseOrDefault(String input, Double defaultValue) {
+		return parseOrDefault(Double::parseDouble, input, defaultValue);
+	}
+
+	public static Byte parseOrDefault(String input, Byte defaultValue) {
+		return parseOrDefault(Byte::parseByte, input, defaultValue);
+	}
+
+	public static Long parseOrDefault(String input, Long defaultValue) {
+		return parseOrDefault(Long::parseLong, input, defaultValue);
+	}
+
+	private static <T> T parseOrDefault(Parser<T> p, String s, T defaultValue) {
+		try {
+			return p.parse(s);
+		} catch (NumberFormatException e) {
+			return defaultValue;
+		}
+	}
+
+	@FunctionalInterface
+	private interface Parser<T> {
+		T parse(String value);
+	}
+
 	/**
 	 * Crack a command line.
 	 * 
@@ -126,6 +155,7 @@ public final class Strings {
 		enum ParseState {
 			NORMAL, SINGLE, DOUBLE;
 		}
+
 		final String input;
 
 		ArrayList<String> result = new ArrayList<>();
@@ -152,15 +182,15 @@ public final class Strings {
 			while (tok.hasMoreTokens()) {
 				String next = tok.nextToken();
 				switch (state) {
-					case SINGLE :
-						handleQuote(next, "'");
-						break;
-					case DOUBLE :
-						handleQuote(next, "\"");
-						break;
-					default :
-						handleNoQuote(next);
-						break;
+				case SINGLE:
+					handleQuote(next, "'");
+					break;
+				case DOUBLE:
+					handleQuote(next, "\"");
+					break;
+				default:
+					handleNoQuote(next);
+					break;
 				}
 			}
 			if (quoted || curr.length() != 0) {
@@ -204,5 +234,6 @@ public final class Strings {
 		}
 	}
 
-	private Strings() { }
+	private Strings() {
+	}
 }

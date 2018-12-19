@@ -61,7 +61,7 @@ public class ObjectComparator<T> {
 
 	}
 
-	private ObjectComparator(Class<T> clz, Map<Class<?>, Checker<?>> override) {
+	public ObjectComparator(Class<T> clz, Map<Class<?>, Checker<?>> override) {
 		this.comparisonClass = clz;
 		Collection<Method> readable = resolveReadable(clz);
 		this.readMethods = Collections.unmodifiableCollection(readable);
@@ -79,7 +79,7 @@ public class ObjectComparator<T> {
 
 		for (Method m : getReadMethods()) {
 			Object propA = readValue(m, a);
-			Object propB = readValue(m, a);
+			Object propB = readValue(m, b);
 
 			Class<?> type = m.getReturnType();
 			Checker<?> checker = equalityOverrides.getOrDefault(type, CHECKER);
@@ -108,7 +108,7 @@ public class ObjectComparator<T> {
 		Class<T> getCheckedClass();
 	}
 
-	private static class DefaultChecker implements Checker<Object> {
+	public static class DefaultChecker implements Checker<Object> {
 
 		@Override
 		public boolean isEqual(Object a, Object b) {

@@ -46,6 +46,12 @@ public class ObjectComparatorTest {
 		tcB = new TestClass(tcA.getTs().getTime() + 1000);
 		assertFalse(comp.isPropertiesEqual(tcA, tcB));
 	}
+	
+	@Test
+	public void isPropertyEqual_sameObject_equal() {
+		TestClass tc = new TestClass();
+		assertTrue(comp.isPropertiesEqual(tc, tc));
+	}
 
 
 	public static class TestClass {

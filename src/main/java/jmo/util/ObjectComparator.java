@@ -17,9 +17,8 @@ import java.util.Objects;
 public class ObjectComparator<T> {
 
 	private static final Checker<Object> CHECKER = new DefaultChecker();
-
-	public static <R> ObjectComparator<R> build(Class<R> type) {
-		return new ObjectComparator<>(type);
+	public static <R> ComparatorBuilder<R> builder(Class<R> type) {
+		return new ComparatorBuilder<>(type);
 	}
 	
 	protected static Collection<Method> resolveReadable(Class<?> clazz) {
@@ -51,7 +50,7 @@ public class ObjectComparator<T> {
 			throw new IllegalArgumentException(err, e);
 		}
 	}
-
+	private Checker<Object> defaultChecker;
 	private final Class<T> comparisonClass;
 	private final Collection<Method> readMethods;
 	private final Map<Class<?>, Checker<?>> equalityOverrides;
@@ -62,6 +61,7 @@ public class ObjectComparator<T> {
 	}
 
 	public ObjectComparator(Class<T> clz, Map<Class<?>, Checker<?>> override) {
+		defaultChecker = CHECKER;
 		this.comparisonClass = clz;
 		Collection<Method> readable = resolveReadable(clz);
 		this.readMethods = Collections.unmodifiableCollection(readable);
@@ -82,7 +82,8 @@ public class ObjectComparator<T> {
 			Object propB = readValue(m, b);
 
 			Class<?> type = m.getReturnType();
-			Checker<?> checker = equalityOverrides.getOrDefault(type, CHECKER);
+			Checker<?> checker = equalityOverrides.getOrDefault(type,
+					defaultChecker);
 
 			if (!checker.isEqualRaw(propA, propB)) {
 				return false;
@@ -118,6 +119,36 @@ public class ObjectComparator<T> {
 		@Override
 		public Class<Object> getCheckedClass() {
 			return Object.class;
+		}
+	}
+
+	public static class ComparatorBuilder<X> {
+		private Class<X> cls;
+		private Checker<Object> defaultChecker;
+		private Map<Class<?>, Checker<?>> checkerOverride;
+
+		public ComparatorBuilder(Class<X> cls) {
+			this.cls = cls;
+			defaultChecker = CHECKER;
+			checkerOverride = new HashMap<>();
+		}
+
+		public ComparatorBuilder<X> defaultChecker(Checker<Object> checker) {
+			Objects.requireNonNull(checker);
+			defaultChecker = checker;
+			return this;
+		}
+
+		public <Y> ComparatorBuilder<X> override(Checker<Y> checker) {
+			Objects.requireNonNull(checker);
+			checkerOverride.put(checker.getCheckedClass(), checker);
+			return this;
+		}
+
+		public ObjectComparator<X> build() {
+			ObjectComparator<X> oc = new ObjectComparator<>(cls);
+			oc.defaultChecker = defaultChecker;
+			return oc;
 		}
 	}
 }

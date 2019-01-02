@@ -11,11 +11,17 @@ import java.util.Map;
 import jmo.util.ObjectComparator.Checker;
 import jmo.util.ObjectComparator.DefaultChecker;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class ObjectComparatorTest {
 
-	ObjectComparator<TestClass> comp = ObjectComparator.build(TestClass.class);
+	private ObjectComparator<TestClass> comp;
+		
+	@Before
+	public void setup() {
+		comp = ObjectComparator.builder(TestClass.class).build();
+	}
 
 	@Test
 	public void isPropertiesEqual_equalTimestamps_true() {

@@ -48,8 +48,35 @@ public class ObjectComparatorTest {
 	}
 	
 	@Test
+	public void isPropertiesEqual_oneNull_notEqual() {
+		TestClass tcA = new TestClass();
+		assertFalse(comp.isPropertiesEqual(tcA, null));
+		assertFalse(comp.isPropertiesEqual(null, tcA));
+	}
+	
+	@Test
+	public void isPropertiesEqual_onePropertyNull_notEqual() {
+		TestClass tcA = new TestClass();
+		TestClass tcB = new TestClass();
+		
+		tcA.setTs(null);
+
+		assertFalse(comp.isPropertiesEqual(tcA, tcB));
+	}
+	
+	@Test
+	public void isPropertiesEqual_sameProperty_Equal() {
+		TestClass tcA = new TestClass(5);
+		TestClass tcB = new TestClass();
+		tcB.setTs(tcA.getTs());
+		assertTrue(comp.isPropertiesEqual(tcA, tcB));
+	}
+	
+	
+	@Test
 	public void isPropertyEqual_sameObject_equal() {
 		TestClass tc = new TestClass();
+		
 		assertTrue(comp.isPropertiesEqual(tc, tc));
 	}
 

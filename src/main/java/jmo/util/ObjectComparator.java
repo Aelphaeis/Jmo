@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class ObjectComparator<T> {
 
-	private static final Checker<Object> CHECKER = new DefaultChecker();
+	protected static final Checker<Object> CHECKER = new DefaultChecker();
 	public static <R> ComparatorBuilder<R> builder(Class<R> type) {
 		return new ComparatorBuilder<>(type);
 	}
@@ -90,6 +90,10 @@ public class ObjectComparator<T> {
 			}
 		}
 		return true;
+	}
+	
+	public Checker<?> getChecker(Class<?> type){
+		return equalityOverrides.getOrDefault(type, defaultChecker);
 	}
 
 	public Class<T> getComparisonClass() {

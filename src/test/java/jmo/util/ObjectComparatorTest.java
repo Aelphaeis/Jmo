@@ -130,7 +130,5 @@ public class ObjectComparatorTest {
 			cal.set(Calendar.MILLISECOND, 0);
 			return new Timestamp(cal.getTime().getTime());
 		}
-
-		
 	}
 }

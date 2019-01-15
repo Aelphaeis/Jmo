@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Filler {
+public class ObjFiller {
 	
 	public static final FillerStrategy<Integer> DEF_INTEGER_FILL_STRATEGY;
 	public static final FillerStrategy<String> DEF_STRING_FILL_STRATEGY;
@@ -27,13 +27,12 @@ public class Filler {
 		DEF_SHORT_FILL_STRATEGY = () -> 0;
 		DEF_LONG_FILL_STRATEGY = () -> 0L;
 		DEF_BYTE_FILL_STRATEGY = () -> 0;
-		
 		DEF_FILL_STRATEGY = () -> null;
 	}
 	
 	private Map<Class<?>, FillerStrategy<?>> strats;
 	
-	public Filler() {
+	public ObjFiller() {
 		strats = new HashMap<>();
 		strats.put(String.class, DEF_STRING_FILL_STRATEGY);
 		
@@ -72,6 +71,15 @@ public class Filler {
 		catch(Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public <T> void addStrategy(Class<T> clz, FillerStrategy<T> strat){
+		strats.put(clz, strat);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> FillerStrategy<T> getFillerStrategy(Class<?> cls){
+		return (FillerStrategy<T>) strats.getOrDefault(cls, DEF_FILL_STRATEGY);
 	}
 	
 	private <T> void set(FillerStrategy<T> s, PropertyDescriptor pd, Object o)

@@ -7,11 +7,11 @@ import org.junit.Test;
 
 public class FillerTest {
 
-	Filler filler;
+	ObjFiller filler;
 
 	@Before
 	public void setup() {
-		filler = new Filler();
+		filler = new ObjFiller();
 	}
 
 	@Test

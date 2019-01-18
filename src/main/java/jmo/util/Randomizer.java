@@ -21,10 +21,14 @@ public class Randomizer {
 		generator = r;
 	}
 	
-	public byte getByte(){
-		byte [] bArr = new byte[1];
+	public byte getByte() {
+		return getBytes(1)[0];
+	}
+	
+	public byte[] getBytes(int size) {
+		byte[] bArr = new byte[size];
 		generator.nextBytes(bArr);
-		return bArr[0];
+		return bArr;
 	}
 	
 	public short getShort(){

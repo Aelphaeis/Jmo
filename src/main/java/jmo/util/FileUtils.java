@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class FileUtils {
 	
-	public void write(String content, File location) throws IOException {
+	public static void write(String content, File location) throws IOException {
 		try (FileWriter writer = new FileWriter(location)){
 			writer.write(content);
 		}

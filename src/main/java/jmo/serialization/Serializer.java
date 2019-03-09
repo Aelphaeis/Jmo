@@ -18,6 +18,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,6 +28,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -216,6 +218,53 @@ public final class Serializer {
 	public static Document deserialize(String xml) throws IOException {
 		return deserialize(new StringReader(xml));
 	}
+	
+	/**
+	 * Given an XML annotated class, creates an XSD and returns as a string.
+	 * @param cls
+	 * @return
+	 * @throws JAXBException
+	 * @throws IOException
+	 */
+	public static <T> String toSchema(Class<T> clazz)
+			throws JAXBException, IOException {
+		StringWriter w = new StringWriter();
+		try {
+			toSchema(clazz, w);
+		}
+		catch(IOException e ) {
+			//This shouldn't happen with string writer.
+			throw new RuntimeException(e);
+		}
+		return w.toString();
+	}
+	
+	/**
+	 * Given an XML annotated class, creates an XSD and writes it to a stream
+	 * @param cls
+	 * @throws JAXBException
+	 * @throws IOException
+	 */
+	public static <T> void toSchema(Class<T> cls, Writer writer)
+			throws IOException, JAXBException {
+		JAXBContext ctxt = JAXBContext.newInstance(cls);
+		SchemaOutputResolver resolver = new SchemaOutputResolver() {
+			@Override
+			public Result createOutput(String uri, String name)
+					throws IOException {
+				StreamResult result = new StreamResult(writer);
+				result.setSystemId(name);
+				return result;
+			}
+
+			@Override
+			public String toString() {
+				return writer.toString();
+			}
+		};
+		ctxt.generateSchema(resolver);
+	}
+	
 	/**
 	 * Given a list (A) of a list (B) of Strings. Writes list A as a CSV to the
 	 * specified writer where list B represents a row. Row size is not

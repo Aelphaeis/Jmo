@@ -20,6 +20,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class SerializerTest {
+	
+	@Test
+	public void t() throws Exception{
+		System.out.println(Serializer.toSchema(AnnotatedFieldPerson.class));
+	}
 
 	@Test
 	public void deserializeStringtoDocument() throws Exception  {
@@ -197,7 +202,9 @@ public class SerializerTest {
 	}
 	
 	@XmlRootElement
-	public static class UnannotatedFieldPerson extends Person { }
+	public static class UnannotatedFieldPerson extends Person {
+		//This class is for test purposes
+	}
 	
 	@XmlRootElement
 	public static class AnnotatedFieldPerson {

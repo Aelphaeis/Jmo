@@ -99,7 +99,7 @@ public class Exceptions {
 		StringWriter sWriter = new StringWriter();
 		PrintWriter pWriter = new PrintWriter(sWriter);
 		t.printStackTrace(pWriter);
-		return pWriter.toString();
+		return sWriter.toString();
 	}
 	
 	private Exceptions() { }

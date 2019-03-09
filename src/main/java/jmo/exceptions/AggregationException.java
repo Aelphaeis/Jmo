@@ -1,9 +1,11 @@
 package jmo.exceptions;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 /**
  * The class {@code AggregationException} represents that multiple exceptions
@@ -22,7 +24,7 @@ public class AggregationException extends Exception {
 	 * unmodifiable collection will be returned.
 	 */
 	public AggregationException() {
-		this(null, null);
+		this(null, Collections.emptyList());
 	}
 
 	/**
@@ -30,12 +32,13 @@ public class AggregationException extends Exception {
 	 * {@link AggregationException#getExceptions()} is called an empty
 	 * unmodifiable collection will be returned.
 	 * 
+	 * 
 	 * @param message
+	 * @param ex
 	 */
-	public AggregationException(String message) {
-		this(message, null);
+	public AggregationException(String msg, Throwable... ex) {
+		this(msg, Arrays.asList(ex));
 	}
-
 	/**
 	 * Takes a collection of exceptions. The exceptions can be retrieved with
 	 * {@link AggregationException#getExceptions()}. if a null collection is
@@ -43,8 +46,8 @@ public class AggregationException extends Exception {
 	 * 
 	 * @param exceptions
 	 */
-	public AggregationException(Collection<? extends Throwable> exceptions) {
-		this(null, exceptions);
+	public AggregationException(Collection<? extends Throwable> ex) {
+		this(null, ex);
 	}
 
 	/**
@@ -55,15 +58,16 @@ public class AggregationException extends Exception {
 	 * @param message
 	 * @param exceptions
 	 */
-	public AggregationException(String message,
-			Collection<? extends Throwable> exceptions) {
-		super(message);
-		if (exceptions == null) {
-			this.exceptions = Collections
-					.unmodifiableCollection(new ArrayList<Throwable>(0));
+	public AggregationException(String msg, Collection<? extends Throwable> e) {
+		super(msg);
+		
+		if (e == null) {
+			this.exceptions = Collections.emptyList();
 		} else {
-			this.exceptions = Collections.unmodifiableCollection(exceptions);
+			this.exceptions = Collections.unmodifiableCollection(e);
 		}
+		
+		this.exceptions.forEach(this::addSuppressed);
 	}
 
 	/**
@@ -85,7 +89,8 @@ public class AggregationException extends Exception {
 	 * @return
 	 */
 	public <T> Collection<T> getExceptions(Class<T> type) {
-		return Collections.unmodifiableList(exceptions.stream().map(type::cast)
-				.collect(Collectors.toList()));
+		return exceptions.stream().map(type::cast)
+				.collect(collectingAndThen(toList(), 
+						Collections::unmodifiableList));
 	}
 }

@@ -88,7 +88,6 @@ public class ObjFiller {
 		Method writeMethod = pd.getWriteMethod();
 		if(writeMethod != null) {
 			writeMethod.invoke(o, value);
-			return;
 		}
 	}
 	

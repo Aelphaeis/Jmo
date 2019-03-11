@@ -47,9 +47,16 @@ public class ReflectorTest {
 	}
 	
 
-	public static interface TestInterface { }
-	public static abstract class TestAbstract implements TestInterface {  }
-	public static class TestConcrete extends TestAbstract { }
+	public static interface TestInterface { 
+		//empty for testing
+	}
+	public static abstract class TestAbstract implements TestInterface { 
+		//empty for testing
+	}
+	public static class TestConcrete extends TestAbstract {
+		//empty for testing
+	}
+	
 	public static class TestConcreteCtor extends TestConcrete { 
 		public TestConcreteCtor() { }
 	}

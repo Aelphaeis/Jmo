@@ -82,9 +82,9 @@ public class ObjFiller {
 		return (FillerStrategy<T>) strats.getOrDefault(cls, DEF_FILL_STRATEGY);
 	}
 	
-	private <T> void set(FillerStrategy<T> s, PropertyDescriptor pd, Object o)
+	private static void set(FillerStrategy<?> s, PropertyDescriptor pd, Object o)
 			throws IllegalAccessException, InvocationTargetException {
-		T value = s.getFillValue();
+		Object value = s.getFillValue();
 		Method writeMethod = pd.getWriteMethod();
 		if(writeMethod != null) {
 			writeMethod.invoke(o, value);

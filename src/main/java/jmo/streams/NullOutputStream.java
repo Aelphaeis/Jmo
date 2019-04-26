@@ -5,7 +5,7 @@ import java.io.OutputStream;
 /**
  * @author morain
  */
-public class NullOutputStream extends OutputStream {
+public final class NullOutputStream extends OutputStream {
 
 	public static final NullOutputStream INSTANCE = new NullOutputStream();
 

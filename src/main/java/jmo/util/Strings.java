@@ -1,6 +1,7 @@
 package jmo.util;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 public final class Strings {
@@ -31,6 +32,18 @@ public final class Strings {
 			pad.append(padding);
 		}
 		return value.append(pad).append(s).append(pad).toString();
+	}
+	
+	public static boolean equalsAny(final CharSequence string, final CharSequence ... searchStrings) {
+		Objects.requireNonNull(string);
+		if(searchStrings.length > 0) {
+			for(final CharSequence search : searchStrings) {
+				if(string.equals(search)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

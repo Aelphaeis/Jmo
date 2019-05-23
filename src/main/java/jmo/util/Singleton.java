@@ -16,13 +16,13 @@ public class Singleton {
 	public static <T> T getInstance(Class<T> c){
 		synchronized (instance) {
 			Map<Class<?>, Object> m = instance.mapHolder;
-			return c.cast(m.computeIfAbsent(c, new SingletonInit<>()));
+			return c.cast(m.computeIfAbsent(c, new SingletonInit()));
 		}
 	}
 	
-	static class SingletonInit<T> implements Function<Class<T>, Object> {
+	static class SingletonInit implements Function<Class<?>, Object> {
 		@Override
-		public Object apply(Class<T> t) {
+		public Object apply(Class<?> t) {
 			try {
 				return t.newInstance();
 			}

@@ -12,6 +12,21 @@ import java.util.stream.Collectors;
 @FunctionalInterface
 public interface TreeAdaptor<T> {
 
+	/**
+	 * Given a tree adaptor, takes an Iterable and converts it into a tree.
+	 * 
+	 * This works by taking an element and resolving the element's parent.
+	 * Elements with the same parent are grouped together as nodes under
+	 * that parent element. If this parent resolution strategy creates a
+	 * circular dependency then an illegal argument is thrown.
+	 * 
+	 * If there are multiple roots, an artificial empty root is created.
+	 * 
+	 * 
+	 * @param i
+	 * @param pr
+	 * @return
+	 */
 	public static <T> TreeNode<T> toTree(Iterable<T> i, TreeAdaptor<T> pr) {
 		Map<T, T> parents = new HashMap<>();
 		Iterator<T> it = i.iterator();
@@ -54,7 +69,15 @@ public interface TreeAdaptor<T> {
 		}
 	}
 
-	// take the map and put it to a tree format.
+	/**
+	 * Take multiple value map turn them into TreeNodes where key is parent
+	 * and elements of the map are the children.
+	 * 
+	 * @param m
+	 * @param v
+	 * @param p
+	 * @return
+	 */
 	static <T> TreeNode<T> subTree(Map<T, List<T>> m, T v, TreeNode<T> p) {
 		List<T> children = m.getOrDefault(v, Collections.emptyList());
 		TreeNode<T> root = new TreeNode<>(p, v);
@@ -64,8 +87,19 @@ public interface TreeAdaptor<T> {
 		return root;
 	}
 
+	/**
+	 * Given a child, this method should return the parent of that child.
+	 * @param child
+	 * @return
+	 */
 	T resolve(T child);
 
+	/**
+	 * This method takes an iterable and returns a tree based on the parent
+	 * resolution strategy.
+	 * @param i
+	 * @return
+	 */
 	default TreeNode<T> toTree(Iterable<T> i) {
 		return toTree(i, this);
 	}

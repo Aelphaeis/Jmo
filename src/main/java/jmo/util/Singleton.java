@@ -2,8 +2,8 @@ package jmo.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-//TODO Document warning suppressions 
 //TODO Write test cases for this class
 public class Singleton {
 
@@ -14,18 +14,32 @@ public class Singleton {
 	private Singleton() {
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T getInstance(Class<T> classOf)
-			throws InstantiationException, IllegalAccessException {
-
-		T obj = null;
+	public static <T> T getInstance(Class<T> c){
 		synchronized (instance) {
-			if (!instance.mapHolder.containsKey(classOf)) {
-				obj = classOf.newInstance();
-				instance.mapHolder.put(classOf, obj);
+			Map<Class<?>, Object> m = instance.mapHolder;
+			return c.cast(m.computeIfAbsent(c, new SingletonInit<>()));
+		}
+	}
+	
+	private static class SingletonInit<T> implements Function<Class<T>, Object> {
+		@Override
+		public Object apply(Class<T> t) {
+			try {
+				return t.newInstance();
 			}
-			obj = (T) instance.mapHolder.get(classOf);
-			return obj;
+			catch(InstantiationException | IllegalAccessException e) {
+				String err = "Unable to create singleton";
+				throw new SingletonInitException(err, e);
+			}
+		}
+	}
+	
+	public static class SingletonInitException extends RuntimeException{
+
+		private static final long serialVersionUID = 1L;
+
+		public SingletonInitException(String message, Throwable cause) {
+			super(message, cause);
 		}
 	}
 }

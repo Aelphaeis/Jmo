@@ -25,7 +25,7 @@ public class SingletonTest {
 		
 		private final int value;
 		public MySingleton() {
-			this.value = integer;;
+			this.value = integer;
 			integer++;
 		}
 		public int getValue() {
@@ -39,7 +39,7 @@ public class SingletonTest {
 		
 		private final int value;
 		private PrivCtor() {
-			this.value = integer;;
+			this.value = integer;
 			integer++;
 		}
 		public int getValue() {

@@ -69,7 +69,7 @@ public class ObjFiller {
 			throw e;
 		}
 		catch(Exception e) {
-			throw new RuntimeException(e);
+			throw new ObjFillerException(e);
 		}
 	}
 	
@@ -94,6 +94,15 @@ public class ObjFiller {
 	@FunctionalInterface
 	public interface FillerStrategy<T>{
 		T getFillValue();
+	}
+	
+	
+	public static class ObjFillerException extends RuntimeException{
+		private static final long serialVersionUID = 1L;
+
+		public ObjFillerException(Throwable cause) {
+			super(cause);
+		}
 	}
 }
 

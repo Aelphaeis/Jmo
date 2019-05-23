@@ -21,8 +21,8 @@ To use Jmo add the following to repositories element
 <dependencies>
     ...
     <dependency>
-        <groupId>JmoUtilities</groupId>
-        <artifactId>JmoUtilities</artifactId>
+        <groupId>com.cruat</groupId>
+        <artifactId>jmo</artifactId>
         <version>@version@</version>
     </dependency>
 </dependencies>

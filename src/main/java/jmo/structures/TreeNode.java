@@ -18,6 +18,10 @@ public class TreeNode<T> implements Iterable<T>{
 	private final TreeNode<T> parent;
 	private final List<TreeNode<T>> children;
 
+	/**
+	 * This creates a TreeNode that is intended as a root with no value or
+	 * children.
+	 */
 	public TreeNode() {
 		this(null, null);
 	}
@@ -79,7 +83,7 @@ public class TreeNode<T> implements Iterable<T>{
 		return visitor;
 	}
 
-	public int getLevel() {
+	public int getDepth() {
 		int lv = -1;
 		for (TreeNode<T> curr = this; curr != null; curr = curr.getParent()) {
 			lv++;

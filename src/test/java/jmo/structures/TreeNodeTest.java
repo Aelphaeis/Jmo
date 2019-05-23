@@ -42,7 +42,7 @@ public class TreeNodeTest {
 
 	@Test
 	public void getLevel_rootNode_0() {
-		assertEquals(0, root.getLevel());
+		assertEquals(0, root.getDepth());
 	}
 
 	@Test

@@ -10,7 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class PerformanceTest {
-	Logger logger = LogManager.getLogger(PerformanceTest.class);
+	Logger logger = LogManager.getLogger("debug");
 
 	private static final String ITFORMAT = "Candidate [%s] run %s : %s ms";
 	private static final String TIFORMAT = "Canadidate [%s] ran %s times";

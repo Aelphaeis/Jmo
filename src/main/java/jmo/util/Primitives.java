@@ -19,8 +19,11 @@ public class Primitives {
 
 		String content = in.substring(1, in.length() - 1);
 		String[] ctntArr = content.split(",");
-		return Arrays.asList(ctntArr).stream().map(String::trim).map(p::parse)
-				.collect(Collectors.toList()).toArray(out);
+		return Arrays.asList(ctntArr).stream()
+				.map(String::trim)
+				.map(p::parse)
+				.collect(Collectors.toList())
+				.toArray(out);
 	}
 
 	public static int parseOrDefault(String input, int defaultValue) {

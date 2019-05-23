@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-//TODO Write test cases for this class
 public class Singleton {
 
 	private static final Singleton instance = new Singleton();
@@ -21,7 +20,7 @@ public class Singleton {
 		}
 	}
 	
-	private static class SingletonInit<T> implements Function<Class<T>, Object> {
+	static class SingletonInit<T> implements Function<Class<T>, Object> {
 		@Override
 		public Object apply(Class<T> t) {
 			try {

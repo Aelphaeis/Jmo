@@ -49,13 +49,13 @@ public final class Strings {
 
 	public static String sequence(String v, int i) {
 		return Sequencer.seq(v, i);
-		
+
 	}
-	
+
 	public static String sequence(String v, Integer i, Integer k) {
 		return Sequencer.seq(v, i, k, null);
 	}
-	
+
 	public static String sequence(String v, Integer i, Integer k, Integer j) {
 		return Sequencer.seq(v, i, k, j);
 	}
@@ -265,26 +265,20 @@ public final class Strings {
 
 		public static String seq(String s, int i) {
 			int index = resolveRealIndex(s, i);
-			if(index > s.length() - 1) {
-				return EMPTY;
-			}
-			else {
-				return String.valueOf(s.charAt(index));
-			}
+			return seq(s, index, index + 1);
 		}
 
 		public static String seq(String s, Integer i, Integer k) {
 			int end = resolveRealIndex(s, co(k, s.length()));
 			int start = resolveRealIndex(s, co(i, 0));
-			
+
 			end = end > s.length() ? s.length() : end;
-			if(start > s.length() - 1 || start > end) {
+			if (start > s.length() - 1 || start > end) {
 				return EMPTY;
 			}
-			
 			return s.substring(start, end);
 		}
-		
+
 		public static String seq(String s, Integer i, Integer k, Integer j) {
 			int skip = Math.abs(co(j, 1));
 			String intermediate = seq(s, i, k);
@@ -321,7 +315,7 @@ public final class Strings {
 		 * @return
 		 */
 		@SafeVarargs
-		public static <T> T co(T... values) {
+		private static <T> T co(T... values) {
 			for (T value : values) {
 				if (value != null) {
 					return value;

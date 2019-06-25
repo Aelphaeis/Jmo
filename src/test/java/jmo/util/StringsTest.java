@@ -8,6 +8,56 @@ import jmo.util.Strings;
 
 public class StringsTest {
 
+	
+	@Test
+	public void sequenceNonNegativeSingleIndexTest() {
+		String value = "Hello World!";
+		assertEquals("H", Strings.sequence(value, 0));
+	}
+	
+	@Test
+	public void sequenceNegativeSingleIndexTest() {
+		String value = "Hello World!";
+		assertEquals("!", Strings.sequence(value, -1));
+	}
+	
+	@Test
+	public void sequenceTooLargeSingleIndexTest() {
+		String value = "Hello World!";
+		assertEquals("", Strings.sequence(value, -50));
+		assertEquals("", Strings.sequence(value, 50));
+	}
+	
+	@Test
+	public void sequenceSubstringTest() {
+		String value = "Hello World!";
+		assertEquals(value, Strings.sequence(value, null, null));
+		assertEquals("World!", Strings.sequence(value, 6, null));
+		assertEquals("Hello", Strings.sequence(value, null, 5));
+		assertEquals("World", Strings.sequence(value, 6, 11));
+
+		assertEquals("Hello", Strings.sequence(value, 0, -7));
+		assertEquals("World", Strings.sequence(value, -6, -1));
+		assertEquals("World!", Strings.sequence(value, -6, null));
+		
+		
+		assertEquals("", Strings.sequence(value, 50, 50));
+		assertEquals("", Strings.sequence(value, 50, null));
+		assertEquals(value, Strings.sequence(value, null, 50));
+		
+		assertEquals("", Strings.sequence(value, 5, 2));
+		assertEquals("", Strings.sequence(value, -3, -6));
+	}
+	
+	@Test
+	public void sequenceReverseLetterTest() {
+		String value = "Hello World!";
+		assertEquals("!dlroW olleH", Strings.sequence(value, null, null, -1));
+		assertEquals("!lo le", Strings.sequence(value, null, null, -2));
+		assertEquals("HloWrd", Strings.sequence(value, null, null, 2));
+		assertEquals(value, Strings.sequence(value, null, null, 1));
+	}
+	
 	@Test
 	public void isBlankNullTest() {
 		String value = null;

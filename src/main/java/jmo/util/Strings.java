@@ -33,17 +33,31 @@ public final class Strings {
 		}
 		return value.append(pad).append(s).append(pad).toString();
 	}
-	
-	public static boolean equalsAny(final CharSequence string, final CharSequence ... searchStrings) {
+
+	public static boolean equalsAny(final CharSequence string,
+			final CharSequence... searchStrings) {
 		Objects.requireNonNull(string);
-		if(searchStrings.length > 0) {
-			for(final CharSequence search : searchStrings) {
-				if(string.equals(search)) {
+		if (searchStrings.length > 0) {
+			for (final CharSequence search : searchStrings) {
+				if (string.equals(search)) {
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+
+	public static String sequence(String v, int i) {
+		return Sequencer.seq(v, i);
+		
+	}
+	
+	public static String sequence(String v, Integer i, Integer k) {
+		return Sequencer.seq(v, i, k, null);
+	}
+	
+	public static String sequence(String v, Integer i, Integer k, Integer j) {
+		return Sequencer.seq(v, i, k, j);
 	}
 
 	/**
@@ -195,15 +209,15 @@ public final class Strings {
 			while (tok.hasMoreTokens()) {
 				String next = tok.nextToken();
 				switch (state) {
-				case SINGLE:
-					handleQuote(next, "'");
-					break;
-				case DOUBLE:
-					handleQuote(next, "\"");
-					break;
-				default:
-					handleNoQuote(next);
-					break;
+					case SINGLE :
+						handleQuote(next, "'");
+						break;
+					case DOUBLE :
+						handleQuote(next, "\"");
+						break;
+					default :
+						handleNoQuote(next);
+						break;
 				}
 			}
 			if (quoted || curr.length() != 0) {
@@ -244,6 +258,77 @@ public final class Strings {
 				String err = "unbalance quotes in " + input;
 				throw new IllegalArgumentException(err);
 			}
+		}
+	}
+
+	private static class Sequencer {
+
+		public static String seq(String s, int i) {
+			int index = resolveRealIndex(s, i);
+			if(index > s.length() - 1) {
+				return EMPTY;
+			}
+			else {
+				return String.valueOf(s.charAt(index));
+			}
+		}
+
+		public static String seq(String s, Integer i, Integer k) {
+			int end = resolveRealIndex(s, co(k, s.length()));
+			int start = resolveRealIndex(s, co(i, 0));
+			
+			end = end > s.length() ? s.length() : end;
+			if(start > s.length() - 1 || start > end) {
+				return EMPTY;
+			}
+			
+			return s.substring(start, end);
+		}
+		
+		public static String seq(String s, Integer i, Integer k, Integer j) {
+			int skip = Math.abs(co(j, 1));
+			String intermediate = seq(s, i, k);
+			StringBuilder builder = new StringBuilder();
+			if (co(j, 0) < 0) {
+				for (int c = intermediate.length() - 1; c >= 0; c -= skip) {
+					builder.append(intermediate.charAt(c));
+				}
+			} else {
+				for (int c = 0; c < intermediate.length(); c += skip) {
+					builder.append(intermediate.charAt(c));
+				}
+			}
+			return builder.toString();
+		}
+
+		private static int resolveRealIndex(String s, int index) {
+			int abs = Math.abs(index);
+			int last = s.length();
+			if (index < 0) {
+				if (abs < last) {
+					return (last) - abs;
+				}
+				return abs;
+			} else {
+				return index;
+			}
+		}
+
+		/**
+		 * Coalesce
+		 * 
+		 * @param values
+		 * @return
+		 */
+		@SafeVarargs
+		public static <T> T co(T... values) {
+			for (T value : values) {
+				if (value != null) {
+					return value;
+				}
+			}
+			String err = "no non null value found";
+			throw new IllegalArgumentException(err);
 		}
 	}
 

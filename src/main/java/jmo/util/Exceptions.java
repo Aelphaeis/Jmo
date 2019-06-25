@@ -3,9 +3,85 @@ package jmo.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Exceptions {
+	
+	public static <T extends Throwable> boolean hasInstance(Throwable t,
+			Class<T> type) {
+		return hasInstance(t, type, false);
+	}
+	
+	public static <T extends Throwable> boolean hasInstance(Throwable t,
+			Class<T> type, boolean strict) {
+		return !getInstances(t, type, strict).isEmpty();
+	}
+	
+	
+	/**
+	 * <p>
+	 * Given an exception and a type, searches the the exceptions (inclusive of
+	 * the one passed in) of the specified exception and finds all instances of
+	 * an exception that is assignable to the type specified and returns a list.
+	 * </p>
+	 * 
+	 * <p>
+	 * The order of the list is from earliest occurrence in the trace to last
+	 * occurrence in the trace
+	 * </p>
+	 * 
+	 * @param from
+	 *            Throwable who's causes we want to check
+	 * @param type
+	 *            Type of exception to return
+	 */
+	public static <T extends Throwable> List<T> getInstances(Throwable t,
+			Class<T> type) {
+		return getInstances(t, type, false);
+	}
+	
+	/**
+	 * <p>
+	 * Given an exception and a type, searches the exceptions (inclusive of the
+	 * one passed in) of the specified exception and finds all instances of an
+	 * exception that is assignable to the type specified and returns a list.
+	 * </p>
+	 * 
+	 * <p>
+	 * The order of the list is from earliest occurrence in the trace to last
+	 * occurrence in the trace
+	 * </p>
+	 * 
+	 * @param from
+	 *            Throwable who we want to check
+	 * @param type
+	 *            Type of exception to return
+	 * @param strict
+	 *            only return the exact class specified (no sub types)
+	 */
+	public static <T extends Throwable> List<T> getInstances(Throwable t,
+			Class<T> type, boolean strict) {
+		if (t == null) {
+			return Collections.emptyList();
+		}
+		List<T> throwables = new ArrayList<>();
+		Throwable throwable = t;
+		do {
+			if (strict) {
+				if (throwable.getClass() == type) {
+					
+					throwables.add(type.cast(throwable));
+				}
+			} else {
+				if (type.isAssignableFrom(throwable.getClass())) {
+					throwables.add(type.cast(throwable));
+				}
+			}
+			throwable = throwable.getCause();
+		} while (throwable != null);
+		return throwables;
+	}
 	
 	/**
 	 * <p>Given an exception and a type, searches the nested exceptions of 
@@ -72,21 +148,7 @@ public class Exceptions {
 	 */
 	public static <T extends Throwable> List<T> getCauseInstances(
 			Throwable from, Class<T> type, boolean strict){
-		List<T> throwables = new ArrayList<>();
-		Throwable t = from;
-		while((t = t.getCause()) != null) {
-			if(strict) {
-				if(t.getClass() == type) {
-					throwables.add(type.cast(t));
-				}
-			}
-			else {
-				if(type.isAssignableFrom(t.getClass())){
-					throwables.add(type.cast(t));
-				}
-			}
-		}
-		return throwables;
+		return getInstances(from.getCause(), type, strict);
 	}
 	
 	/**

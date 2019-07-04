@@ -1,16 +1,19 @@
 package test.jmo.performance;
 
-import static jmo.util.NamingConventions.*;
+import static jmo.util.NamingConventions.toScreamingSnakeCaseFromCamelCase;
+import static jmo.util.NamingConventions.toScreamingSnakeCaseFromCamelCase2;
+import static jmo.util.NamingConventions.toScreamingSnakeCaseFromCamelCase3;
+import static jmo.util.NamingConventions.toScreamingSnakeCaseFromCamelCase4;
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PerformanceTest {
-	Logger logger = LogManager.getLogger("debug");
+	Logger logger = LoggerFactory.getLogger("debug");
 
 	private static final String ITFORMAT = "Candidate [%s] run %s : %s ms";
 	private static final String TIFORMAT = "Canadidate [%s] ran %s times";

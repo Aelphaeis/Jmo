@@ -7,13 +7,15 @@ import static jmo.util.NamingConventions.toScreamingSnakeCaseFromCamelCase4;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PerformanceTest {
-	Logger logger = LoggerFactory.getLogger("debug");
+	private static final String LC_HELLO_WORLD = "HelloWorld!";
+	private static final String HELLO_WORLD = "HELLO_WORLD!";
+
+	private static final Logger logger = LoggerFactory.getLogger("debug");
 
 	private static final String ITFORMAT = "Candidate [%s] run %s : %s ms";
 	private static final String TIFORMAT = "Canadidate [%s] ran %s times";
@@ -36,9 +38,9 @@ public class PerformanceTest {
 
 			@Override
 			public void doAction() {
-				String s = "HelloWorld!";
-				assertEquals("HELLO_WORLD!",
-						toScreamingSnakeCaseFromCamelCase(s));
+				String s = LC_HELLO_WORLD;
+				String result = toScreamingSnakeCaseFromCamelCase(s);
+				assertEquals(HELLO_WORLD, result);
 			}
 		};
 		B = new Candidate() {
@@ -50,9 +52,9 @@ public class PerformanceTest {
 
 			@Override
 			public void doAction() {
-				String s = "HelloWorld!";
-				assertEquals("HELLO_WORLD!",
-						toScreamingSnakeCaseFromCamelCase2(s));
+				String s = LC_HELLO_WORLD;
+				String result = toScreamingSnakeCaseFromCamelCase2(s);
+				assertEquals(HELLO_WORLD, result);
 			}
 		};
 		C = new Candidate() {
@@ -64,8 +66,8 @@ public class PerformanceTest {
 
 			@Override
 			public void doAction() {
-				String s = "HelloWorld!";
-				assertEquals("HELLO_WORLD!",
+				String s = LC_HELLO_WORLD;
+				assertEquals(HELLO_WORLD,
 						toScreamingSnakeCaseFromCamelCase3(s));
 			}
 		};
@@ -78,8 +80,8 @@ public class PerformanceTest {
 
 			@Override
 			public void doAction() {
-				String s = "HelloWorld!";
-				assertEquals("HELLO_WORLD!",
+				String s = LC_HELLO_WORLD;
+				assertEquals(HELLO_WORLD,
 						toScreamingSnakeCaseFromCamelCase4(s));
 			}
 		};
@@ -87,7 +89,6 @@ public class PerformanceTest {
 	}
 
 	@Test
-	@Ignore
 	public void performanceTest() {
 		A.doAction();
 		B.doAction();

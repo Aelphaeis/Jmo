@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -47,7 +48,7 @@ import org.xml.sax.SAXException;
 //TODO Allow for multiple classes to be inserted into serializer.
 public final class Serializer {
 	private static final Logger logger = LoggerFactory
-			.getLogger(Serializer.class);
+.getLogger(Serializer.class);
 
 	private Serializer() {
 		// we don't want anyone instantiating this class.
@@ -123,6 +124,8 @@ public final class Serializer {
 		final String indent = "{http://xml.apache.org/xslt}indent-amount";
 		try {
 			TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
 			Transformer t = tf.newTransformer();
 			DOMSource source = new DOMSource(document);
 			StreamResult result = new StreamResult(writer);
@@ -134,8 +137,7 @@ public final class Serializer {
 			t.transform(source, result);
 		} catch (TransformerConfigurationException e) {
 			// this is impossible and not recoverable
-			logger.error("Unable to configure tranformer", e);
-			throw new IllegalStateException(e);
+			throw new SerializerException(e);
 		} catch (TransformerException e) {
 			String err = "Unrecoverable error occurred during transformation";
 			logger.error(err, e);
@@ -158,6 +160,8 @@ public final class Serializer {
 			throws JAXBException {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
 			DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 			InputSource xmlSource = new InputSource(new StringReader(xml));
 			Document doc = dBuilder.parse(xmlSource);
@@ -167,14 +171,11 @@ public final class Serializer {
 
 			JAXBElement<T> element = unmarshaller.unmarshal(doc, clazz);
 			return element.getValue();
-		} catch (ParserConfigurationException e) {
-			// This should not occur ever
+		} catch (ParserConfigurationException e) { // This should not occur
 			logger.error(e.getMessage(), e);
-			throw new IllegalStateException("Unable to configure parser", e);
-		} catch (IOException e) {
-			// This should not occur ever
-			logger.error(e.getMessage(), e);
-			throw new IllegalStateException("Unable to read document", e);
+			throw new SerializerException("Unable to configure parser", e);
+		} catch (IOException e) { // This should not occur ever 
+			throw new SerializerException("Unable to read document", e);
 		} catch (SAXException e) {
 			// The Xml input is not formatted properly.
 			throw new IllegalArgumentException("Illegal Xml input", e);
@@ -191,6 +192,7 @@ public final class Serializer {
 	public static Document deserialize(Reader is) throws IOException {
 		try {
 			TransformerFactory factory = TransformerFactory.newInstance();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			Transformer transformer = factory.newTransformer();
 			StreamSource source = new StreamSource(is);
 			DOMResult result = new DOMResult();
@@ -200,8 +202,7 @@ public final class Serializer {
 			return (Document) result.getNode();
 		} catch (TransformerConfigurationException e) {
 			// this is impossible and not recoverable
-			logger.error("Unknown error occurred", e);
-			throw new IllegalStateException(e);
+			throw new SerializerException(e);
 		} catch (TransformerException e) {
 			throw new IOException(e);
 		}
@@ -234,7 +235,7 @@ public final class Serializer {
 		}
 		catch(IOException e ) {
 			//This shouldn't happen with string writer.
-			throw new RuntimeException(e);
+			throw new SerializerException(e);
 		}
 		return w.toString();
 	}
@@ -475,25 +476,17 @@ public final class Serializer {
 			try {
 				return ((Field) accessor).get(value);
 			} catch (IllegalAccessException e) {
-				// This should never happen, if it does we are in an illegal
-				// state
-				logger.error("Trying to access inaccessible field", e);
-				throw new IllegalStateException(e);
+				// if this happens we are in an illegal state
+				throw new SerializerException(e);
 			}
 		}
 		if (accessor instanceof Method) {
 			try {
 				return ((Method) accessor).invoke(value);
 			} catch (IllegalAccessException e) {
-				// this should never happen if it does we are in an illegal
-				// state
-				logger.error("Trying to access inaccessible field", e);
-				throw new IllegalStateException(e);
-			} catch (InvocationTargetException e) {
-				// This could happen, unlikely, but possible.
-				logger.error("The method we called threw an exception", e);
-				throw e;
-			}
+				// if this happens we are in an illegal state
+				throw new SerializerException(e);
+			} 
 		}
 		throw new IllegalArgumentException("Accessor is not a Field or Method");
 	}
@@ -535,4 +528,26 @@ public final class Serializer {
 			b.append(", ");
 		}
 	}
+	
+	public static class SerializerException extends RuntimeException{
+
+		private static final long serialVersionUID = 1L;
+
+		public SerializerException() {
+			super();
+		}
+
+		public SerializerException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public SerializerException(String message) {
+			super(message);
+		}
+
+		public SerializerException(Throwable cause) {
+			super(cause);
+		}
+	}
+	
 }

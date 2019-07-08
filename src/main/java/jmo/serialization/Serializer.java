@@ -64,9 +64,9 @@ public final class Serializer {
 	 *             if the object cannot be serialized
 	 */
 	public static <T> String serialize(T obj) throws JAXBException {
-		StringWriter stringWriter = new StringWriter();
-		serialize(obj, stringWriter);
-		return stringWriter.toString();
+		StringWriter sw = new StringWriter();
+		serialize(obj, sw);
+		return sw.toString();
 	}
 
 	/**
@@ -79,9 +79,9 @@ public final class Serializer {
 	 *             if the object cannot be serialized
 	 */
 	public static String serialize(Document obj) {
-		StringWriter stringWriter = new StringWriter();
-		serialize(obj, stringWriter);
-		return stringWriter.toString();
+		StringWriter sw = new StringWriter();
+		serialize(obj, sw);
+		return sw.toString();
 	}
 
 	/**
@@ -172,7 +172,6 @@ public final class Serializer {
 			JAXBElement<T> element = unmarshaller.unmarshal(doc, clazz);
 			return element.getValue();
 		} catch (ParserConfigurationException e) { // This should not occur
-			logger.error(e.getMessage(), e);
 			throw new SerializerException("Unable to configure parser", e);
 		} catch (IOException e) { // This should not occur ever 
 			throw new SerializerException("Unable to read document", e);
@@ -340,33 +339,32 @@ public final class Serializer {
 	 * Takes a list of an object annotated annotated with XmlRootElement and
 	 * XmlElement and writes data into a CSV format to a writer
 	 * 
-	 * @param writer
+	 * @param w
 	 *            Where to write the CSV data
-	 * @param iterable
+	 * @param it
 	 *            Data to write
-	 * @param clazz
+	 * @param cls
 	 *            The class of the data
 	 * @param closeStream
 	 *            whether or not to close stream upon operation completion
 	 * @throws InvocationTargetException
 	 */
-	public static <T> void writeIterabletoCSV(Writer writer,
-			Iterable<T> iterable, Class<T> clazz, boolean closeWriter)
+	public static <T> void writeIterabletoCSV(Writer w, Iterable<T> it,
+			Class<T> cls, boolean closeWriter)
 			throws InvocationTargetException {
 
 		// Determine if property order exists
-		XmlType xmlType = clazz.getAnnotation(XmlType.class);
+		XmlType xmlType = cls.getAnnotation(XmlType.class);
 		String[] propOrder = xmlType != null ? xmlType.propOrder() : null;
 
 		// Organize all the data
-		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(
-				clazz);
+		List<AccessibleObject> accessibles = getAccessibleFieldsAndMethods(cls);
 		accessibles = sortAccessibles(accessibles, propOrder);
 
 		// Print headers and columns
-		PrintWriter pWriter = new PrintWriter(writer);
+		PrintWriter pWriter = new PrintWriter(w);
 		pWriter.println(toString(propOrder));
-		for (T obj : iterable) {
+		for (T obj : it) {
 			String[] values = new String[accessibles.size()];
 			for (int i = 0; i < accessibles.size(); i++) {
 				AccessibleObject accessor = accessibles.get(i);
@@ -379,7 +377,7 @@ public final class Serializer {
 		pWriter.flush();
 		if (closeWriter) {
 			try {
-				writer.close();
+				w.close();
 			} catch (IOException e) {
 				throw new IllegalStateException("Unable to close writer", e);
 			}
@@ -549,5 +547,4 @@ public final class Serializer {
 			super(cause);
 		}
 	}
-	
 }

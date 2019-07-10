@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class QueryResult {
 	List<QueryColumn> columns;
@@ -50,11 +51,23 @@ public class QueryResult {
 		return new ArrayList<>();
 	}
 	
+	public <T> List<T> column(String columnName, Class<T> type) {
+		return column(columnName).stream()
+				.map(type::cast)
+				.collect(Collectors.toList());
+	}
+	
 	public List<Object> column(int columnIndex){
 		List<Object> objs = new ArrayList<>();
 		for(Entry<Integer, List<Object>> e : values.entrySet()) 
 			objs.add(e.getValue().get(columnIndex));
 		return objs;
+	}
+	
+	public <T> List<T> column(int columnIndex, Class<T> type) {
+		return column(columnIndex).stream()
+				.map(type::cast)
+				.collect(Collectors.toList());
 	}
 	
 	public Object value(String columnName, int index){

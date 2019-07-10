@@ -1,5 +1,6 @@
 package jmo.db;
 
+import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import jmo.serialization.Serializer;
 
 public class QueryResult {
 	List<QueryColumn> columns;
@@ -102,5 +105,19 @@ public class QueryResult {
 	
 	public int getRowCount() {
 		return values.size();
+	}
+
+	@Override
+	public String toString() {
+		StringWriter writer = new StringWriter();
+		List<List<String>> content = new ArrayList<>();
+		content.add(getColumns().stream().map(QueryColumn::getColumnName)
+				.collect(Collectors.toList()));
+		content.addAll(this.values.values().stream()
+				.map(p -> p.stream().map(String::valueOf)
+						.collect(Collectors.toList()))
+				.collect(Collectors.toList()));
+		Serializer.writeListsToCSV(writer, content);
+		return writer.toString();
 	}
 }

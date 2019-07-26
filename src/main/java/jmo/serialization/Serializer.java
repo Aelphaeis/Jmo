@@ -115,7 +115,7 @@ public final class Serializer {
 
 	/**
 	 * Given a document and a writer, will write the contents of the document to
-	 * the writter.
+	 * the writer.
 	 * 
 	 * @param document
 	 * @param writer
@@ -352,7 +352,7 @@ public final class Serializer {
 	public static <T> void writeIterabletoCSV(Writer w, Iterable<T> it,
 			Class<T> cls, boolean closeWriter)
 			throws InvocationTargetException {
-
+		
 		// Determine if property order exists
 		XmlType xmlType = cls.getAnnotation(XmlType.class);
 		String[] propOrder = xmlType != null ? xmlType.propOrder() : null;

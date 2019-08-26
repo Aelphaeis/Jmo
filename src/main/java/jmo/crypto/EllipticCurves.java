@@ -61,6 +61,7 @@ public class EllipticCurves {
 			throw new ECRuntimeException(err, e);
 		}
 	}
+	
 	public static boolean verify(PublicKey key, byte[] digest, byte[] sig) {
 		try {
 			Signature signature = signature();

@@ -32,65 +32,41 @@ public class EllipticCurves {
 		return kpg.genKeyPair();
 	}
 
-	public static PrivateKey buildPrivateKey(byte[] key)
-			throws InvalidKeySpecException {
-		KeyFactory factory = keyFactory();
-		return factory.generatePrivate(new PKCS8EncodedKeySpec(key));
-	}
-
-	public static PrivateKey safeBuildPrivateKey(byte[] key) {
+	public static PrivateKey buildPrivateKey(byte[] key) {
 		try {
-			return buildPrivateKey(key);
+			KeyFactory factory = keyFactory();
+			return factory.generatePrivate(new PKCS8EncodedKeySpec(key));
 		} catch (InvalidKeySpecException e) {
 			throw new ECRuntimeException(e);
 		}
 	}
 
-	public static PublicKey buildPublicKey(byte[] key)
-			throws InvalidKeySpecException {
-		KeyFactory factory = keyFactory();
-		return factory.generatePublic(new X509EncodedKeySpec(key));
-	}
-
-	public static PublicKey safeBuildPublicKey(byte[] key) {
+	public static PublicKey buildPublicKey(byte[] key) {
 		try {
-			return buildPublicKey(key);
+			KeyFactory factory = keyFactory();
+			return factory.generatePublic(new X509EncodedKeySpec(key));
 		} catch (InvalidKeySpecException e) {
 			throw new ECRuntimeException(e);
 		}
 	}
 
-	public static byte[] sign(PrivateKey key, byte[] digest)
-			throws InvalidKeyException, SignatureException {
-		Signature signature = signature();
-		signature.initSign(key);
-		signature.update(digest);
-		return signature.sign();
-	}
-
-	public static byte[] safeSign(PrivateKey key, byte[] digest) {
+	public static byte[] sign(PrivateKey key, byte[] digest) {
 		try {
-			return sign(key, digest);
+			Signature signature = signature();
+			signature.initSign(key);
+			signature.update(digest);
+			return signature.sign();
 		} catch (InvalidKeyException | SignatureException e) {
 			String err = "Error occurred signing digest";
 			throw new ECRuntimeException(err, e);
 		}
 	}
-	/**
-	 * Uses a public key to validate content signature. Returns true if
-	 * the signature is valid, otherwise false.
-	 */
-	public static boolean verify(PublicKey key, byte[] digest, byte[] sig)
-			throws InvalidKeyException, SignatureException {
-		Signature signature = signature();
-		signature.initVerify(key);
-		signature.update(digest);
-		return signature.verify(sig);
-	}
-
-	public static boolean safeVerify(PublicKey key, byte[] digest, byte[] sig) {
+	public static boolean verify(PublicKey key, byte[] digest, byte[] sig) {
 		try {
-			return verify(key, digest, sig);
+			Signature signature = signature();
+			signature.initVerify(key);
+			signature.update(digest);
+			return signature.verify(sig);
 		} catch (InvalidKeyException | SignatureException e) {
 			String err = "Error occurred verifying digest";
 			throw new ECRuntimeException(err, e);

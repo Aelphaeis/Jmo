@@ -19,6 +19,8 @@ import jmo.crypto.EllipticCurves.ECRuntimeException;
 public class EllipticCurvesTest {
 	public static final int MAX_KEY_SIZE = EllipticCurves.MAX_KEY_SIZE;
 	public static final int MIN_KEY_SIZE = EllipticCurves.MIN_KEY_SIZE;
+	
+	private String pangram = "The quick brown fox jumps over a lazy dog.";
 
 	@Test(expected = InvalidParameterException.class)
 	public void generateKeys_belowMin_exception() {
@@ -32,7 +34,6 @@ public class EllipticCurvesTest {
 	
 	@Test
 	public void sign_signVerify_valid() {
-		String pangram = "The quick brown fox jumps over a lazy dog.";
 		byte[] bytes = pangram.getBytes(StandardCharsets.UTF_8);
 
 		KeyPair kp = EllipticCurves.generateKeys(RECOMMENDED_KEY_SIZE);
@@ -45,7 +46,6 @@ public class EllipticCurvesTest {
 
 	@Test
 	public void sign_signVerify_valid2() {
-		String pangram = "The quick brown fox jumps over a lazy dog.";
 		byte[] bytes = pangram.getBytes(StandardCharsets.UTF_8);
 
 		KeyPair kp = EllipticCurves.generateKeys(RECOMMENDED_KEY_SIZE);
@@ -62,7 +62,6 @@ public class EllipticCurvesTest {
 
 	@Test(expected = ECRuntimeException.class)
 	public void safeVerify_invalidKey_exception() {
-		String pangram = "The quick brown fox jumps over a lazy dog.";
 		byte[] bytes = pangram.getBytes(StandardCharsets.UTF_8);
 		byte[] sig;
 
@@ -75,7 +74,6 @@ public class EllipticCurvesTest {
 	@Test(expected = ECRuntimeException.class)
 	public void safeSign_invalidKey_exception()
 			throws NoSuchAlgorithmException {
-		String pangram = "The quick brown fox jumps over a lazy dog.";
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
 		KeyPair kp = kpg.generateKeyPair();
 

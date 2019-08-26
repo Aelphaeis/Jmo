@@ -36,9 +36,9 @@ public class EllipticCurvesTest {
 		byte[] bytes = pangram.getBytes(StandardCharsets.UTF_8);
 
 		KeyPair kp = EllipticCurves.generateKeys(RECOMMENDED_KEY_SIZE);
-		byte[] sig = EllipticCurves.safeSign(kp.getPrivate(), bytes);
+		byte[] sig = EllipticCurves.sign(kp.getPrivate(), bytes);
 
-		assertTrue(EllipticCurves.safeVerify(kp.getPublic(), bytes, sig));
+		assertTrue(EllipticCurves.verify(kp.getPublic(), bytes, sig));
 		assertThat(104, Matchers.greaterThanOrEqualTo(sig.length));
 		assertThat(101, Matchers.lessThanOrEqualTo(sig.length));
 	}
@@ -53,9 +53,9 @@ public class EllipticCurvesTest {
 		assertThat(79, Matchers.lessThanOrEqualTo(result));
 		assertEquals(120, kp.getPublic().getEncoded().length);
 
-		byte[] sig = EllipticCurves.safeSign(kp.getPrivate(), bytes);
+		byte[] sig = EllipticCurves.sign(kp.getPrivate(), bytes);
 
-		assertTrue(EllipticCurves.safeVerify(kp.getPublic(), bytes, sig));
+		assertTrue(EllipticCurves.verify(kp.getPublic(), bytes, sig));
 		assertThat(104, Matchers.greaterThanOrEqualTo(sig.length));
 		assertThat(101, Matchers.lessThanOrEqualTo(sig.length));
 	}
@@ -67,9 +67,9 @@ public class EllipticCurvesTest {
 		byte[] sig;
 
 		KeyPair kp = EllipticCurves.generateKeys();
-		sig = EllipticCurves.safeSign(kp.getPrivate(), bytes);
+		sig = EllipticCurves.sign(kp.getPrivate(), bytes);
 
-		EllipticCurves.safeVerify(kp.getPublic(), sig, "t".getBytes());
+		EllipticCurves.verify(kp.getPublic(), sig, "t".getBytes());
 	}
 
 	@Test(expected = ECRuntimeException.class)
@@ -80,6 +80,6 @@ public class EllipticCurvesTest {
 		KeyPair kp = kpg.generateKeyPair();
 
 		byte[] bytes = pangram.getBytes(StandardCharsets.UTF_8);
-		EllipticCurves.safeSign(kp.getPrivate(), bytes);
+		EllipticCurves.sign(kp.getPrivate(), bytes);
 	}
 }

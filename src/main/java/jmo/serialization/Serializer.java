@@ -12,7 +12,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -123,8 +125,7 @@ public final class Serializer {
 	public static void serialize(Document document, Writer writer) {
 		final String indent = "{http://xml.apache.org/xslt}indent-amount";
 		try {
-			TransformerFactory tf = TransformerFactory.newInstance();
-			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			TransformerFactory tf = transformerMaker();
 
 			Transformer t = tf.newTransformer();
 			DOMSource source = new DOMSource(document);
@@ -135,9 +136,6 @@ public final class Serializer {
 			t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
 			t.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			// this is impossible and not recoverable
-			throw new SerializerException(e);
 		} catch (TransformerException e) {
 			String err = "Unrecoverable error occurred during transformation";
 			logger.error(err, e);
@@ -190,8 +188,7 @@ public final class Serializer {
 	 */
 	public static Document deserialize(Reader is) throws IOException {
 		try {
-			TransformerFactory factory = TransformerFactory.newInstance();
-			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			TransformerFactory factory = transformerMaker();
 			Transformer transformer = factory.newTransformer();
 			StreamSource source = new StreamSource(is);
 			DOMResult result = new DOMResult();
@@ -199,13 +196,9 @@ public final class Serializer {
 			transformer.transform(source, result);
 
 			return (Document) result.getNode();
-		} catch (TransformerConfigurationException e) {
-			// this is impossible and not recoverable
-			throw new SerializerException(e);
 		} catch (TransformerException e) {
 			throw new IOException(e);
 		}
-
 	}
 
 	/**
@@ -256,13 +249,40 @@ public final class Serializer {
 				result.setSystemId(name);
 				return result;
 			}
-
-			@Override
-			public String toString() {
-				return writer.toString();
-			}
 		};
 		ctxt.generateSchema(resolver);
+	}
+	
+	/**
+	 * Create a transformerFactory with the settings specified in the map.
+	 * The factory will always have secure processing set to true.
+	 * 
+	 * @return
+	 */
+	public static TransformerFactory transformerMaker() {
+		return transformerMaker(null);
+	}
+	
+	/**
+	 * Create a transformerFactory with the settings specified in the map.
+	 * The factory will always have secure processing set to true.
+	 * 
+	 * @param o
+	 * @return
+	 */
+	public static TransformerFactory transformerMaker(Map<String, Boolean> o) {
+		try {
+			Map<String, Boolean> feats = o != null ? o : new HashMap<>();
+			TransformerFactory f = TransformerFactory.newInstance();
+			for(Map.Entry<String, Boolean> entry : feats.entrySet()) {
+				f.setFeature(entry.getKey(), entry.getValue());
+			}
+			f.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			return f;
+		}
+		catch(TransformerConfigurationException e) {
+			throw new SerializerException(e);
+		}
 	}
 	
 	/**

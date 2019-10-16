@@ -23,10 +23,11 @@ public class TreeNodeTest {
 	public void setup() {
 		List<Integer> elements = IntStream.range(1, 16).mapToObj(p -> p)
 				.collect(Collectors.toList());
-		root = TreeAdaptor.toTree(elements, p -> {
+		TreeAdaptor<Integer> adaptor = p -> {
 			int sqrt = (int) Math.round(Math.sqrt(p));
 			return p == sqrt ? 0 : sqrt;
-		});
+		};
+		root = adaptor.toTree(elements);
 	}
 
 	@Test

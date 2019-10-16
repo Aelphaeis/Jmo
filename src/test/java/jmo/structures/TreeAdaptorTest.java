@@ -45,8 +45,8 @@ public class TreeAdaptorTest {
 
 	@Test
 	public void toTree_noRoot_artificalRoot() {
-		TreeNode<Integer> tn = TreeAdaptor.toTree(Arrays.asList(3, 4), 
-				p -> null);
+		TreeNode<Integer> tn = ((TreeAdaptor<Integer>)i -> null)
+				.toTree(Arrays.asList(3, 4));
 		assertNull(tn.getValue());
 		assertEquals(3, tn.child(0).intValue());
 		assertEquals(4, tn.child(1).intValue());
@@ -54,8 +54,9 @@ public class TreeAdaptorTest {
 	
 	@Test
 	public void toTree_2Roots_artificalRoot() {
-		TreeNode<Integer> tn = TreeAdaptor.toTree(Arrays.asList(3, 4),
-				p -> p * 2);
+		
+		TreeNode<Integer> tn = ((TreeAdaptor<Integer>)i -> i * 2)
+				.toTree(Arrays.asList(3, 4));
 		assertNull(tn.getValue());
 		assertEquals(6, tn.child(0).intValue());
 		assertEquals(8, tn.child(1).intValue());
@@ -69,6 +70,7 @@ public class TreeAdaptorTest {
 		for (int i = 3; i <= 4; i++) {
 			list.add(i);
 		}
-		TreeAdaptor.toTree(list, p -> p);
+		TreeAdaptor<Integer> adaptor = p -> p;
+		adaptor.toTree(list);
 	}
 }

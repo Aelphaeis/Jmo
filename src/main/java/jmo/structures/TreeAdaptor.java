@@ -13,63 +13,6 @@ import java.util.stream.Collectors;
 public interface TreeAdaptor<T> {
 
 	/**
-	 * Given a tree adaptor, takes an Iterable and converts it into a tree.
-	 * 
-	 * This works by taking an element and resolving the element's parent.
-	 * Elements with the same parent are grouped together as nodes under
-	 * that parent element. If this parent resolution strategy creates a
-	 * circular dependency then an illegal argument is thrown.
-	 * 
-	 * If there are multiple roots, an artificial empty root is created.
-	 * 
-	 * 
-	 * @param i
-	 * @param pr
-	 * @return
-	 */
-	public static <T> TreeNode<T> toTree(Iterable<T> i, TreeAdaptor<T> pr) {
-		Map<T, T> parents = new HashMap<>();
-		Iterator<T> it = i.iterator();
-
-		// find the parent of each node
-		while (it.hasNext()) {
-			T value = it.next();
-			// if a node has no parent its the root
-			T parent = pr.resolve(value);
-			parents.put(value, parent);
-		}
-
-		// find the root
-		List<T> roots = new ArrayList<>(
-				parents.values().stream().filter(p -> !parents.containsKey(p))
-						.collect(Collectors.toSet()));
-
-		// child parent mappings
-		Map<T, List<T>> cpm = new HashMap<>();
-		for (Entry<T, T> p : parents.entrySet()) {
-			T val = p.getValue();
-			T key = p.getKey();
-			cpm.computeIfAbsent(val, k -> new ArrayList<T>()).add(key);
-		}
-
-		if (roots.isEmpty()) {
-			String err = "Unable to resolve root. Circular dependency?";
-			throw new IllegalArgumentException(err);
-		}
-		
-		// if multiple roots create an artificial root
-		if (roots.size() > 1) {
-			TreeNode<T> artificalRoot = new TreeNode<>();
-			for (T subValue : roots) {
-				subTree(cpm, subValue, artificalRoot);
-			}
-			return artificalRoot;
-		} else {
-			return subTree(cpm, roots.get(0), null);
-		}
-	}
-
-	/**
 	 * Take multiple value map turn them into TreeNodes where key is parent
 	 * and elements of the map are the children.
 	 * 
@@ -101,6 +44,44 @@ public interface TreeAdaptor<T> {
 	 * @return
 	 */
 	default TreeNode<T> toTree(Iterable<T> i) {
-		return toTree(i, this);
+		Map<T, T> parents = new HashMap<>();
+		Iterator<T> it = i.iterator();
+
+		// find the parent of each node
+		while (it.hasNext()) {
+			T value = it.next();
+			// if a node has no parent its the root
+			T parent = resolve(value);
+			parents.put(value, parent);
+		}
+
+		// find the root
+		List<T> roots = new ArrayList<>(
+				parents.values().stream().filter(p -> !parents.containsKey(p))
+						.collect(Collectors.toSet()));
+
+		// child parent mappings
+		Map<T, List<T>> cpm = new HashMap<>();
+		for (Entry<T, T> p : parents.entrySet()) {
+			T val = p.getValue();
+			T key = p.getKey();
+			cpm.computeIfAbsent(val, k -> new ArrayList<T>()).add(key);
+		}
+
+		if (roots.isEmpty()) {
+			String err = "Unable to resolve root. Circular dependency?";
+			throw new IllegalArgumentException(err);
+		}
+		
+		// if multiple roots create an artificial root
+		if (roots.size() > 1) {
+			TreeNode<T> artificalRoot = new TreeNode<>();
+			for (T subValue : roots) {
+				subTree(cpm, subValue, artificalRoot);
+			}
+			return artificalRoot;
+		} else {
+			return subTree(cpm, roots.get(0), null);
+		}
 	}
 }

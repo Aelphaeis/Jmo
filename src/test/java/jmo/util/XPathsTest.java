@@ -21,6 +21,7 @@ import test.jmo.rules.ResourceFolder;
 
 public class XPathsTest {
 	
+	private static final String BELGIAN_WAFFLES = "Belgian Waffles";
 	private static final String SAMPLE_NAME = "sample.xml";
 	
 	@Rule
@@ -29,7 +30,7 @@ public class XPathsTest {
 	@Test
 	public void query_multi_allReturned() throws IOException {
 		String [] expected = new String[5];
-		expected[0] = "Belgian Waffles";
+		expected[0] = BELGIAN_WAFFLES;
 		expected[1] = "Strawberry Belgian Waffles";
 		expected[2] = "Berry-Berry Belgian Waffles";
 		expected[3] = "French Toast";
@@ -48,7 +49,7 @@ public class XPathsTest {
 	public void first_xpath_found() throws IOException {
 		String query = "breakfast_menu/food[1]/name";
 		Element e = XPaths.first(getSample(), query);
-		assertEquals("Belgian Waffles", e.getTextContent());
+		assertEquals(BELGIAN_WAFFLES, e.getTextContent());
 	}
 	
 	@Test
@@ -62,7 +63,7 @@ public class XPathsTest {
 	public void distinct_uniqueXPath_found() throws IOException {
 		String query = "breakfast_menu/food[1]/name";
 		Element e = XPaths.distinct(getSample(), query);
-		assertEquals("Belgian Waffles", e.getTextContent());
+		assertEquals(BELGIAN_WAFFLES, e.getTextContent());
 	}
 	
 	@Test

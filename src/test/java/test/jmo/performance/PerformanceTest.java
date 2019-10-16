@@ -23,18 +23,18 @@ public class PerformanceTest {
 	private static final String TOFORMAT = "Candidate [%s] total :  %s ms";
 	private static final String AVGFORMAT = "Candidate [%s] average : %s ms";
 
-	Candidate A;
-	Candidate B;
-	Candidate C;
-	Candidate D;
+	Candidate a;
+	Candidate b;
+	Candidate c;
+	Candidate d;
 
 	@Before
 	public void setup() {
-		A = new Candidate() {
+		a = new Candidate() {
 
 			@Override
 			public String getName() {
-				return "A";
+				return "a";
 			}
 
 			@Override
@@ -44,11 +44,11 @@ public class PerformanceTest {
 				assertEquals(HELLO_WORLD, result);
 			}
 		};
-		B = new Candidate() {
+		b = new Candidate() {
 
 			@Override
 			public String getName() {
-				return "B";
+				return "b";
 			}
 
 			@Override
@@ -58,11 +58,11 @@ public class PerformanceTest {
 				assertEquals(HELLO_WORLD, result);
 			}
 		};
-		C = new Candidate() {
+		c = new Candidate() {
 
 			@Override
 			public String getName() {
-				return "C";
+				return "c";
 			}
 
 			@Override
@@ -72,11 +72,11 @@ public class PerformanceTest {
 						toScreamingSnakeCaseFromCamelCase3(s));
 			}
 		};
-		D = new Candidate() {
+		d = new Candidate() {
 
 			@Override
 			public String getName() {
-				return "D";
+				return "d";
 			}
 
 			@Override
@@ -92,15 +92,15 @@ public class PerformanceTest {
 	@Test
 	@Ignore
 	public void performanceTest() {
-		A.doAction();
-		B.doAction();
-		C.doAction();
-		D.doAction();
+		a.doAction();
+		b.doAction();
+		c.doAction();
+		d.doAction();
 
-		run(A);
-		run(B);
-		run(C);
-		run(D);
+		run(a);
+		run(b);
+		run(c);
+		run(d);
 	}
 
 	void run(Candidate can) {
@@ -108,14 +108,19 @@ public class PerformanceTest {
 		int limit = 10;
 		long total = 0;
 
-		for (int i = 0; i < limit; i++) {
-			long duration = can.checkPerformance();
-			logger.debug(String.format(ITFORMAT, can.getName(), i, duration));
-			total += duration;
+		if(logger.isDebugEnabled()) {
+			for (int i = 0; i < limit; i++) {
+				long dur = can.checkPerformance();
+				logger.debug(String.format(ITFORMAT, can.getName(), i, dur));
+				total += dur;
+			}	
 		}
 
-		logger.info(String.format(TIFORMAT, can.getName(), limit));
-		logger.info(String.format(TOFORMAT, can.getName(), total));
-		logger.info(String.format(AVGFORMAT, can.getName(), total / limit));
+		if(logger.isInfoEnabled()) {
+			logger.info(String.format(TIFORMAT, can.getName(), limit));
+			logger.info(String.format(TOFORMAT, can.getName(), total));
+			logger.info(String.format(AVGFORMAT, can.getName(), total / limit));
+		}
+		
 	}
 }

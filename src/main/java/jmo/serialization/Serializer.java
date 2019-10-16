@@ -1,5 +1,7 @@
 package jmo.serialization;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -47,10 +49,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-//TODO Allow for multiple classes to be inserted into serializer.
 public final class Serializer {
-	private static final Logger logger = LoggerFactory
-.getLogger(Serializer.class);
+	private static final Logger logger = LoggerFactory.getLogger(Serializer.class);
 
 	private Serializer() {
 		// we don't want anyone instantiating this class.
@@ -200,7 +200,13 @@ public final class Serializer {
 			throw new IOException(e);
 		}
 	}
-
+	
+	public static Document deserialize(File file)throws IOException {
+		try (FileReader reader = new FileReader(file)){
+			return deserialize(reader);
+		}
+	}
+	
 	/**
 	 * Given a string of xml, deserializes the xml into a document
 	 * 
@@ -405,7 +411,7 @@ public final class Serializer {
 	}
 
 	/**
-	 * Given a propOrder sorts the accessibles by name in the order specified.
+	 * Given a propOrder sorts the accessible by name in the order specified.
 	 * If no order is specified.
 	 * 
 	 * @param accessibles

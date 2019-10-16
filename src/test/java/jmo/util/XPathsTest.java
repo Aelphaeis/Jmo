@@ -3,11 +3,6 @@ package jmo.util;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -27,15 +22,4 @@ public class XPathsTest {
 		Document document = Serializer.deserialize(sample);
 		XPaths.distinct(document, "breakfast_menu/food");
 	}
-	
-
-	
-	private Document sample() throws ParserConfigurationException {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		DocumentBuilder builder = dbf.newDocumentBuilder();
-		Document document = builder.newDocument();
-		return document;
-	}
-	
 }

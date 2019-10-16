@@ -170,9 +170,8 @@ public class InMemoryContext implements Context  {
 	}
 
 	@Override
-	public void close() throws NamingException {
-		throw new UnsupportedOperationException(NIY);
-		
+	public void close() {
+		//not resources to release
 	}
 
 	@Override

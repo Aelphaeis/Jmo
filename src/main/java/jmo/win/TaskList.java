@@ -109,11 +109,11 @@ public class TaskList {
 
 		}
 
-		String image;
-		int pid;
-		String sessionName;
-		int sessionNum;
-		String memUsage;
+		private String image;
+		private int pid;
+		private String sessionName;
+		private int sessionNum;
+		private String memUsage;
 
 		@Override
 		public String toString() {

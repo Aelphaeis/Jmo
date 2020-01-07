@@ -415,18 +415,20 @@ public final class Serializer {
 	 * If no order is specified.
 	 * 
 	 * @param accessibles
-	 * @param propOrder
+	 * @param order
 	 * @return
 	 */
-	protected static List<AccessibleObject> sortAccessibles(
-			List<AccessibleObject> accessibles, String[] propOrder) {
-		if (propOrder != null) {
+	static List<AccessibleObject> sortAccessibles(
+			List<AccessibleObject> accessibles, String[] order) {
+		if (order != null) {
 			List<AccessibleObject> orderedAccessibles = new ArrayList<>();
-			for (int i = 0; i < propOrder.length; i++) {
+			
+			
+			for (int i = 0; i < order.length; i++) {
 				for (int j = 0; j < accessibles.size(); j++) {
-					String name = accessibles.get(j)
-							.getAnnotation(XmlElement.class).name();
-					if (name.equals(propOrder[i])) {
+					AccessibleObject obj = accessibles.get(j);
+					String name = obj.getAnnotation(XmlElement.class).name();
+					if (name.equals(order[i])) {
 						orderedAccessibles.add(accessibles.remove(j));
 					}
 				}
@@ -454,7 +456,7 @@ public final class Serializer {
 	 * @param clazz
 	 * @return list of AccessibleOjects
 	 */
-	protected static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(
+	static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(
 			Class<T> clazz) {
 		List<AccessibleObject> accessibles = new ArrayList<>();
 
@@ -494,7 +496,7 @@ public final class Serializer {
 	 * @throws InvocationTargetException
 	 *             If AccessibleObject is method and throws an exception
 	 */
-	protected static Object getValueWithAccessor(Object value,
+	static Object getValueWithAccessor(Object value,
 			AccessibleObject accessor) throws InvocationTargetException {
 		if (accessor instanceof Field) {
 			try {

@@ -152,6 +152,21 @@ public class Exceptions {
 	}
 	
 	/**
+	 * Get list of nested exceptions. The first exception is the outter must
+	 * exception and the last exception is the innermost exception
+	 * 
+	 * @param t
+	 * @return
+	 */
+	public static List<Throwable> getThrowables(Throwable t){
+		List<Throwable> throwables = new ArrayList<>();
+		for(Throwable curr = t; curr != null; curr = curr.getCause()) {
+			throwables.add(curr);
+		}
+		return throwables;
+	}
+	
+	/**
 	 * Takes a throwable's stack trace and puts it into a string
 	 * 
 	 * @param t
@@ -163,6 +178,8 @@ public class Exceptions {
 		t.printStackTrace(pWriter);
 		return sWriter.toString();
 	}
+	
+	
 	
 	private Exceptions() { }
 

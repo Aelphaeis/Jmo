@@ -2,6 +2,9 @@ package jmo.util;
 
 import static org.junit.Assert.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -10,6 +13,25 @@ import jmo.util.Exceptions;
 
 public class ExceptionsTest {
 	
+	public static List<Throwable> getThrowables(Throwable t) {
+		List<Throwable> throwables = new ArrayList<>();
+		for (Throwable curr = t; curr != null; curr = curr.getCause()) {
+			throwables.add(curr);
+		}
+		return throwables;
+	}
+
+	public static String getFirstLine(Throwable t) {
+		return toString(t).split("\n")[0];
+	}
+
+	public static String toString(Throwable t) {
+		StringWriter sWriter = new StringWriter();
+		PrintWriter pWriter = new PrintWriter(sWriter);
+		t.printStackTrace(pWriter);
+		return sWriter.toString();
+	}
+
 	@Test
 	public void Exceptions_getCauseInstances_ExceptionExistsInStack() {
 		Exception npe = new NullPointerException();

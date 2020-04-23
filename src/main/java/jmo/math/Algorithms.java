@@ -14,15 +14,15 @@ public class Algorithms {
 						.collect(Collectors.groupingBy(c -> c,
 								Collectors.summingLong(c -> 1L))))
 				.reduce(new HashMap<>(), (x, y) -> {
-					x.forEach((k, v) -> y.merge(k, v, (a, b) -> a > b ? a : b));
+					x.forEach((k, v) -> y.merge(k, v, Math::max));
 					return y;
 				})
 				.entrySet()
 				.stream()
-				.mapToLong((e) -> e.getValue() * e.getKey())
+				.mapToLong(e -> (long) Math.pow(e.getKey(), e.getValue()))
 				.reduce(1, (x, y) -> x * y);
 	}
-	
+
 	public static long greatestCommonDivisor(long a, long b) {
 		long[] aFactors = factors(a);
 		long[] bFactors = factors(b);
@@ -48,10 +48,8 @@ public class Algorithms {
 		}
 		return primes;
 	}
-	
+
 	public static long[] factors(long num) {
-		return LongStream.range(1, num + 1)
-				.filter(p -> num % p == 0)
-				.toArray();
+		return LongStream.range(1, num + 1).filter(p -> num % p == 0).toArray();
 	}
 }

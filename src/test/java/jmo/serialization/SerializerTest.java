@@ -202,9 +202,10 @@ public class SerializerTest {
 		assertEquals(2, aos.size());
 		
 		XmlElement a = aos.get(0).getDeclaredAnnotation(XmlElement.class);
-		assertEquals("name", a.name());
 		XmlElement b = aos.get(1).getDeclaredAnnotation(XmlElement.class);
-		assertEquals("age", b.name());
+
+		assertEquals("age", a.name());
+		assertEquals("name", b.name());
 	}
 	
 	@Test(expected=IllegalStateException.class)
@@ -274,14 +275,14 @@ public class SerializerTest {
 	}
 	
 	@XmlRootElement
-	@XmlType(propOrder= {"name","age"})
+	@XmlType(propOrder = { "age", "name" })
 	public static class SortedAnnotatedPerson extends AnnotatedPerson {
-
-		public SortedAnnotatedPerson() { 
+		
+		public SortedAnnotatedPerson() {
 			super();
 		}
 		
-		public SortedAnnotatedPerson(String name, int age){
+		public SortedAnnotatedPerson(String name, int age) {
 			super(name, age);
 		}
 	}

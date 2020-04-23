@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -43,14 +44,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public final class Serializer {
-	private static final Logger logger = LoggerFactory.getLogger(Serializer.class);
 
 	private Serializer() {
 		// we don't want anyone instantiating this class.
@@ -138,7 +136,6 @@ public final class Serializer {
 			t.transform(source, result);
 		} catch (TransformerException e) {
 			String err = "Unrecoverable error occurred during transformation";
-			logger.error(err, e);
 			throw new IllegalArgumentException(err);
 		}
 	}
@@ -411,40 +408,45 @@ public final class Serializer {
 	}
 
 	/**
-	 * Given a propOrder sorts the accessible by name in the order specified.
-	 * If no order is specified.
+	 * Given a propOrder sorts the accessible by name in the order specified. If
+	 * no order is specified.
 	 * 
 	 * @param accessibles
-	 * @param propOrder
+	 * @param order
 	 * @return
 	 */
-	protected static List<AccessibleObject> sortAccessibles(
-			List<AccessibleObject> accessibles, String[] propOrder) {
-		if (propOrder != null) {
-			List<AccessibleObject> orderedAccessibles = new ArrayList<>();
-			for (int i = 0; i < propOrder.length; i++) {
-				for (int j = 0; j < accessibles.size(); j++) {
-					String name = accessibles.get(j)
-							.getAnnotation(XmlElement.class).name();
-					if (name.equals(propOrder[i])) {
-						orderedAccessibles.add(accessibles.remove(j));
-					}
-				}
-			}
-			if (!accessibles.isEmpty()) {
-				String[] unusedAccessibles = new String[accessibles.size()];
-				for (int i = 0; i < accessibles.size(); i++) {
-					AccessibleObject obj = accessibles.get(i);
-					String objName = obj.getAnnotation(XmlElement.class).name();
-					unusedAccessibles[i] = objName;
-				}
-				String msg = "The following properties name are present but not specified in @XmlType.propOrder : ";
-				msg += Arrays.toString(unusedAccessibles);
-				throw new IllegalStateException(msg);
-			}
-			return orderedAccessibles;
+	static List<AccessibleObject> sortAccessibles(
+			List<AccessibleObject> accessibles, String[] order) {
+		
+		if(Objects.isNull(order)) {
+			return accessibles;
 		}
-		return accessibles;
+		
+		List<AccessibleObject> orderedAccessibles = new ArrayList<>();
+		for(String prop : order) {
+			for (int j = 0; j < accessibles.size(); j++) {
+				AccessibleObject obj = accessibles.get(j);
+				String name = obj.getAnnotation(XmlElement.class).name();
+				if (name.equals(prop)) {
+					orderedAccessibles.add(accessibles.remove(j));
+					break;
+				}
+			}
+		}
+		
+		if (!accessibles.isEmpty()) {
+			String[] unusedAccessibles = new String[accessibles.size()];
+			
+			for (int i = 0; i < accessibles.size(); i++) {
+				AccessibleObject obj = accessibles.get(i);
+				String objName = obj.getAnnotation(XmlElement.class).name();
+				unusedAccessibles[i] = objName;
+			}
+			String msg = "Properties aren't referenced in @XmlType.propOrder: ";
+			msg += Arrays.toString(unusedAccessibles);
+			throw new IllegalStateException(msg);
+		}
+		return orderedAccessibles;
 	}
 
 	/**
@@ -454,7 +456,7 @@ public final class Serializer {
 	 * @param clazz
 	 * @return list of AccessibleOjects
 	 */
-	protected static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(
+	static <T> List<AccessibleObject> getAccessibleFieldsAndMethods(
 			Class<T> clazz) {
 		List<AccessibleObject> accessibles = new ArrayList<>();
 
@@ -494,7 +496,7 @@ public final class Serializer {
 	 * @throws InvocationTargetException
 	 *             If AccessibleObject is method and throws an exception
 	 */
-	protected static Object getValueWithAccessor(Object value,
+	static Object getValueWithAccessor(Object value,
 			AccessibleObject accessor) throws InvocationTargetException {
 		if (accessor instanceof Field) {
 			try {

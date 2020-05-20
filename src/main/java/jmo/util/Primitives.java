@@ -2,11 +2,12 @@ package jmo.util;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Primitives {
 
 	public static final Parser<Boolean> YNBOOL_PARSER = new YesNoBoolParser();
-	
+
 	public static <T> T[] parseArray(Parser<T> p, String in, T[] out) {
 		if (!isArrayString(in)) {
 			String err = "String is not an output from Arrays.toString";
@@ -19,7 +20,8 @@ public class Primitives {
 
 		String content = in.substring(1, in.length() - 1);
 		String[] ctntArr = content.split(",");
-		return Arrays.asList(ctntArr).stream()
+		return Arrays.asList(ctntArr)
+				.stream()
 				.map(String::trim)
 				.map(p::parse)
 				.collect(Collectors.toList())
@@ -57,7 +59,8 @@ public class Primitives {
 	public static <T> T parseOrDefault(Parser<T> p, String s, T defaultValue) {
 		try {
 			return p.parse(s);
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e) {
 			return defaultValue;
 		}
 	}
@@ -87,13 +90,11 @@ public class Primitives {
 	}
 
 	public static Integer[] box(int[] content) {
-		Integer[] result = new Integer[content.length];
-		for (int i = 0; i < content.length; i++) {
-			result[i] = content[i];
-		}
-		return result;
+		return IntStream.range(0, content.length)
+				.mapToObj(p -> p)
+				.toArray(Integer[]::new);
 	}
-	
+
 	public static double[] unbox(Double[] content) {
 		double[] result = new double[content.length];
 		for (int i = 0; i < content.length; i++) {
@@ -109,7 +110,7 @@ public class Primitives {
 		}
 		return result;
 	}
-	
+
 	public static float[] unbox(Float[] content) {
 		float[] result = new float[content.length];
 		for (int i = 0; i < content.length; i++) {
@@ -133,7 +134,7 @@ public class Primitives {
 		}
 		return result;
 	}
-	
+
 	public static Character[] box(char[] content) {
 		Character[] result = new Character[content.length];
 		for (int i = 0; i < content.length; i++) {
@@ -141,7 +142,7 @@ public class Primitives {
 		}
 		return result;
 	}
-	
+
 	public static short[] unbox(Short[] content) {
 		short[] result = new short[content.length];
 		for (int i = 0; i < content.length; i++) {
@@ -149,7 +150,7 @@ public class Primitives {
 		}
 		return result;
 	}
-	
+
 	public static Short[] box(short[] content) {
 		Short[] result = new Short[content.length];
 		for (int i = 0; i < content.length; i++) {
@@ -157,7 +158,7 @@ public class Primitives {
 		}
 		return result;
 	}
-	
+
 	public static boolean[] unbox(Boolean[] content) {
 		boolean[] result = new boolean[content.length];
 		for (int i = 0; i < content.length; i++) {
@@ -192,6 +193,7 @@ public class Primitives {
 
 	@FunctionalInterface
 	public interface Parser<T> {
+
 		T parse(String value);
 	}
 
@@ -202,8 +204,9 @@ public class Primitives {
 	private static boolean isArrayString(String in) {
 		return in.startsWith("[") && in.endsWith("]");
 	}
-	
+
 	private static class YesNoBoolParser implements Parser<Boolean> {
+
 		private static final String YES = "yes";
 		private static final String NO = "no";
 		private static final String FALSE = String.valueOf(Boolean.FALSE);
@@ -211,9 +214,11 @@ public class Primitives {
 		public Boolean parse(String v) {
 			if (YES.equalsIgnoreCase(v) || Boolean.valueOf(v)) {
 				return true;
-			} else if (FALSE.equalsIgnoreCase(v) || NO.equalsIgnoreCase(v)) {
+			}
+			else if (FALSE.equalsIgnoreCase(v) || NO.equalsIgnoreCase(v)) {
 				return false;
-			} else {
+			}
+			else {
 				String err = "Not a valid boolean [%s]";
 				throw new IllegalArgumentException(String.format(err, v));
 			}

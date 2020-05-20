@@ -2,7 +2,10 @@ package jmo.math;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -37,6 +40,24 @@ public class Algorithms {
 		throw new IllegalStateException();
 	}
 
+	public static long greatestCommonDivisor(long ... numbers) {
+		Map<Long, Long> m = new LinkedHashMap<>();
+		for (int i = 0; i < numbers.length; i++) {
+			for (long f : factors(numbers[i])) {
+				m.computeIfAbsent(f, p -> 0L);
+				m.put(f, m.get(f) + 1);
+			}
+		}
+
+		long largest = 1;
+		for (Entry<Long, Long> e : m.entrySet()) {
+			if (e.getValue() == numbers.length) {
+				largest = e.getKey();
+			}
+		}
+		return largest;
+	}
+	
 	public static List<Long> primeDecomposition(long num) {
 		ArrayList<Long> primes = new ArrayList<>();
 		for (int i = 2; i <= num; i++) {

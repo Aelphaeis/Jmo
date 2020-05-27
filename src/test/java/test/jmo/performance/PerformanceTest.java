@@ -7,22 +7,21 @@ import static jmo.util.NamingConventions.toScreamingSnakeCaseFromCamelCase4;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PerformanceTest {
-	private static final String LC_HELLO_WORLD = "HelloWorld!";
-	private static final String HELLO_WORLD = "HELLO_WORLD!";
-
+	
 	private static final Logger logger = LoggerFactory.getLogger("debug");
 
+	private static final String LC_HELLO_WORLD = "HelloWorld!";
+	private static final String HELLO_WORLD = "HELLO_WORLD!";
+	
 	private static final String ITFORMAT = "Candidate [%s] run %s : %s ms";
 	private static final String TIFORMAT = "Canadidate [%s] ran %s times";
 	private static final String TOFORMAT = "Candidate [%s] total :  %s ms";
 	private static final String AVGFORMAT = "Candidate [%s] average : %s ms";
-
 	Candidate a;
 	Candidate b;
 	Candidate c;
@@ -30,67 +29,25 @@ public class PerformanceTest {
 
 	@Before
 	public void setup() {
-		a = new Candidate() {
-
-			@Override
-			public String getName() {
-				return "a";
-			}
-
-			@Override
-			public void doAction() {
-				String s = LC_HELLO_WORLD;
-				String result = toScreamingSnakeCaseFromCamelCase(s);
-				assertEquals(HELLO_WORLD, result);
-			}
+		a = () -> {
+			String s = LC_HELLO_WORLD;
+			assertEquals(HELLO_WORLD, toScreamingSnakeCaseFromCamelCase(s));
 		};
-		b = new Candidate() {
-
-			@Override
-			public String getName() {
-				return "b";
-			}
-
-			@Override
-			public void doAction() {
-				String s = LC_HELLO_WORLD;
-				String result = toScreamingSnakeCaseFromCamelCase2(s);
-				assertEquals(HELLO_WORLD, result);
-			}
+		b = () -> {
+			String s = LC_HELLO_WORLD;
+			assertEquals(HELLO_WORLD, toScreamingSnakeCaseFromCamelCase2(s));
 		};
-		c = new Candidate() {
-
-			@Override
-			public String getName() {
-				return "c";
-			}
-
-			@Override
-			public void doAction() {
-				String s = LC_HELLO_WORLD;
-				assertEquals(HELLO_WORLD,
-						toScreamingSnakeCaseFromCamelCase3(s));
-			}
+		c = () -> {
+			String s = LC_HELLO_WORLD;
+			assertEquals(HELLO_WORLD, toScreamingSnakeCaseFromCamelCase3(s));
 		};
-		d = new Candidate() {
-
-			@Override
-			public String getName() {
-				return "d";
-			}
-
-			@Override
-			public void doAction() {
-				String s = LC_HELLO_WORLD;
-				assertEquals(HELLO_WORLD,
-						toScreamingSnakeCaseFromCamelCase4(s));
-			}
+		d = () -> {
+			String s = LC_HELLO_WORLD;
+			assertEquals(HELLO_WORLD, toScreamingSnakeCaseFromCamelCase4(s));
 		};
-
 	}
 
 	@Test
-	@Ignore
 	public void performanceTest() {
 		a.doAction();
 		b.doAction();
@@ -108,19 +65,19 @@ public class PerformanceTest {
 		int limit = 10;
 		long total = 0;
 
-		if(logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			for (int i = 0; i < limit; i++) {
 				long dur = can.checkPerformance();
 				logger.debug(String.format(ITFORMAT, can.getName(), i, dur));
 				total += dur;
-			}	
+			}
 		}
 
-		if(logger.isInfoEnabled()) {
+		if (logger.isInfoEnabled()) {
 			logger.info(String.format(TIFORMAT, can.getName(), limit));
 			logger.info(String.format(TOFORMAT, can.getName(), total));
 			logger.info(String.format(AVGFORMAT, can.getName(), total / limit));
 		}
-		
+
 	}
 }

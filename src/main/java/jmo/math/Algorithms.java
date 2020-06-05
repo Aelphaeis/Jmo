@@ -73,4 +73,23 @@ public class Algorithms {
 	public static long[] factors(long num) {
 		return LongStream.range(1, num + 1).filter(p -> num % p == 0).toArray();
 	}
+	
+	public static List<Integer> digits(long n){
+		List<Integer> d = new ArrayList<>();
+		while(n > 0) {
+			d.add(Integer.valueOf((int) (n % 10)));
+			n /= 10;
+		}
+		return d;
+	}
+	
+    
+    public static boolean isPandigital(long num) {
+        int count;
+        int digits;
+        for(count = 0, digits = 1023; num > 0; num /= 10, count++){
+          digits ^= 1 << num % 10;
+        }
+        return digits == 0 && count == 10;
+    }
 }

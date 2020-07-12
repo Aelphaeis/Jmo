@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class RandomizerTest {
 
-	Randomizer r;
+	private Randomizer r;
 
 	
 	@Test

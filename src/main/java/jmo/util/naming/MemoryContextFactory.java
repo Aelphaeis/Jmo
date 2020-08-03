@@ -6,11 +6,11 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 
-public class JmoInitContextFactory implements InitialContextFactory {
+public class MemoryContextFactory implements InitialContextFactory {
 
 	@Override
 	public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
-		return new InMemoryContext();
+		return new MemoryContext();
 	}
 
 }

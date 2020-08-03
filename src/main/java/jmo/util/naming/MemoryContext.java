@@ -3,6 +3,7 @@ package jmo.util.naming;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -13,21 +14,26 @@ import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-public class InMemoryContext implements Context  {
+public class MemoryContext implements Context {
+
+	public static final String PREFIX = "java:";// comp/env/jdbc/database"
 	private static final String NIY = "Not Implemented Yet";
-	Map<String, Object> bindings;
+	private final Map<String, Object> bindings;
 	
-	public InMemoryContext() {
+
+	public MemoryContext() {
 		bindings = new HashMap<>();
 	}
-	
+
 	@Override
 	public Object lookup(Name name) throws NamingException {
+		Objects.requireNonNull(name);
 		return lookup(name.toString());
 	}
 
 	@Override
 	public Object lookup(String name) throws NamingException {
+		Objects.requireNonNull(name);
 		return bindings.get(name);
 	}
 
@@ -38,7 +44,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public void bind(String name, Object obj) throws NamingException {
-		if(bindings.containsKey(name)){
+		if (bindings.containsKey(name)) {
 			String err = "object has already been bound to name : %s";
 			throw new NameAlreadyBoundException(err);
 		}
@@ -58,7 +64,7 @@ public class InMemoryContext implements Context  {
 	@Override
 	public void unbind(Name name) throws NamingException {
 		unbind(name.toString());
-		
+
 	}
 
 	@Override
@@ -69,7 +75,7 @@ public class InMemoryContext implements Context  {
 	@Override
 	public void rename(Name oldName, Name newName) throws NamingException {
 		rename(oldName.toString(), newName.toString());
-		
+
 	}
 
 	@Override
@@ -86,12 +92,14 @@ public class InMemoryContext implements Context  {
 	}
 
 	@Override
-	public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(String name)
+			throws NamingException {
 		throw new UnsupportedOperationException(NIY);
 	}
 
 	@Override
-	public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(Name name)
+			throws NamingException {
 		return listBindings(name.toString());
 	}
 
@@ -109,7 +117,7 @@ public class InMemoryContext implements Context  {
 	@Override
 	public void destroySubcontext(String name) throws NamingException {
 		throw new UnsupportedOperationException(NIY);
-		
+
 	}
 
 	@Override
@@ -139,7 +147,7 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public NameParser getNameParser(String name) throws NamingException {
-		throw new UnsupportedOperationException(NIY);
+		return new MemoryNameParser();
 	}
 
 	@Override
@@ -160,7 +168,8 @@ public class InMemoryContext implements Context  {
 	}
 
 	@Override
-	public Object removeFromEnvironment(String propName) throws NamingException {
+	public Object removeFromEnvironment(String propName)
+			throws NamingException {
 		throw new UnsupportedOperationException(NIY);
 	}
 
@@ -171,12 +180,11 @@ public class InMemoryContext implements Context  {
 
 	@Override
 	public void close() {
-		//not resources to release
+		// no resources to release
 	}
 
 	@Override
 	public String getNameInNamespace() throws NamingException {
 		throw new UnsupportedOperationException(NIY);
 	}
-
 }

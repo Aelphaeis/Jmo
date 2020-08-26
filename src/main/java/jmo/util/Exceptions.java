@@ -5,8 +5,25 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class Exceptions {
+	
+	public static <T> Supplier<T> uncheck(ExceptionalSupplier<T> supplier) {
+		return () -> {
+			try {
+				return supplier.get();
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		};
+	}
+	
+	@FunctionalInterface
+	public static interface ExceptionalSupplier<T> {
+		public T get() throws Exception;
+	}
 	
 	public static <T extends Throwable> boolean hasInstance(Throwable t,
 			Class<T> type) {

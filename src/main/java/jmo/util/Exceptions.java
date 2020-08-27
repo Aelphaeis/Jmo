@@ -163,7 +163,7 @@ public class Exceptions {
 	}
 
 	/**
-	 * Get list of nested exceptions. The first exception is the outter must
+	 * Get list of nested exceptions. The first exception is the outer must
 	 * exception and the last exception is the innermost exception
 	 * 
 	 * @param t

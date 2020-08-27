@@ -5,25 +5,12 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Exceptions {
 	
-	public static <T> Supplier<T> uncheck(ExceptionalSupplier<T> supplier) {
-		return () -> {
-			try {
-				return supplier.get();
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		};
-	}
-	
-	@FunctionalInterface
-	public static interface ExceptionalSupplier<T> {
-		public T get() throws Exception;
-	}
+
 	
 	public static <T extends Throwable> boolean hasInstance(Throwable t,
 			Class<T> type) {
@@ -194,6 +181,39 @@ public class Exceptions {
 		PrintWriter pWriter = new PrintWriter(sWriter);
 		t.printStackTrace(pWriter);
 		return sWriter.toString();
+	}
+	
+	public static <T> Supplier<T> uncheck(ExceptionalSupplier<T> supplier) {
+		return () -> {
+			try {
+				return supplier.get();
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		};
+	}
+
+	public static <T, R> Function<T, R> uncheck(ExceptionalFunction<T, R> f) {
+		return t -> {
+			try {
+				return f.apply(t);
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		};
+	}
+	
+	@FunctionalInterface
+	public static interface ExceptionalSupplier<T> {
+		public T get() throws Exception;
+	}
+	
+	@FunctionalInterface
+	public static interface ExceptionalFunction<T, R>{
+		public R apply(T t) throws Exception;
+		
 	}
 	
 	

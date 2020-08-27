@@ -9,20 +9,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Exceptions {
-	
 
-	
 	public static <T extends Throwable> boolean hasInstance(Throwable t,
 			Class<T> type) {
 		return hasInstance(t, type, false);
 	}
-	
+
 	public static <T extends Throwable> boolean hasInstance(Throwable t,
 			Class<T> type, boolean strict) {
 		return !getInstances(t, type, strict).isEmpty();
 	}
-	
-	
+
 	/**
 	 * <p>
 	 * Given an exception and a type, searches the the exceptions (inclusive of
@@ -35,16 +32,14 @@ public class Exceptions {
 	 * occurrence in the trace
 	 * </p>
 	 * 
-	 * @param from
-	 *            Throwable who's causes we want to check
-	 * @param type
-	 *            Type of exception to return
+	 * @param from Throwable who's causes we want to check
+	 * @param type Type of exception to return
 	 */
 	public static <T extends Throwable> List<T> getInstances(Throwable t,
 			Class<T> type) {
 		return getInstances(t, type, false);
 	}
-	
+
 	/**
 	 * <p>
 	 * Given an exception and a type, searches the exceptions (inclusive of the
@@ -57,12 +52,9 @@ public class Exceptions {
 	 * occurrence in the trace
 	 * </p>
 	 * 
-	 * @param from
-	 *            Throwable who we want to check
-	 * @param type
-	 *            Type of exception to return
-	 * @param strict
-	 *            only return the exact class specified (no sub types)
+	 * @param from   Throwable who we want to check
+	 * @param type   Type of exception to return
+	 * @param strict only return the exact class specified (no sub types)
 	 */
 	public static <T extends Throwable> List<T> getInstances(Throwable t,
 			Class<T> type, boolean strict) {
@@ -74,10 +66,11 @@ public class Exceptions {
 		do {
 			if (strict) {
 				if (throwable.getClass() == type) {
-					
+
 					throwables.add(type.cast(throwable));
 				}
-			} else {
+			}
+			else {
 				if (type.isAssignableFrom(throwable.getClass())) {
 					throwables.add(type.cast(throwable));
 				}
@@ -86,75 +79,89 @@ public class Exceptions {
 		} while (throwable != null);
 		return throwables;
 	}
-	
+
 	/**
-	 * <p>Given an exception and a type, searches the nested exceptions of 
-	 * the specified exception type and finds the first instance of an 
-	 * exception that is assignable to the type specified.</p>
+	 * <p>
+	 * Given an exception and a type, searches the nested exceptions of the
+	 * specified exception type and finds the first instance of an exception
+	 * that is assignable to the type specified.
+	 * </p>
 	 * 
-	 * <p>If no exception matches the criteria, returns null.</p>
+	 * <p>
+	 * If no exception matches the criteria, returns null.
+	 * </p>
 	 * 
 	 * @param from
 	 * @param type
 	 */
-	public static <T extends Throwable> T getCauseInstance (
-			Throwable from, Class<T> type){
+	public static <T extends Throwable> T getCauseInstance(Throwable from,
+			Class<T> type) {
 		return getCauseInstance(from, type, false);
 	}
-	
+
 	/**
 	 * 
-	 * <p>Given an exception and a type, searches the nested exceptions of 
-	 * the specified exception and finds the first instance of an exception
-	 * that is assignable to the type specified.</p>
+	 * <p>
+	 * Given an exception and a type, searches the nested exceptions of the
+	 * specified exception and finds the first instance of an exception that is
+	 * assignable to the type specified.
+	 * </p>
 	 * 
-	 * <p>If strict is true, it will only return the exact class specified
-	 * sub types of that class will be ignored.</p>
+	 * <p>
+	 * If strict is true, it will only return the exact class specified sub
+	 * types of that class will be ignored.
+	 * </p>
 	 * 
-	 * <p>If no exception matches the criteria, returns null.</p>
+	 * <p>
+	 * If no exception matches the criteria, returns null.
+	 * </p>
 	 * 
-	 * @param from Throwable who's causes we want to check
-	 * @param type Type of exception to return
+	 * @param from   Throwable who's causes we want to check
+	 * @param type   Type of exception to return
 	 * @param strict only return the exact class specified (no sub types)
 	 */
-	public static <T extends Throwable> T getCauseInstance (
-			Throwable from, Class<T> type, boolean strict){
+	public static <T extends Throwable> T getCauseInstance(Throwable from,
+			Class<T> type, boolean strict) {
 		List<T> throwables = getCauseInstances(from, type, strict);
-		if(throwables.isEmpty()) {
+		if (throwables.isEmpty()) {
 			return null;
 		}
 		else {
 			return throwables.get(throwables.size() - 1);
 		}
 	}
-	
+
 	/**
-	 * <p>Given an exception and a type, searches the nested exceptions of 
-	 * the specified exception and finds all instances of an exception
-	 * that is assignable to the type specified and returns a list.</p>
+	 * <p>
+	 * Given an exception and a type, searches the nested exceptions of the
+	 * specified exception and finds all instances of an exception that is
+	 * assignable to the type specified and returns a list.
+	 * </p>
 	 * 
 	 * @param from Throwable who's causes we want to check
 	 * @param type Type of exception to return
 	 */
 	public static <T extends Throwable> List<T> getCauseInstances(
-			Throwable from, Class<T> type){
+			Throwable from, Class<T> type) {
 		return getCauseInstances(from, type, false);
 	}
 
 	/**
-	 * <p>Given an exception and a type, searches the nested exceptions of 
-	 * the specified exception and finds all instances of an exception
-	 * that is assignable to the type specified and returns a list.</p>
+	 * <p>
+	 * Given an exception and a type, searches the nested exceptions of the
+	 * specified exception and finds all instances of an exception that is
+	 * assignable to the type specified and returns a list.
+	 * </p>
 	 * 
-	 * @param from Throwable who's causes we want to check
-	 * @param type Type of exception to return
+	 * @param from   Throwable who's causes we want to check
+	 * @param type   Type of exception to return
 	 * @param strict only return the exact class specified (no sub types)
 	 */
 	public static <T extends Throwable> List<T> getCauseInstances(
-			Throwable from, Class<T> type, boolean strict){
+			Throwable from, Class<T> type, boolean strict) {
 		return getInstances(from.getCause(), type, strict);
 	}
-	
+
 	/**
 	 * Get list of nested exceptions. The first exception is the outter must
 	 * exception and the last exception is the innermost exception
@@ -162,14 +169,14 @@ public class Exceptions {
 	 * @param t
 	 * @return
 	 */
-	public static List<Throwable> getThrowables(Throwable t){
+	public static List<Throwable> getThrowables(Throwable t) {
 		List<Throwable> throwables = new ArrayList<>();
-		for(Throwable curr = t; curr != null; curr = curr.getCause()) {
+		for (Throwable curr = t; curr != null; curr = curr.getCause()) {
 			throwables.add(curr);
 		}
 		return throwables;
 	}
-	
+
 	/**
 	 * Takes a throwable's stack trace and puts it into a string
 	 * 
@@ -182,7 +189,7 @@ public class Exceptions {
 		t.printStackTrace(pWriter);
 		return sWriter.toString();
 	}
-	
+
 	public static <T> Supplier<T> uncheck(ExceptionalSupplier<T> supplier) {
 		return () -> {
 			try {
@@ -204,20 +211,18 @@ public class Exceptions {
 			}
 		};
 	}
-	
+
 	@FunctionalInterface
 	public static interface ExceptionalSupplier<T> {
+
 		public T get() throws Exception;
 	}
-	
-	@FunctionalInterface
-	public static interface ExceptionalFunction<T, R>{
-		public R apply(T t) throws Exception;
-		
-	}
-	
-	
-	
-	private Exceptions() { }
 
+	@FunctionalInterface
+	public static interface ExceptionalFunction<T, R> {
+
+		public R apply(T t) throws Exception;
+	}
+
+	private Exceptions() {}
 }

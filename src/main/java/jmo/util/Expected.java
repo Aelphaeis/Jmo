@@ -16,16 +16,17 @@ public class Expected {
 	}
 
 	public static boolean expect(BooleanSupplier p, int timeout, int interval) {
+		
 		try {
+			{
 			long end = System.currentTimeMillis() + timeout;
 			for (long i = 0; i < end; i = System.currentTimeMillis()) {
-				long started = System.currentTimeMillis();
 				if (p.getAsBoolean()) {
 					return true;
 				}
-				long duration = System.currentTimeMillis() - started;
-				Thread.sleep(interval - duration);
-			}
+				Thread.sleep(interval);
+			}}
+
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();

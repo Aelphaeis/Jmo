@@ -52,7 +52,7 @@ public class Expected {
 
 		private static final long serialVersionUID = 1L;
 
-		public UnexpectedResultException(String message) {
+		private UnexpectedResultException(String message) {
 			super(message);
 		}
 	}

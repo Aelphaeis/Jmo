@@ -20,7 +20,7 @@ public class Observable<T extends Observable.Args> {
 	}
 
 	public void notifyObservers(Object caller, T args) {
-		obs.forEach(p -> p.accept(caller, args));
+		obs.forEach(p -> p.accept(caller, Objects.requireNonNull(args)));
 	}
 
 	public void deleteObservers() {

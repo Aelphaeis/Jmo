@@ -1,44 +1,40 @@
 package jmo.patterns.observer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.BiConsumer;
 
-public class Observable <T extends ObservableArgs>{
-	private List<Observer<T>> obs;
+public class Observable<T extends Observable.Args> {
 
-	public Observable() {
-		obs = new ArrayList<>();
-	}
+	private Queue<BiConsumer<Object, T>> obs = new ConcurrentLinkedQueue<>();
 
-	public void addObserver(Observer<T> o) {
-		if (o == null) {
-			throw new NullPointerException();
-		}
-		if (!obs.contains(o)) {
+	public void addObserver(BiConsumer<Object, T> o) {
+		if (!obs.contains(Objects.requireNonNull(o))) {
 			obs.add(o);
 		}
 	}
 
-	public void deleteObserver(Observer<T> o) {
+	public void deleteObserver(BiConsumer<Object, T> o) {
 		obs.remove(o);
 	}
 
 	public void notifyObservers(Object caller, T args) {
-		List<Observer<T>> observers;
-		synchronized (this) {
-			observers = new ArrayList<>(obs); 
-		}
-		
-		for(Observer<T> observer : observers) {
-			observer.update(caller, args);
-		}
+		obs.forEach(p -> p.accept(caller, args));
 	}
 
 	public void deleteObservers() {
-		obs = new ArrayList<>();
+		obs.clear();
 	}
 
 	public int countObservers() {
 		return obs.size();
+	}
+
+	public static class Args {
+
+		public static final Args EMPTY = new Args();
+
+		protected Args() {}
 	}
 }

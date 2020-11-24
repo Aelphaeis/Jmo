@@ -3,6 +3,7 @@ package jmo.serialization;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
@@ -175,6 +176,32 @@ public final class Serializer {
 			throw new IllegalArgumentException("Illegal Xml input", e);
 		}
 	}
+	
+	public static <T> T deserialize(InputStream is, Class<T> clazz)
+			throws JAXBException {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+			DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+			InputSource xmlSource = new InputSource(is);
+			Document doc = dBuilder.parse(xmlSource);
+
+			JAXBContext context = JAXBContext.newInstance(clazz);
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+
+			JAXBElement<T> element = unmarshaller.unmarshal(doc, clazz);
+			return element.getValue();
+		} catch (ParserConfigurationException e) { // This should not occur
+			throw new SerializerException("Unable to configure parser", e);
+		} catch (IOException e) { // This should not occur ever 
+			throw new SerializerException("Unable to read document", e);
+		} catch (SAXException e) {
+			// The Xml input is not formatted properly.
+			throw new IllegalArgumentException("Illegal Xml input", e);
+		}
+	}
+	
 
 	/**
 	 * Given a input stream deserializes the xml into a document

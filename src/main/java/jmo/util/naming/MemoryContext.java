@@ -19,10 +19,15 @@ public class MemoryContext implements Context {
 	public static final String PREFIX = "java:";// comp/env/jdbc/database"
 	private static final String NIY = "Not Implemented Yet";
 	private final Map<String, Object> bindings;
-	
+	private Hashtable<?, ?> environment;
 
 	public MemoryContext() {
-		bindings = new HashMap<>();
+		this(new Hashtable<>());
+	}
+
+	protected MemoryContext(Hashtable<?, ?> environment) {
+		this.environment = Objects.requireNonNull(environment);
+		this.bindings = new HashMap<>();
 	}
 
 	@Override
@@ -168,14 +173,13 @@ public class MemoryContext implements Context {
 	}
 
 	@Override
-	public Object removeFromEnvironment(String propName)
-			throws NamingException {
-		throw new UnsupportedOperationException(NIY);
+	public Object removeFromEnvironment(String propName) {
+		return environment.remove(propName);
 	}
 
 	@Override
 	public Hashtable<?, ?> getEnvironment() throws NamingException {
-		throw new UnsupportedOperationException(NIY);
+		return environment;
 	}
 
 	@Override
